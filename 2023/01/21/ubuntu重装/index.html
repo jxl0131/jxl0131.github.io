@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ubuntu唯一的缺点是经常会重装。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ubuntu重装">
+<meta property="og:url" content="http://example.com/2023/01/21/ubuntu%E9%87%8D%E8%A3%85/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="ubuntu唯一的缺点是经常会重装。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-21T03:52:52.000Z">
+<meta property="article:modified_time" content="2023-02-05T08:19:28.977Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="ubuntu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/01/21/ubuntu%E9%87%8D%E8%A3%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ubuntu重装 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/21/ubuntu%E9%87%8D%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ubuntu重装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-21 11:52:52" itemprop="dateCreated datePublished" datetime="2023-01-21T11:52:52+08:00">2023-01-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-05 16:19:28" itemprop="dateModified" datetime="2023-02-05T16:19:28+08:00">2023-02-05</time>
+              </span>
+
+          
+            <div class="post-description">ubuntu唯一的缺点是经常会重装。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="系统重装"><a href="#系统重装" class="headerlink" title="系统重装"></a>系统重装</h2><p>不需要到windows上格式化原ubuntu使用的各个磁盘分区。只需要插入启动u盘，连上网，在线安装，选择覆盖检测到的原ubuntu即可。仍可以对原ubuntu的各个分区占用进行重新划分，并可以选择是否格式化某些分区。</p>
+<p>可以选择中文的系统环境，英文（美国）的键盘。</p>
+<p>安装完成后软件源已经是中国的了。可以进一步换成某高校或企业的源。</p>
+<p>然后执行<code>sudo apt-get update</code> <code>sudo apt-get upgrade</code> 全面升级软件到最新，升级后查看桌面、声卡驱动、蓝牙驱动等是否正常工作。假如正常，就<code>sudo apt-mark hold linux-image-xxxxxx</code>把当前已经安装的内核版本都固定住，防止日后upgrade的时候将内核一同升级导致的驱动实效等问题。</p>
+<h2 id="双系统共享D盘的挂载"><a href="#双系统共享D盘的挂载" class="headerlink" title="双系统共享D盘的挂载"></a>双系统共享D盘的挂载</h2><p>D盘自动挂载在&#x2F;media&#x2F;jxl&#x2F;D，在文件夹的“其他”里能够看到其实际物理分区为&#x2F;dev&#x2F;nvme0n1p7，但是却无法修改其所属人和权限。</p>
+<p>挂载位置可以随便选，比如<br>&#x2F;D<br>&#x2F;media&#x2F;jxl&#x2F;D<br>&#x2F;home&#x2F;jxl&#x2F;D</p>
+<p>我选择第二种。同时又要让D盘属于jxl，但是其他用户（比如root）也可以增加、修改、执行文件。</p>
+<p>所以要在专管开机挂载磁盘的文件最后一行加入挂载指令：<br><code>jxl@jxl-Inspiron-5580:~$ sudo vi /etc/fstab</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 挂载D盘并将其设为可执行</span><br><span class="line">UUID=DE86-CC06  /media/jxl/D vfat iocharset=utf8,gid=1000,uid=1000,umask=000 0 2</span><br></pre></td></tr></table></figure>
+
+<p>其中UUID和D盘文件系统类型vfat获取自</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jxl@jxl-Inspiron-5580:~$ sudo blkid /dev/nvme0n1p7</span><br><span class="line">/dev/nvme0n1p7: LABEL=&quot;D&quot; UUID=&quot;DE86-CC06&quot; TYPE=&quot;vfat&quot; PARTLABEL=&quot;Basic data partition&quot; PARTUUID=&quot;ec655e13-9b7b-46c1-bd9f-78911f667a6f&quot;</span><br></pre></td></tr></table></figure>
+
+<p>属于1000用户组和1000用户jxl：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jxl@jxl-Inspiron-5580:~$ cat /etc/passwd |grep jxl</span><br><span class="line">jxl:x:1000:1000:jxl,,,:/home/jxl:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>iocharset&#x3D;utf8使得中文不乱码，umask&#x3D;000相当于在挂载时<code>chmod 777</code></p>
+<p>最后两个数字，第一个​​0​​​是代表是否开机检查磁盘，​​0​​​是否，​​1​​是是</p>
+<p>第二个数字是分区的种类：</p>
+<p>​​0​​交换分区</p>
+<p>​​1​​启动分区</p>
+<p>​​2​​普通分区（选2，普通分区）</p>
+<p><code>reboot</code>之后生效。</p>
+<h2 id="安装vscode"><a href="#安装vscode" class="headerlink" title="安装vscode"></a>安装vscode</h2><p>注意的是软件商店里的不能键入中文。从官网下很简单才行。</p>
+<h2 id="浏览器看视频缺少插件"><a href="#浏览器看视频缺少插件" class="headerlink" title="浏览器看视频缺少插件"></a>浏览器看视频缺少插件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install ubuntu-restricted-extras</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/" rel="prev" title="mc插件服插件体验">
+      <i class="fa fa-chevron-left"></i> mc插件服插件体验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/01/21/python%E8%AF%AD%E6%B3%95/" rel="next" title="python语法">
+      python语法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E9%87%8D%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">系统重装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%85%B1%E4%BA%ABD%E7%9B%98%E7%9A%84%E6%8C%82%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">双系统共享D盘的挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85vscode"><span class="nav-number">3.</span> <span class="nav-text">安装vscode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9C%8B%E8%A7%86%E9%A2%91%E7%BC%BA%E5%B0%91%E6%8F%92%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">浏览器看视频缺少插件</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

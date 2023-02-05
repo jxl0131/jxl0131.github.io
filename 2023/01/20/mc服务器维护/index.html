@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="为素未谋面的许多人搭建了mc服务器后，我总结了一些mc服务器维护的经验之谈。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mc服务器维护">
+<meta property="og:url" content="http://example.com/2023/01/20/mc%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="为素未谋面的许多人搭建了mc服务器后，我总结了一些mc服务器维护的经验之谈。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-20T03:52:52.000Z">
+<meta property="article:modified_time" content="2023-02-05T08:19:33.429Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="mc">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/01/20/mc%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mc服务器维护 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/20/mc%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mc服务器维护
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-20 11:52:52" itemprop="dateCreated datePublished" datetime="2023-01-20T11:52:52+08:00">2023-01-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-05 16:19:33" itemprop="dateModified" datetime="2023-02-05T16:19:33+08:00">2023-02-05</time>
+              </span>
+
+          
+            <div class="post-description">为素未谋面的许多人搭建了mc服务器后，我总结了一些mc服务器维护的经验之谈。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="开服"><a href="#开服" class="headerlink" title="开服"></a>开服</h2><p>在ubuntu上启动一个所有人可进的游戏java版mc服务器</p>
+<ul>
+<li>自行安装jdk</li>
+</ul>
+<p>ubuntu安装java很简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openjdk-14-jdk</span><br></pre></td></tr></table></figure>
+
+<p>多个java同时存在，切换当前的java环境:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">jxl@jxl-Inspiron-5580:~/下载$ sudo update-alternatives --config java</span><br><span class="line">有 2 个候选项可用于替换 java (提供 /usr/bin/java)。</span><br><span class="line"></span><br><span class="line">  选择       路径                                          优先级  状态</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">  0            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      自动模式</span><br><span class="line">* 1            /opt/jdk/jdk1.8.0_311/bin/java                   100       手动模式</span><br><span class="line">  2            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      手动模式</span><br><span class="line"></span><br><span class="line">要维持当前值[*]请按&lt;回车键&gt;，或者键入选择的编号：0               </span><br><span class="line">update-alternatives: 使用 /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java 来在自动模式中提供 /usr/bin/java (java)</span><br><span class="line">jxl@jxl-Inspiron-5580:~/下载$ java -showversion</span><br><span class="line">openjdk version &quot;1.8.0_312&quot;</span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_312-8u312-b07-0ubuntu1~18.04-b07)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果是windows，到各种镜像站找到jdk或openjdk的.exe安装包，一路确认；或者直接复制别人Program Files&#x2F;java&#x2F;下的对应版本的java文件夹到自己电脑这边。在脚本里直接指定java.exe所在的绝对路径就可以轻松区别java版本。</p>
+<ul>
+<li><p>初次运行<br>-Xms后面是最小的内存，-Xmx 是最大的内存，这里大家可以根据自己的服务器配置而定。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xms1G -Xmx1G -jar server.jar nogui</span><br></pre></td></tr></table></figure></li>
+<li><p>上一次运行后会生成eula.txt，修改它，即同意条款</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim eula.txt</span><br></pre></td></tr></table></figure></li>
+<li><p>再次运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar -Xms512M -Xmx2048M server.jar nogui</span><br></pre></td></tr></table></figure></li>
+<li><p>上一次运行后会生成server.properties等文件<br> 把server.properties中的正版验证online-mode修改为false，这样非正版玩家都可以进入了。</p>
+</li>
+<li><p>加装forge（可选）<br>forge是加装在原版上的一个接口，用户连接原版服务器（或客户端）和mods。官网有两种forge提供：低版本的mc可以下载universal版本的forge，所有版本都有installer版的forge。<strong>理论上来说，在ubuntu上运行installer之后会生成universal版本的forge。</strong>如果有现成的universal版本，肯定先试一下。但是一般来说没有。<br>所以，</p>
+<ul>
+<li><p>在ubuntu上运行forge installer<br>将forge文件放入server.jar同目录。然后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar forge-1.12.2-14.23.4.2705-installer.jar -nogui -serverInstall</span><br></pre></td></tr></table></figure>
+<p>等待一段时间后将产生的forge-1.12.2-14.23.4.2705-universal.jar当作纯净版的server.jar一样重新启动配置一遍即可。</p>
+</li>
+<li><p>在本机上执行完installer将产生的所有文件整体xftp传到ubuntu<br>然后将forge-1.16.5-36.2.30.jar当成之前纯净版的server.jar即可。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>假如你已经在windows、ubuntu中用诸如裸开、cloudron、docker成功跑起了服务器。这里整理一些维护常识。</p>
+<h2 id="防崩溃"><a href="#防崩溃" class="headerlink" title="防崩溃"></a>防崩溃</h2><ul>
+<li><p>编写简单循环的脚本（start.sh），使服务器崩溃后能自动重启</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@VM-16-2-ubuntu:~/mcf16.5$ cat start.sh </span><br><span class="line">#!/bin/sh</span><br><span class="line">while true</span><br><span class="line">do</span><br><span class="line">#此处填写启动mc服务器的命令</span><br><span class="line">      java -server -XX:-UseVMInterruptibleIO -XX:NewRatio=3 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=4 -XX:+AggressiveOpts -XX:+UseFastAccessorMethods -XX:+UseBiasedLocking -XX:+CMSParallelRemarkEnabled -XX:MaxGCPauseMillis=50 -XX:+UseAdaptiveGCBoundary -XX:-UseGCOverheadLimit -XX:SurvivorRatio=8 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=15 -XX:+DisableExplicitGC -Xnoclassgc -oss4M -ss4M -XX:CMSInitiatingOccupancyFraction=60 -XX:SoftRefLRUPolicyMSPerMB=2048 -Xms512M -Xmx2048M -jar forge-1.16.5-36.2.30.jar nogui</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>windows上循环脚本的写法(假如是在windows上开服的话)</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">:loop</span><br><span class="line"></span><br><span class="line">call 服务器启动.cmd</span><br><span class="line"></span><br><span class="line">goto loop</span><br><span class="line">pause</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="防ssh中断后终端被杀"><a href="#防ssh中断后终端被杀" class="headerlink" title="防ssh中断后终端被杀"></a>防ssh中断后终端被杀</h2><ul>
+<li>先用screen开启一个分屏<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screen -S mcf</span><br></pre></td></tr></table></figure></li>
+<li>然后在该分屏启动服务器<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar -Xms512M -Xmx2048M server.jar nogui</span><br></pre></td></tr></table></figure>
+运行后可以直接在后台指令区和服务器进行交互。也可以给自己管理员权限方便在游戏中直接控制。<br>如果想返回ubuntu自己的指令行，就按ctrl+A+D回去。<br>想要重新进入这个screen进程回到mc运行的那个指令行，就打开ssh输入<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screen -r mcf</span><br></pre></td></tr></table></figure>
+如果想要删除这个screen会话，就输入<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screen -S mcf -X quit</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><p>在ubuntu终端（mc的服务器端）不需要斜杠。在客户端需要。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/stop 停止游戏</span><br><span class="line">/op binary 设为管理员</span><br></pre></td></tr></table></figure>
+<h4 id="服务器后台遇到的一个问题"><a href="#服务器后台遇到的一个问题" class="headerlink" title="服务器后台遇到的一个问题"></a>服务器后台遇到的一个问题</h4><blockquote>
+<p>ServerHangWatchdog detected that a single server tick took 60.00 seconds (should be max 0.05)，导致服务器停止运行了</p>
+</blockquote>
+<p>这是我落后的腾讯云跟不上mc服务器先进的看门狗计时自我要求了！<br>修改server.properties文件内的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max-tick-time=60</span><br></pre></td></tr></table></figure>
+<p>60改成-1，-1表示：哪怕延迟再多，看门狗都不会切断服务器了。</p>
+<h4 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h4><p>server.properties文件修改</p>
+<p>entity-broadcast-range-percentage  实体游戏渲染距离（10~1000）<br>设置小一点</p>
+<p>Description: Exception in server tick loop  tick的最大加载毫秒数（超过这个时间将判定服务器崩溃）<br>设为-1。假如你设为某个不是-1的值，比方说256，那么服务器跟不上玩家的时间超出256跳之后就会崩溃。</p>
+<p>max-world-size  世界大小<br>改小，反正跑不了那么多图</p>
+<p>network-compression-threshold 数据包多大时开始压缩传输<br>这个值设置得小会让CPU负担大一点，设置得大会让网卡（跟服务器带宽有关）负担大一点。<br>所以这个值，看你的机器性能瓶颈在哪。查看你的CPU和带宽的使用情况，通过调节这个值让两边的负载尽量均衡，而不要让某一个累死另外一个轻松死。</p>
+<p>view-distance视距<br>调小一点</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mc/" rel="tag"># mc</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/20/mc%E9%AD%94%E6%94%B9%E4%B8%BB%E8%8F%9C%E5%8D%95%E7%9A%84ui%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%8A%A0%E8%BD%BD%E7%95%8C%E9%9D%A2/" rel="prev" title="mc魔改主菜单的ui和进度加载界面">
+      <i class="fa fa-chevron-left"></i> mc魔改主菜单的ui和进度加载界面
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/" rel="next" title="mc插件服插件体验">
+      mc插件服插件体验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%9C%8D"><span class="nav-number">1.</span> <span class="nav-text">开服</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E5%B4%A9%E6%BA%83"><span class="nav-number">2.</span> <span class="nav-text">防崩溃</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2ssh%E4%B8%AD%E6%96%AD%E5%90%8E%E7%BB%88%E7%AB%AF%E8%A2%AB%E6%9D%80"><span class="nav-number">3.</span> <span class="nav-text">防ssh中断后终端被杀</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">常用指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8E%E5%8F%B0%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">4.0.1.</span> <span class="nav-text">服务器后台遇到的一个问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">4.0.2.</span> <span class="nav-text">优化</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

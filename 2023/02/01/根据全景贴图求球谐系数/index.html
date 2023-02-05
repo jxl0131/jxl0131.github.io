@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从具体到抽象，再回到具体。计算机和数学都得遵从哲学规律。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="根据全景贴图求球谐系数">
+<meta property="og:url" content="http://example.com/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="从具体到抽象，再回到具体。计算机和数学都得遵从哲学规律。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/9C4A7069-others-280-1.png">
+<meta property="og:image" content="http://example.com/images/9C4A7069-others-280-1_rec.png">
+<meta property="og:image" content="http://example.com/images/AG8A9396-others-240-1.png">
+<meta property="og:image" content="http://example.com/images/AG8A9396-others-240-1_rec.png">
+<meta property="og:image" content="http://example.com/images/AG8A9438-others-280-2.png">
+<meta property="og:image" content="http://example.com/images/AG8A9438-others-280-2_rec.png">
+<meta property="og:image" content="http://example.com/images/AG8A9704-others-40-1.png">
+<meta property="og:image" content="http://example.com/images/AG8A9704-others-40-1_rec.png">
+<meta property="article:published_time" content="2023-02-01T12:11:36.000Z">
+<meta property="article:modified_time" content="2023-02-05T08:19:29.381Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="SH">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/9C4A7069-others-280-1.png">
+
+<link rel="canonical" href="http://example.com/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>根据全景贴图求球谐系数 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          根据全景贴图求球谐系数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-01 20:11:36" itemprop="dateCreated datePublished" datetime="2023-02-01T20:11:36+08:00">2023-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-05 16:19:29" itemprop="dateModified" datetime="2023-02-05T16:19:29+08:00">2023-02-05</time>
+              </span>
+
+          
+            <div class="post-description">从具体到抽象，再回到具体。计算机和数学都得遵从哲学规律。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>目前认为室内参数化光照模型主要分为两大类：</p>
+<ul>
+<li>球面谐波</li>
+<li>球面高斯</li>
+</ul>
+<p>目前球面高斯类的方法已经有<a target="_blank" rel="noopener" href="https://github.com/fnzhan/Illumination-Estimation">EMlight</a>开源了，球面高斯参数生成、网络训练已经打通。但是我还没有掌握球面谐波类的方法，球面谐波模型主要难点在于求取球谐基函数的系数（spherical harmonics coefficients.）。</p>
+<ol>
+<li>从使用SH光照模型并开源的代码入手，寻找球面谐波系数求取的代码：</li>
+</ol>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/cake-lab/PointAR">PointAR</a><br>代码开源，但是求球谐系数的代码直接写在了PointAR&#x2F;datasets&#x2F;pointar&#x2F;preprocess&#x2F;cuda&#x2F;preprocess.cu里，且疑似根据点云来求</li>
+<li>Learning Scene Illumination by Pairwise Photos from Rear and Front Mobile Cameras<br>靠谷歌的C++库<a target="_blank" rel="noopener" href="https://github.com/google/spherical-harmonics%E6%9D%A5%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E3%80%82%E8%BF%99%E4%B8%AA%E5%BA%93%E5%BA%94%E8%AF%A5%E6%98%AF%E9%9D%A0%E8%B0%B1%E7%9A%84%EF%BC%8C%E4%BD%86%E6%98%AF%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3%E6%9C%89%E7%82%B9%E9%9A%BE%E7%9C%8B%E6%87%82%E3%80%82">https://github.com/google/spherical-harmonics来求球谐系数。这个库应该是靠谱的，但是说明文档有点难看懂。</a></li>
+<li>Deep Lighting Environment Map Estimation from Spherical Panoramas<br>代码开源。SH实域系数求法 代码直接开源，可学习借鉴。使用的是LAVAL数据集。</li>
+</ul>
+<ol start="2">
+<li>直接谷歌”python spherical harmonics coefficients”等关键词，在github上也同时寻找，找到了3个python包和一个github代码：</li>
+</ol>
+<ul>
+<li>pyspharm</li>
+<li>pyshtools</li>
+<li>scipy.special.sph_harm</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/lianera/SphericalHarmonicsLighting%EF%BC%88C++%EF%BC%89">https://github.com/lianera/SphericalHarmonicsLighting（C++）</a></li>
+</ul>
+<p>阅读相关文档，最终pyshtools跑通。<br>借助pyshtools包，完成了将全景HDR图映射到球谐基上，获取低频部分的球谐系数，并从球谐系数重建出全景HDR、LDR图的代码。</p>
+<p>下面展示一些全景图及其通过5阶球谐系数（共36*3个参数）重建出的图像：</p>
+<ul>
+<li><p>图1<br><img src="/../images/9C4A7069-others-280-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图1-重建<br><img src="/../images/9C4A7069-others-280-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2<br><img src="/../images/AG8A9396-others-240-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2-重建<br><img src="/../images/AG8A9396-others-240-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2<br><img src="/images/AG8A9438-others-280-2.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图3-重建<br><img src="/images/AG8A9438-others-280-2_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图4<br><img src="/images/AG8A9704-others-40-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图4-重建<br><img src="/images/AG8A9704-others-40-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+</ul>
+<p>可以看出5阶球谐系数能反映全景图的低频光照信息，成分上接近环境光。但是无法表示昏暗环境下的光源强度，这是SH光照模型的弱点。<br>Garon在其文章<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8954392/">Fast Spatially-Varying Indoor Lighting Estimation</a>中也用的是5阶球谐系数，他测试了3阶到8阶的SH，认为5阶SH达到了效率和效果的平衡，最适合他的工作：</p>
+<blockquote>
+<p>We chose order 5 after experimenting with orders ranging from 3 to 8, and empirically confirming that order 5 SH lighting gave us a practical trade-off between rendering time and visual quality (including shading and shadow softness).</p>
+</blockquote>
+<p>其他论文中使用到的SH也基本是2阶（9 $\times$ 3）、3阶（16 $\times$ 3）的。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SH/" rel="tag"># SH</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/01/%E6%B2%A1%E6%9C%89%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90%E4%B9%9F%E8%83%BD%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/" rel="prev" title="没有管理员权限也能安装软件">
+      <i class="fa fa-chevron-left"></i> 没有管理员权限也能安装软件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/" rel="next" title="创建hexo，并让hexo支持公式">
+      创建hexo，并让hexo支持公式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

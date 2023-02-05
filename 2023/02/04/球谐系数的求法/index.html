@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这是2023-02-04 05:31:26的提交的周报">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周报：球谐系数的求法">
+<meta property="og:url" content="http://example.com/2023/02/04/%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E7%9A%84%E6%B1%82%E6%B3%95/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="这是2023-02-04 05:31:26的提交的周报">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-04T05:31:26.000Z">
+<meta property="article:modified_time" content="2023-02-05T08:19:32.129Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="周报">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/02/04/%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E7%9A%84%E6%B1%82%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周报：球谐系数的求法 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/04/%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E7%9A%84%E6%B1%82%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周报：球谐系数的求法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-04 13:31:26" itemprop="dateCreated datePublished" datetime="2023-02-04T13:31:26+08:00">2023-02-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-05 16:19:32" itemprop="dateModified" datetime="2023-02-05T16:19:32+08:00">2023-02-05</time>
+              </span>
+
+          
+            <div class="post-description">这是2023-02-04 05:31:26的提交的周报</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
+<ol>
+<li>训练EMLight</li>
+<li>有时间看下手里两个没细看的代码：garder19、styleLight</li>
+</ol>
+<h1 id="本周实际完成工作总结"><a href="#本周实际完成工作总结" class="headerlink" title="本周实际完成工作总结"></a>本周实际完成工作总结</h1><!-- 逐条概述本周实际开展的主要工作 -->
+<ol>
+<li><p>EMLight实际数据集太多，仍在训练。之前已经训练到了图片量为2000的数据集，但是由于实验室主机整体更换，数据集出现了变动，导致之前训练作废，重新训练。</p>
+</li>
+<li><p>garder19、styleLight还未看。</p>
+</li>
+<li><p>这周去看了几篇采用SH光照模型的论文，并做了SH拟合光照并复原光照的实验。</p>
+</li>
+</ol>
+<h1 id="本周实际完成工作详述"><a href="#本周实际完成工作详述" class="headerlink" title="本周实际完成工作详述"></a>本周实际完成工作详述</h1><!-- 根据上述工作概述，逐条详细描述算法设计、实验情况等。可将实验图表及描述作为附件上传 -->
+
+<ol>
+<li>EMLight重新训练的原因</li>
+</ol>
+<p>Laval数据集一共有2100+张hdr全景图。在预处理阶段，每张全景图生成8个crop图，以及对应的八个warped图。所以Laval数据集可为EMLight提供19557</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(emlight) jixinlong@ubun:~/datasets/LavalIndoor/pkl$ <span class="built_in">ls</span> -l|grep <span class="string">&quot;^-&quot;</span>| <span class="built_in">wc</span> -l</span><br><span class="line">19557</span><br></pre></td></tr></table></figure>
+<p>但是19557张图片太多了，一次性投喂给神经网络，让他学怎么做光照估计，就好比让什么都还不会的婴儿学高等数学。它一定会放弃，loss无法收敛。</p>
+<p>所以EMLight论文中建议递进地训练，先拿100张，让模型熟练掌握在100图上的光照估计任务。然后数据集扩增到800张、2500张、10000张……每种规模上的训练一定要到“过拟合”的程度，才能进行下一阶段的训练。</p>
+<p>我正是遵照这个方法在逐步训练EMLight。要注意的是，800张图片应当包含上一阶段的100张图片，2500张图也应该包含800张图，这才符合“递进式”学习的含义。在训练代码的数据集加载部分，有这样一行代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gt_nms = os.listdir(gt_dir)</span><br></pre></td></tr></table></figure>
+<p>它的含义是从图片目录中读取所有的图片名，形成一个文件名列表。紧接着，后边有一行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.pairs = self.pairs[: 10000]</span><br></pre></td></tr></table></figure>
+<p>含义是选取文件名列表的前10000个，用于此次训练。这两行代码就是EMLight限定数据集规模的方式。我之前好奇过，这个os.listdir()函数，它返回的文件目录每次都是固定的吗？我搜索到的答案是，返回的结果确实是固定的，而且是按照某种文件名的内在编码进行顺序排序的。我不放心，又自己多次运行这个函数，确定每次返回的结果、顺序都是一模一样的。加上EMLight这个代码是开源的，有那么多双眼睛盯着，作者也不傻，总不能这个地方还出错吧。如果我手动给它加个排序，必然有多出的开销，所以我这里没有改动，遵从原代码。</p>
+<p>Laval数据集，在实验室服务器上有一份，在自己租的服务器上还有一份。本来已经只用实验室服务器了，但是寒假时候实验室服务器整机更新，我就没有备份Laval数据集，而是在更新好之后直接从自己租的服务器把Laval数据集传一份到实验室。整机更新之后我接着训练，就出现问题了，loss不但不收敛，还疯狂飙到很高，模型似乎摆烂了。</p>
+<p>后来发现，原因是实验室服务器整机更新，更新前后系统硬件或操作系统层面的变化，可能导致了os.listdir()函数在完全一样的目录下不同的输出。这就意味着之前在800张图片上训练好的模型，在新的机器上面对800张还很陌生的图片，于是loss飙升。这种情况，没法复原在老机器上os.listdir()函数的输出顺序，之前训练的模型基本就废了。</p>
+<p>好在发现了问题。我在上述两行代码之间加上一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gt_nms.sort() #不排序的话，在另一台机器上解压出大量文件并读取的时候顺序会随机不一样</span><br></pre></td></tr></table></figure>
+<p>这行代码强制对os.listdir()的返回结果进行排序。经测试，这种排序不受机器软硬件环境的影响。加上新机器的3090显卡，很快赶上了之前的训练进度。</p>
+<ol start="2">
+<li>跟据全景贴图求球谐系数</li>
+</ol>
+<p>见<a target="_blank" rel="noopener" href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/">根据全景贴图求球谐系数 </a></p>
+<h2 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h2><p>无</p>
+<h1 id="下周工作计划"><a href="#下周工作计划" class="headerlink" title="下周工作计划"></a>下周工作计划</h1><!-- 针对本周工作存在的问题，概述下周的工作内容 -->
+<ol>
+<li>尝试把EMLight从SG模型改成SH模型，训练网络从crop中回归出SH系数。</li>
+</ol>
+<h1 id="需要协调与支援"><a href="#需要协调与支援" class="headerlink" title="需要协调与支援"></a>需要协调与支援</h1><!-- 额外描述所需硬件、软件及人手 -->
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%91%A8%E6%8A%A5/" rel="tag"># 周报</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/" rel="prev" title="创建hexo，并让hexo支持公式">
+      <i class="fa fa-chevron-left"></i> 创建hexo，并让hexo支持公式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/05/hello-world/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E5%91%A8%E6%8B%9F%E5%AE%9A%E5%B7%A5%E4%BD%9C%E8%AE%A1%E5%88%92"><span class="nav-number">1.</span> <span class="nav-text">本周拟定工作计划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E5%91%A8%E5%AE%9E%E9%99%85%E5%AE%8C%E6%88%90%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">本周实际完成工作总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E5%91%A8%E5%AE%9E%E9%99%85%E5%AE%8C%E6%88%90%E5%B7%A5%E4%BD%9C%E8%AF%A6%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">本周实际完成工作详述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">附件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E5%91%A8%E5%B7%A5%E4%BD%9C%E8%AE%A1%E5%88%92"><span class="nav-number">4.</span> <span class="nav-text">下周工作计划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E5%8D%8F%E8%B0%83%E4%B8%8E%E6%94%AF%E6%8F%B4"><span class="nav-number">5.</span> <span class="nav-text">需要协调与支援</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

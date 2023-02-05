@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="旧电脑的重生记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于frp的家庭网电脑建站方案">
+<meta property="og:url" content="http://example.com/2023/01/22/%E5%9F%BA%E4%BA%8Efrp%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%94%B5%E8%84%91%E5%BB%BA%E7%AB%99%E6%96%B9%E6%A1%88/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="旧电脑的重生记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-22T03:52:52.000Z">
+<meta property="article:modified_time" content="2023-02-05T08:19:33.177Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="ubuntu">
+<meta property="article:tag" content="frp">
+<meta property="article:tag" content="server">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/01/22/%E5%9F%BA%E4%BA%8Efrp%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%94%B5%E8%84%91%E5%BB%BA%E7%AB%99%E6%96%B9%E6%A1%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于frp的家庭网电脑建站方案 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/01/22/%E5%9F%BA%E4%BA%8Efrp%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%94%B5%E8%84%91%E5%BB%BA%E7%AB%99%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于frp的家庭网电脑建站方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-22 11:52:52" itemprop="dateCreated datePublished" datetime="2023-01-22T11:52:52+08:00">2023-01-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-05 16:19:33" itemprop="dateModified" datetime="2023-02-05T16:19:33+08:00">2023-02-05</time>
+              </span>
+
+          
+            <div class="post-description">旧电脑的重生记。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>我有一台2015年（初三）左右购入的惠普笔记本，当时买来用于练习英语听力。到了2020年左右，我正在上大二，且仍然使用这台惠普。<br>笔记本、手机等更新换代是常有的事，然而我的惠普上的windows7旗舰版能够胜任我一个计算机专业学生的所有需求，只不过硬件有些撑不住了–外壳破裂，开启无线网的按钮失灵。</p>
+<p>2020年寒假，我照常把笔记本丢在了学校，结果因为疫情没法回去，所以顺势买了台新的戴尔笔记本。老惠普从此退役，没在打开过。</p>
+<p>今年暑假，我觉得老惠普就这样扔掉太可惜，于是想将它变成服务器。这里记录了这个过程。</p>
+<h1 id="经过"><a href="#经过" class="headerlink" title="经过"></a>经过</h1><ol>
+<li>网络和电源</li>
+</ol>
+<p>我用一根网线直接连接路由器和老惠普，使其不仅有网还比无线网络稳定。电源也一直连接着。电脑屏幕会息屏，但是息屏是桌面的事，不会干扰ssh登陆。</p>
+<ol start="2">
+<li>重装系统</li>
+</ol>
+<p>改造之前，惠普上是windows11+ubuntu16.04+ubuntu16.04的三系统共存。windows11到底是比较吃硬件的，在老惠普上运行很慢。两个ubuntu非常好用，只可惜空间有点小。虽然能直接访问windows下的D、E、F各个盘，还是觉得windows11的存在很累赘。于是我把系统重装为<strong>ubuntu22.04单系统</strong>。重装完之后老惠普的键盘出现了大小写错乱和没按shift却一直输出特殊字符的问题。此时想重装为之前没这种Bug的ubuntu16.04已经晚了。这是因为重装为ubuntu22.04之后只有uefi一种引导方式了，而ubuntu16.04的镜像文件里恰恰没有照应uefi的引导文件，导致开机检测不到u盘里的ubuntu16.04镜像文件。</p>
+<p>可能还有其他方法可以把系统装回低版本ubuntu，但已经不想折腾了。况且作为服务器，老惠普的键盘、桌面统统不重要。因为远程ssh登陆老惠普之后的输入都跟老惠普自身的键盘、桌面无关。ubuntu比windows轻捷很多，同样的老机器，ubuntu运行起来非常顺滑。</p>
+<ol start="3">
+<li>启用ssh</li>
+</ol>
+<p>新装的ubuntu上ssh是没开的。装下openssh-server</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install openssh-server</span><br><span class="line"># 看看ssh服务器是不是开了</span><br><span class="line">sudo systemctl status ssh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>新装的系统上带了防火墙。看看防火墙的状态，确保ssh使用的22端口是放行的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw status</span><br></pre></td></tr></table></figure>
+
+<p>此时，因为我的戴尔和惠普处在同一个家庭网中，用我的戴尔是能够ssh登陆老惠普的。老惠普的键盘错乱到我不想用的地步，ssh一开我立马从戴尔上登入惠普。</p>
+<ol start="4">
+<li>frp内网穿透</li>
+</ol>
+<p>老惠普老当益壮，4G内存，4核CPU，400G+的磁盘，已经完胜XX云上普通配置的机器了。<br>他唯一的弱点是没有一个公网ip，让我离家千里之后能在互联网上寻找到他。<br>好在我有kexueshangwang的刚需，手里常年会有一台vultr的最低配置的vps。但是vps要花钱，我穷我舍不得买高配的用，低配的带些服务器比较吃力（我觉得会比较吃力）。此外，最不放心的是vps在物理上经常永远不属于我，我不想把重要的东西放在上边。</p>
+<p>我需要把vps的公网ip和老惠普的硬件资源做一个整合。把vps当作门户，把我的域名jixinlong.top解析到vps的ip上。即使以后更换vps也可以很快的调整dns解析条目。利用frp做一个内网穿透，建立从vps到老惠普的ssh，http，https，静态文件服务 映射。</p>
+<ul>
+<li>vps 7000端口 –绑定– 惠普7000端口</li>
+<li>vps 80端口 –http映射– 惠普80端口</li>
+<li>vps 443端口 –https映射– 惠普443端口</li>
+<li>vps 非22端口 –ssh映射– 惠普22端口</li>
+<li>vps 8080端口 –静态文件服务映射– 惠普某端口</li>
+</ul>
+<p>还需要一个8888端口给后续的宝塔面板使用。</p>
+<ul>
+<li>vps 8888端口 –tcp映射– 惠普8888端口</li>
+</ul>
+<p>vps上的frps.ini：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@01:~/frp_0.43.0_linux_amd64# cat frps.ini</span><br><span class="line">[common]</span><br><span class="line">bind_port = 7000</span><br><span class="line">vhost_http_port = 80</span><br><span class="line">vhost_https_port = 443</span><br></pre></td></tr></table></figure>
+
+<p>惠普上的frpc.ini</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">jxl@jxl-HP-g14-Notebook-PC:~/frp_0.43.0_linux_amd64$ cat frpc.ini</span><br><span class="line">[common]</span><br><span class="line">server_addr = dns.jixinlong.top</span><br><span class="line">server_port = 7000</span><br><span class="line"></span><br><span class="line">[hp-ssh]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line">remote_port = xxxx</span><br><span class="line"></span><br><span class="line">[hp-static-files]</span><br><span class="line">type = tcp</span><br><span class="line">remote_port = 8080</span><br><span class="line">plugin = static_file</span><br><span class="line"># 要对外暴露的文件目录</span><br><span class="line">plugin_local_path = xxxx</span><br><span class="line"># 访问 url 中会被去除的前缀，保留的内容即为要访问的文件路径</span><br><span class="line">plugin_strip_prefix = static</span><br><span class="line">plugin_http_user = xxxx</span><br><span class="line">plugin_http_passwd = xxxx</span><br><span class="line"></span><br><span class="line">[hp-https-www]</span><br><span class="line">type = https</span><br><span class="line">custom_domains = www.jixinlong.top</span><br><span class="line">local_port = 443</span><br><span class="line"></span><br><span class="line">[hp-https]</span><br><span class="line">type = https</span><br><span class="line">custom_domains = jixinlong.top</span><br><span class="line">local_port = 443</span><br><span class="line"></span><br><span class="line">[hp-jxl-http]</span><br><span class="line">type = http</span><br><span class="line">local_port = 80</span><br><span class="line">custom_domains = jixinlong.top</span><br><span class="line"></span><br><span class="line">[hp-jxl-http-www]</span><br><span class="line">type = http</span><br><span class="line">local_port = 80</span><br><span class="line">custom_domains = www.jixinlong.top</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#宝塔面板</span><br><span class="line">[hp-jxl-baota]</span><br><span class="line">type = tcp</span><br><span class="line">local_port = 8888</span><br><span class="line">remote_port = 8888</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">#custom_domains = baota.jixinlong.top</span><br></pre></td></tr></table></figure>
+<p>注意这里的宝塔8888端口映射使用普通的tcp映射就好，采用http反而连不上报错。这个和宝塔面板本身有关。</p>
+<p>两边分别运行frps和frpc，此时就可以利用ssh直接域名dns.jixinlong.top及对应非22端口来远程登陆老惠普了。vps那边可以用screen把frps切到一边去常态化监听。</p>
+<ol start="5">
+<li>惠普的frpc开机自启</li>
+</ol>
+<p>vps一般是不会无故重启啥的，比较稳定。但是惠普就不一定了，家里停电、断网啥的都可以导致它关机。一旦关机我就没法在外地远程登陆惠普了。所以这里需要让惠普这边的frpc开机自动启动。<br>此处参考了网上的一些写法，配置systemctl进行开机启动<br>创建frpc.service服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /lib/systemd/system/frpc.service</span><br></pre></td></tr></table></figure>
+<p>输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">#服务描述</span><br><span class="line">Description=frpc service </span><br><span class="line">After=network.target network-online.target syslog.target</span><br><span class="line">Wants=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">#执行命令 </span><br><span class="line">ExecStart=/home/jxl/frp_0.43.0_linux_amd64/frpc -c /home/jxl/frp_0.43.0_linux_amd64/frpc.ini</span><br><span class="line">#定期重启，一天一次，一方内网穿透疲惫</span><br><span class="line">Restart=always</span><br><span class="line">RuntimeMaxSec=604800</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 网上教程的After和Wants是这样写的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">After=network.target syslog.target</span><br><span class="line">Wants=network.target</span><br></pre></td></tr></table></figure>
+<p>区别在于没有-online。不加online的network.target意味着希望在网络服务启动之后再启动frpc服务，<strong>但网络服务启动不保证能连上网络</strong>。我实际实验时也发现这种写法的自启动，网络并没有连接上，导致frpc启动失败。改成我这种写法之后，就能使网络连接成功之后再启动frpc。</p>
+<p>继续，终端里输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload  </span><br></pre></td></tr></table></figure>
+
+<p>之后便可以直接使用systemctl命令来控制frpc</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#启动</span><br><span class="line">sudo systemctl start frpc </span><br><span class="line">#关闭</span><br><span class="line">sudo systemctl stop frpc</span><br><span class="line">#重启</span><br><span class="line">sudo systemctl restart frpc</span><br><span class="line">#查看状态</span><br><span class="line">sudo systemctl status frpc</span><br><span class="line"></span><br><span class="line">设置开机自动启动</span><br><span class="line"></span><br><span class="line">sudo systemctl enable frpc</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>安装宝塔面板，并利用宝塔安装wordpress</li>
+</ol>
+<p>宝塔是一个帮人快速搭建建网站的环境，并帮人建网站的面板。wordpress单纯是一个帮助人快速建网站的框架。wordpress需要数据库、php、Apache 服务等作为环境，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/270230445">这些可以在ubuntu上自己挨个装</a>（方法1）;<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/293c94adc11d">也可以先搞个宝塔，利用宝塔一键装这些环境</a>（方法2）。</p>
+<p>网上有的教程是用宝塔装好环境之后，直接在宝塔的应用商店里搜到wordpress一键装wordpress的。但我没搜到。所以我是基于方法2，从wordpress中文官网下载压缩包，丢到宝塔网站目录里装的wordpress。</p>
+<p>总之把wordpress安装好之后，网站就初步建立了。</p>
+<ol start="7">
+<li>wordpress使用</li>
+</ol>
+<p>网上说wordpress写得很不好，资源利用率不高啥的。我不明觉厉。wordpress也有优点，就是快捷建站，有良好的生态（使用者多，那么围过来的开发者就多），插件、网站主题很多。跟同样快捷的Hexo+github静态建站方案比起来，它的优点是动态的，天然地带评论区等功能。</p>
+<p>图片、视频、音乐都可以上传到wordpress的媒体库。主题可以随时换，不同主题不一样，有没有用到背景图、头像等因主题而已，但是针对某个主题的设定会有记忆，下次切回来的时候不用重新挨个设置该主题的内容元素。</p>
+<p>插件这边，我装了WP Githuber MD，可以直接把本地写好的markdown复制进去，自动渲染后发表成文章。wordpress默认使用的头像服务被ban了，访问时会出现头像加载不出来的丑态。我直接One User Avatar插件把所有人的头像设成存在网站本地的小鸟游同学大头照。</p>
+<ol start="8">
+<li><span id="jump">wordpress更换网址（可选）</span></li>
+</ol>
+<p>首先要修改设置里的WordPress地址（URL）和站点地址（URL）为新地址。此时frp穿透无误的情况下，是可以通过新网址访问网站前后台的。</p>
+<p>接着，网站中存有很多之前写文章时导入的图片，其链接还是旧的，这些图片就会加载不出来。改下数据库里的这些链接。进入phpmyadmin数据库管理，找到 wp_posts 这个数据表，切换到SQL状态，在输入栏中输入如下代码执行即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UPDATE wp_posts SET post_content = replace( post_content, &#x27;老域名&#x27;,&#x27;新域名&#x27;) ;</span><br></pre></td></tr></table></figure>
+<p>改完大部分图片加载正常了。去网站上翻翻看，还有音频啥的没改过来，就重新编辑所在文章，删了重新添加，音频的链接就会变成新的。</p>
+<ol start="9">
+<li>http更换为https</li>
+</ol>
+<p>这一步其实很简单。<br>宝塔面板里 该网站-设置-SSL-申请个证书并部署它-打开“强制https”<br>http变成https也算是网址的更换了，所以要做一次<a href="#jump">wordpress更换网址</a><br>更换之后再访问网站，浏览器就不会提示不安全连接啥的了。</p>
+<ol start="10">
+<li>假如改wordpress网址玩脱了</li>
+</ol>
+<p>导致登不进去了。有两种办法。</p>
+<ul>
+<li>宝塔进入使用主题的function.php，在任意空白处加上下面两行代码：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">update_option(&#x27;siteurl&#x27;,&#x27;改之前的网址&#x27;);    </span><br><span class="line"></span><br><span class="line">update_option(&#x27;home&#x27;,&#x27;改之前的网址&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>保存，再次登录即可。记得再把这两行注释掉。</p>
+<ul>
+<li>直接改数据库，把记录里的网址改回去。<br>宝塔登陆phpMyAdmin，选中你的WordPress数据库；<br>找到wp-options这个数据表；<br>打开这个表，找到第一条记录，也就是option_name为siteurl的那条记录，将option_value中错误的地址改为正确的即可。（如果option_name为home的那条记录地址也是错误的，改为正确的即可）</li>
+</ul>
+<h1 id="优缺点总结"><a href="#优缺点总结" class="headerlink" title="优缺点总结"></a>优缺点总结</h1><p>本方案利用vultr的vps做网站门户，实际网站资源部署在家庭网内的老惠普上。这样的好处是：</p>
+<ul>
+<li>将域名解析到一个oversea的vps上，且名义上我oversea的vps就是网站所在地，这样不需要繁琐的域名、网站put on records 工作。</li>
+<li>vps的更换可以是高度灵活的。假如我换了vps，只需要把域名解析到新的ip，然后在新的vps上继续运行frps即可。重启老惠普上的frpc，老惠普会自动依据我的域名寻址到新的vps，并请求和新的vps建立映射。真正网站实体在老惠普上，铁打的惠普，流水的vps。</li>
+</ul>
+<p>这样的坏处也显而易见：</p>
+<ul>
+<li>本来可以直连的网站中间多了个vps，路径变远了。更何况这个vps还是oversea的，远上加远。这降低了网站速度。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
+              <a href="/tags/frp/" rel="tag"># frp</a>
+              <a href="/tags/server/" rel="tag"># server</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/22/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83/" rel="prev" title="神经网络训练">
+      <i class="fa fa-chevron-left"></i> 神经网络训练
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/01/22/b%E7%AB%99%E7%9B%B4%E6%92%AD%E5%90%AC%E6%AD%8C/" rel="next" title="b站直播听歌">
+      b站直播听歌 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%B7%E5%9B%A0"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%8F%E8%BF%87"><span class="nav-number">2.</span> <span class="nav-text">经过</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">优缺点总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

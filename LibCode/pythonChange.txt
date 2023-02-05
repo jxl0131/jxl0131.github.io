@@ -1,0 +1,18 @@
+#First step is to check what python versions are available on your Ubuntu system. To do so execute the following command: 
+ls /usr/bin/python* &&
+
+#Next, check if you already have some python alternatives configured. To do so run: 
+sudo update-alternatives --list python
+
+#In this step we are going to set two Python alternatives, namely it will by Python2 and Python3 alternative. Execute the following commands: 
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1 &&
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 2 &&
+
+#Confirm that both alternatives are ready to be used: 
+sudo update-alternatives --list python &&
+
+#Change to alternative python version. For example to change to Python 2 execute the following command: 
+sudo update-alternatives --config python  $$
+
+#Check your python version: 
+python -V
