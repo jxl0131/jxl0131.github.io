@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>b站直播听歌</title>
+    <url>/2023/01/22/b%E7%AB%99%E7%9B%B4%E6%92%AD%E5%90%AC%E6%AD%8C/</url>
+    <content><![CDATA[<ol>
+<li>下载弹幕姬，下载网易云喵和点歌姬插件解压放入。</li>
+<li>EDGE打开b站，直播-鼠标放头像上-我的直播间-看直播间id&#x3D;24601711-开播，id输入弹幕姬接入直播间</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>b站</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
-    <url>/2023/02/05/hello-world/</url>
+    <url>/2023/01/20/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
@@ -19,16 +31,49 @@
 ]]></content>
   </entry>
   <entry>
-    <title>mc插件服插件体验</title>
-    <url>/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/</url>
-    <content><![CDATA[<p>mc的服务器可以分为原版、模组服、插件服、混合服。</p>
-<p>前三者都相对稳定，但是没法同时兼容模组和插件两种好玩的添加。模组服，例如forge和fabric两大派，是比较常见的，且前者比后者早出现。有很多很多往mc里添加了新内容的模组，开一个模组服意味着可玩的内容一下子无穷无尽了。但是服务器端用的模组必须复制一份到客户端，这是它的缺点。</p>
-<p>插件服是完全针对服务器的概念，客户端无需添加插件。所以插件原版服务器逻辑的渗透更深，让客户端什么都不需要添加就能享受新玩法。深度改写原版服务器逻辑并不容易，所以一方面很多插件都只是对原版做了些功能性的完善，例如白名单插件、登陆插件。另一方面，也有些插件增添了实质性的新内容。插件的另外一个好处是，最新版本的插件往往向下兼容旧版本的服务器，这意味着不需要像找模组那样寻找旧版的模组。</p>
-<p>混合服，例如mohist和catserver等，兼容了模组和插件，但是没法完全兼容两者，导致版本匹配的插件、模组没法使用在混合服中。</p>
-<p>近日尝试了一些有趣的插件，特作记录。</p>
-<h2 id="权限管理插件"><a href="#权限管理插件" class="headerlink" title="权限管理插件"></a>权限管理插件</h2><p>权限管理有很多插件可用。低版本的可以选essentials+groupmanager，高版本的例如1.16.5可以使用essentialx+luckporms。</p>
-<p>折腾一圈之后，终于在1.16.5上用起了essentialx+luckporms组合。luckporms有个前置插件叫vaults需要安装。</p>
-<p>原版通过玩家是否是管理员来粗略地控制权限。但是op拥有所有权利，非op却连传送都不行，这是让人玩不舒服的。加装了权限管理之后，可以把所有指令的使用权交给luckporms来管辖，腐竹拥有使用luckporms来管辖其他玩家能使用什么指令的权力。所有人都设为非op。</p>
+    <title>mc魔改主菜单的ui和进度加载界面</title>
+    <url>/2023/01/20/mc%E9%AD%94%E6%94%B9%E4%B8%BB%E8%8F%9C%E5%8D%95%E7%9A%84ui%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%8A%A0%E8%BD%BD%E7%95%8C%E9%9D%A2/</url>
+    <content><![CDATA[<h1 id="魔改主菜单的ui"><a href="#魔改主菜单的ui" class="headerlink" title="魔改主菜单的ui"></a>魔改主菜单的ui</h1><p>使用mod实现ui界面自定义:<br>fancymenu_forge_2.11.0_MC_1.12-1.12.2<br>两个前置也要装<br>konkrete_forge_1.3.3_MC_1.12-1.12.2<br>_MixinBootstrap-1.1.0</p>
+<p>支持大背景、按钮背景、按钮位置的自定义。</p>
+<ol>
+<li>模组字体修改</li>
+</ol>
+<p>可能字体太小看不清：<br>修改.minecraft\versions\『渡·海·棠』\config\fancymenu\config.txt的最后一行，将其调整为3.0</p>
+<ol start="2">
+<li><p>大背景修改<br>在.minecraft\versions\『渡·海·棠』\下建个放素材的文件夹，放好各自图片素材。对于前景图标按钮之类的素材，可以利用背景透明的那种图片素材，效果更好。设计一种布局时，<em>当前菜单-布局-新建布局</em>，然后会进入可设计界面。可以先 <em>布局-配置-set background</em>设一个美美的高清大背景。</p>
+</li>
+<li><p>按钮修改</p>
+</li>
+</ol>
+<p>然后把不用的按钮或界面元素删掉：<em>右击那个按钮、界面元素-删除</em>。</p>
+<p>然后调整按钮位置、大小：<em>右击按钮-设置方位</em>，根据按钮群在界面的大概方位选一个，方可挪动它们并进行位置、大小微调。</p>
+<p>最后设置按钮背景图和鼠标碰到按钮时的背景图：<em>右击按钮-set background</em>，选择按钮背景图。</p>
+<p>按钮上的也可以自定义，注意可以通过在文字前加 &amp;1 的方式将其格式化为特点色彩。</p>
+<ol start="4">
+<li>窗口上的图标和文字</li>
+</ol>
+<p>准备两个小图分别命名为icon16x16.png和icon32x32.png，尺寸同图名。放入.minecraft&#x2F;config&#x2F;fancymenu&#x2F;minecraftwindow&#x2F;icons，然后在模组工具栏点击左上角的设置，在minecraft 窗口那里设置窗口上文字，并允许自定义图标。</p>
+<ol start="5">
+<li>一个没啥用的动画</li>
+</ol>
+<p>这个动画制作起来还是需要点时间的，但是没啥用。因为它会在游戏加载进度界面之后，在主菜单出现之前播放。</p>
+<ul>
+<li>选好视频</li>
+<li>分解为帧</li>
+<li>利用独立软件fm_animation_maker_1.2.0将帧文件夹做成素材</li>
+<li>加装loadmyresources_1.0.1_MC_1.12-1.12.2模组，并把做好的素材COPY_CONTENT_TO_MINECRAFT_FOLDER文件夹下的两文件拷贝到客户端对应位置，分别合并</li>
+<li>在 <em>FancyMeun 设置-游戏加载-游戏开场动画</em>那里输入制作素材时给素材的命名，使素材能被找到。建议把“预加载动画”选项disable掉，这样可以免除长时间预加载。</li>
+</ul>
+<p>假如想在游戏开始前播放一段介绍游戏的煽情动画，这个功能可以考虑考虑。</p>
+<h1 id="魔改游戏加载界面"><a href="#魔改游戏加载界面" class="headerlink" title="魔改游戏加载界面"></a>魔改游戏加载界面</h1><p>首先，是有很多mod可以diy的。但是很凑巧大部分不支持1.12，即使支持也会和之前的FancyMeun排斥。<br>这里采用手动修改配置文件的方式。</p>
+<ol>
+<li><p>对于1.12，.minecraft\versions\『渡·海·棠』\config下的splash.properties是控制这个加载界面的。首先可以利用它把加载时的内存状态隐藏掉，背景、进度条等的颜色改一改。</p>
+</li>
+<li><p>有下角的砧板动画<br>这个砧板是forge的标志，根据splash.properties的倒数第二行指示： forgeTexture&#x3D;fml:textures&#x2F;gui&#x2F;forge.png<br>这个动画的位置在.minecraft\libraries\net\minecraftforge\forge\forge-1.12.2-14.23.5.2860.jar\assets\fml\textures\gui\forge.png<br>有意思的是这个小动画其实是个png，但是宽度为128，长度是128的很多倍。那我们可以ps一个类似的png图，模仿出一个小动画效果。</p>
+</li>
+<li><p>主体mojang大图标<br>它位于.minecraft\versions\『渡·海·棠』.jar\assets\minecraft\textures\gui\title\mojang.png<br>大小不能变，否则报错。</p>
+</li>
+</ol>
 ]]></content>
       <tags>
         <tag>mc</tag>
@@ -105,90 +150,74 @@
       </tags>
   </entry>
   <entry>
-    <title>b站直播听歌</title>
-    <url>/2023/01/22/b%E7%AB%99%E7%9B%B4%E6%92%AD%E5%90%AC%E6%AD%8C/</url>
-    <content><![CDATA[<ol>
-<li>下载弹幕姬，下载网易云喵和点歌姬插件解压放入。</li>
-<li>EDGE打开b站，直播-鼠标放头像上-我的直播间-看直播间id&#x3D;24601711-开播，id输入弹幕姬接入直播间</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>b站</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mc魔改主菜单的ui和进度加载界面</title>
-    <url>/2023/01/20/mc%E9%AD%94%E6%94%B9%E4%B8%BB%E8%8F%9C%E5%8D%95%E7%9A%84ui%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%8A%A0%E8%BD%BD%E7%95%8C%E9%9D%A2/</url>
-    <content><![CDATA[<h1 id="魔改主菜单的ui"><a href="#魔改主菜单的ui" class="headerlink" title="魔改主菜单的ui"></a>魔改主菜单的ui</h1><p>使用mod实现ui界面自定义:<br>fancymenu_forge_2.11.0_MC_1.12-1.12.2<br>两个前置也要装<br>konkrete_forge_1.3.3_MC_1.12-1.12.2<br>_MixinBootstrap-1.1.0</p>
-<p>支持大背景、按钮背景、按钮位置的自定义。</p>
-<ol>
-<li>模组字体修改</li>
-</ol>
-<p>可能字体太小看不清：<br>修改.minecraft\versions\『渡·海·棠』\config\fancymenu\config.txt的最后一行，将其调整为3.0</p>
-<ol start="2">
-<li><p>大背景修改<br>在.minecraft\versions\『渡·海·棠』\下建个放素材的文件夹，放好各自图片素材。对于前景图标按钮之类的素材，可以利用背景透明的那种图片素材，效果更好。设计一种布局时，<em>当前菜单-布局-新建布局</em>，然后会进入可设计界面。可以先 <em>布局-配置-set background</em>设一个美美的高清大背景。</p>
-</li>
-<li><p>按钮修改</p>
-</li>
-</ol>
-<p>然后把不用的按钮或界面元素删掉：<em>右击那个按钮、界面元素-删除</em>。</p>
-<p>然后调整按钮位置、大小：<em>右击按钮-设置方位</em>，根据按钮群在界面的大概方位选一个，方可挪动它们并进行位置、大小微调。</p>
-<p>最后设置按钮背景图和鼠标碰到按钮时的背景图：<em>右击按钮-set background</em>，选择按钮背景图。</p>
-<p>按钮上的也可以自定义，注意可以通过在文字前加 &amp;1 的方式将其格式化为特点色彩。</p>
-<ol start="4">
-<li>窗口上的图标和文字</li>
-</ol>
-<p>准备两个小图分别命名为icon16x16.png和icon32x32.png，尺寸同图名。放入.minecraft&#x2F;config&#x2F;fancymenu&#x2F;minecraftwindow&#x2F;icons，然后在模组工具栏点击左上角的设置，在minecraft 窗口那里设置窗口上文字，并允许自定义图标。</p>
-<ol start="5">
-<li>一个没啥用的动画</li>
-</ol>
-<p>这个动画制作起来还是需要点时间的，但是没啥用。因为它会在游戏加载进度界面之后，在主菜单出现之前播放。</p>
-<ul>
-<li>选好视频</li>
-<li>分解为帧</li>
-<li>利用独立软件fm_animation_maker_1.2.0将帧文件夹做成素材</li>
-<li>加装loadmyresources_1.0.1_MC_1.12-1.12.2模组，并把做好的素材COPY_CONTENT_TO_MINECRAFT_FOLDER文件夹下的两文件拷贝到客户端对应位置，分别合并</li>
-<li>在 <em>FancyMeun 设置-游戏加载-游戏开场动画</em>那里输入制作素材时给素材的命名，使素材能被找到。建议把“预加载动画”选项disable掉，这样可以免除长时间预加载。</li>
-</ul>
-<p>假如想在游戏开始前播放一段介绍游戏的煽情动画，这个功能可以考虑考虑。</p>
-<h1 id="魔改游戏加载界面"><a href="#魔改游戏加载界面" class="headerlink" title="魔改游戏加载界面"></a>魔改游戏加载界面</h1><p>首先，是有很多mod可以diy的。但是很凑巧大部分不支持1.12，即使支持也会和之前的FancyMeun排斥。<br>这里采用手动修改配置文件的方式。</p>
-<ol>
-<li><p>对于1.12，.minecraft\versions\『渡·海·棠』\config下的splash.properties是控制这个加载界面的。首先可以利用它把加载时的内存状态隐藏掉，背景、进度条等的颜色改一改。</p>
-</li>
-<li><p>有下角的砧板动画<br>这个砧板是forge的标志，根据splash.properties的倒数第二行指示： forgeTexture&#x3D;fml:textures&#x2F;gui&#x2F;forge.png<br>这个动画的位置在.minecraft\libraries\net\minecraftforge\forge\forge-1.12.2-14.23.5.2860.jar\assets\fml\textures\gui\forge.png<br>有意思的是这个小动画其实是个png，但是宽度为128，长度是128的很多倍。那我们可以ps一个类似的png图，模仿出一个小动画效果。</p>
-</li>
-<li><p>主体mojang大图标<br>它位于.minecraft\versions\『渡·海·棠』.jar\assets\minecraft\textures\gui\title\mojang.png<br>大小不能变，否则报错。</p>
-</li>
-</ol>
+    <title>mc插件服插件体验</title>
+    <url>/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/</url>
+    <content><![CDATA[<p>mc的服务器可以分为原版、模组服、插件服、混合服。</p>
+<p>前三者都相对稳定，但是没法同时兼容模组和插件两种好玩的添加。模组服，例如forge和fabric两大派，是比较常见的，且前者比后者早出现。有很多很多往mc里添加了新内容的模组，开一个模组服意味着可玩的内容一下子无穷无尽了。但是服务器端用的模组必须复制一份到客户端，这是它的缺点。</p>
+<p>插件服是完全针对服务器的概念，客户端无需添加插件。所以插件原版服务器逻辑的渗透更深，让客户端什么都不需要添加就能享受新玩法。深度改写原版服务器逻辑并不容易，所以一方面很多插件都只是对原版做了些功能性的完善，例如白名单插件、登陆插件。另一方面，也有些插件增添了实质性的新内容。插件的另外一个好处是，最新版本的插件往往向下兼容旧版本的服务器，这意味着不需要像找模组那样寻找旧版的模组。</p>
+<p>混合服，例如mohist和catserver等，兼容了模组和插件，但是没法完全兼容两者，导致版本匹配的插件、模组没法使用在混合服中。</p>
+<p>近日尝试了一些有趣的插件，特作记录。</p>
+<h2 id="权限管理插件"><a href="#权限管理插件" class="headerlink" title="权限管理插件"></a>权限管理插件</h2><p>权限管理有很多插件可用。低版本的可以选essentials+groupmanager，高版本的例如1.16.5可以使用essentialx+luckporms。</p>
+<p>折腾一圈之后，终于在1.16.5上用起了essentialx+luckporms组合。luckporms有个前置插件叫vaults需要安装。</p>
+<p>原版通过玩家是否是管理员来粗略地控制权限。但是op拥有所有权利，非op却连传送都不行，这是让人玩不舒服的。加装了权限管理之后，可以把所有指令的使用权交给luckporms来管辖，腐竹拥有使用luckporms来管辖其他玩家能使用什么指令的权力。所有人都设为非op。</p>
 ]]></content>
       <tags>
         <tag>mc</tag>
       </tags>
   </entry>
   <entry>
-    <title>python语法</title>
-    <url>/2023/01/21/python%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=<span class="string">&#x27;jxl&#x27;</span></span><br><span class="line"><span class="built_in">len</span>(a) <span class="comment">#字符串长度</span></span><br><span class="line">a == <span class="string">&#x27;jxl&#x27;</span> <span class="keyword">and</span> a~= <span class="string">&#x27;jx&#x27;</span> <span class="comment">#并列条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个字符串str1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str1 = <span class="string">&quot;3w.gorly.test.com.cn&quot;</span></span><br><span class="line"><span class="comment">#指定分隔符为&#x27;.&#x27;，并且指定切割次数为1次</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> str1.split(<span class="string">&#x27;.&#x27;</span>,<span class="number">1</span>)</span><br><span class="line">[<span class="string">&#x27;3w&#x27;</span>, <span class="string">&#x27;gorly.test.com.cn&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#一个坑:python里的=是引用</span></span><br><span class="line"><span class="comment">#若想要传值必须写</span></span><br><span class="line">a = copy.deepcopy(b)</span><br></pre></td></tr></table></figure>
-
-
+    <title>创建hexo，并让hexo支持公式</title>
+    <url>/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="创建hexo"><a href="#创建hexo" class="headerlink" title="创建hexo"></a>创建hexo</h1><p>网上相关教程很多。<br>hexo项目的主页在<a href="https://github.com/hexojs/hexo">https://github.com/hexojs/hexo</a><br>本来没什么可说的，就是依赖比较多：需要git、github账号、nodejs、npm</p>
+<p>光我自己参考过的教程就很多了，比方说：</p>
+<p><a href="http://codewithzhangyi.com/2018/04/19/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89/#:~:text=%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89%201%20%E5%87%86%E5%A4%87%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%202%20%E6%B3%A8%E5%86%8Cgithub%203%20%E5%88%9B%E5%BB%BARepository%204,Key%E9%85%8D%E7%BD%AE%E6%88%90%E5%8A%9F%E5%95%A6%EF%BC%81%208%20%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2.%20...%209%20%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0username.github.io%2010%20%E5%86%99%E5%8D%9A%E5%AE%A2%E5%95%A6%EF%BC%81">如何搭建自己的个人网站（上） | Zhang Yi</a><br><a href="https://zhuanlan.zhihu.com/p/35668237">超详细Hexo+Github博客搭建小白教程 - 知乎</a></p>
+<p>这是两个非常细致的教程，手把手喂饭了。对于熟悉git的人，可以看下边一篇简洁版的，重点讲node和npm的安装。<br><a href="https://anjingcuc.gitee.io/courses-wiki/online-publishing/homework/">使用 Hexo 生成博客并发布</a></p>
+<p>要注意的点是npm和nodejs在安装时可能会报错，我认为创建hexo基本都卡在这个上边。我遇到的两个问题:</p>
 <ul>
-<li>通过setup.py来安装python模块，记录产生了哪些文件夹以便卸载</li>
+<li>hexo、npm和node版本不匹配<br>hexo匹配的node版本：</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">## 记录安装日志</span><br><span class="line"># 安装jieba</span><br><span class="line">python setup.py install --record logName</span><br><span class="line">## 卸载的时候使用日志文件logName</span><br><span class="line">cat logName | xargs rm -rf</span><br></pre></td></tr></table></figure>
-
-
-
+<p><img src="/../images/hexo%E5%8C%B9%E9%85%8D%E7%9A%84node%E7%89%88%E6%9C%AC.png" alt="hexo需要的node版本"></p>
 <ul>
-<li>python调用matlab打包好的模块</li>
+<li>安装npm和node时没有给够权限导致安装失败</li>
 </ul>
+<p>以上问题百度容易解决，但是难发现是这两个问题。</p>
+<h1 id="用hexo创建文章"><a href="#用hexo创建文章" class="headerlink" title="用hexo创建文章"></a>用hexo创建文章</h1><p>这个，一旦hexo部署好，就能在自带的首页上看到hexo的使用方法。<br>无外乎:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;xxxx&quot;</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">hexo d</span><br><span class="line">hexo clean</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+
+<p>有些东西额外注意：</p>
+<ul>
+<li>主题目录和项目根目录下各有一个_comfig.yml配置文件，且后者优先级更高。</li>
+<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;themes&#x2F;next&#x2F;languages 下有很多语言文件，可以找到汉语的，然后在配置里改“language:xxx”</li>
+<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;scaffolds目录下都是一些模板，可以修改或增加模板。</li>
+<li>头像、网站图标、摘要都可以再打磨打磨。</li>
+<li>NexT文章目录点击不跳转，可参考<a href="https://www.bilibili.com/read/cv10197254/#:~:text=NexT%E4%B8%AD%E6%96%87%E7%9B%AE%E5%BD%95%E4%B8%8D%E8%B7%B3%E8%BD%AC%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%201%20hexo%3A%205.3.0,2%20node%3A%2012.18.3%203%20var%C2%A0target%C2%A0%3D%C2%A0document.getElementById%28decodeURI%28link.getAttribute%28%27href%27%29%29.replace%28%27%23%27%2C%C2%A0%27%27%29%29%3B">NexT中文目录不跳转的解决方法</a></li>
+</ul>
+<p>更多玩法，可以参考这篇<a href="https://blog.csdn.net/weixin_39542608/article/details/111584243">next文章目录跳转_Hexo系列 | Hexo+next主题搭建炫酷的个人博客网站</a></p>
+<p>但我觉得做个人网站的初心是记录好的内容和经历，网站做得太花里胡哨就没意思啦。对网站的美化要适可而止。</p>
+<h1 id="让hexo支持公式"><a href="#让hexo支持公式" class="headerlink" title="让hexo支持公式"></a>让hexo支持公式</h1><p>hexo加nexT，初始没有支持公式。我查了一些资料，发现越早的资料方法越复杂。这说明hexo对公式的支持还是越来越强的。我参考<a href="https://zhuanlan.zhihu.com/p/105986034">在 Hexo 博客中写出好看的Latex 公式</a>，但是比它少安装两个插件，阴差阳错倒也成功了。</p>
+<p>要做以下几步：</p>
 <ol>
-<li>安装matlab运行库，并把路径写入$PATH这样才不会报找不到运行库的错</li>
-<li>将matlab代码编译出来后，用对应python在编译出的文件夹for_redistribution_files_only下运行<code>python setup.py install --record logName</code>。即可到python中调用该模块。</li>
+<li>修改 主题配置中 的 mathjax 相关设置</li>
+</ol>
+<p>搜寻主题配置文件里的“math”关键词，取消下方第二行的注释。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># MathJax</span><br><span class="line">mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</span><br><span class="line"># mathjax: </span><br></pre></td></tr></table></figure>
+<p>更改下方第二行为“enable: true”</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mathjax:</span><br><span class="line">  enable: true</span><br><span class="line">  # See: https://mhchem.github.io/MathJax-mhchem/</span><br><span class="line">  mhchem: false</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在文章头部声明“mathjax: true”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 跟据全景贴图求球谐系数</span><br><span class="line">date: 2023-02-01 20:11:36</span><br><span class="line">tags:</span><br><span class="line">- SH</span><br><span class="line">mathjax: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>重新编译以下<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></li>
 </ol>
 <hr>
+<p><em>截止2023年2月4号，配置如下的hexo用以上方法更改主题配置后公式渲染生效。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubuntu@VM-16-2-ubuntu:~/blog/source$  npm list</span><br><span class="line">hexo-site@0.0.0 /home/ubuntu/blog</span><br><span class="line">├── hexo-deployer-git@3.0.0</span><br><span class="line">├── hexo-generator-archive@2.0.0</span><br><span class="line">├── hexo-generator-category@2.0.0</span><br><span class="line">├── hexo-generator-index@3.0.0</span><br><span class="line">├── hexo-generator-search@2.4.3</span><br><span class="line">├── hexo-generator-searchdb@1.4.1</span><br><span class="line">├── hexo-generator-tag@2.0.0</span><br><span class="line">├── hexo-renderer-ejs@2.0.0</span><br><span class="line">├── hexo-renderer-marked@6.0.0</span><br><span class="line">├── hexo-renderer-stylus@2.1.0</span><br><span class="line">├── hexo-server@3.0.0</span><br><span class="line">├── hexo-theme-landscape@0.0.3</span><br><span class="line">├── hexo-theme-next@8.14.1</span><br><span class="line">└── hexo@6.3.0</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
-        <tag>python</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -270,58 +299,135 @@ wall 向所有终端广播<br>tall 向别的用户发消息</li>
       </tags>
   </entry>
   <entry>
-    <title>创建hexo，并让hexo支持公式</title>
-    <url>/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="创建hexo"><a href="#创建hexo" class="headerlink" title="创建hexo"></a>创建hexo</h1><p>网上相关教程很多。<br>hexo项目的主页在<a href="https://github.com/hexojs/hexo">https://github.com/hexojs/hexo</a><br>本来没什么可说的，就是依赖比较多：需要git、github账号、nodejs、npm</p>
-<p>光我自己参考过的教程就很多了，比方说：</p>
-<p><a href="http://codewithzhangyi.com/2018/04/19/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89/#:~:text=%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89%201%20%E5%87%86%E5%A4%87%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%202%20%E6%B3%A8%E5%86%8Cgithub%203%20%E5%88%9B%E5%BB%BARepository%204,Key%E9%85%8D%E7%BD%AE%E6%88%90%E5%8A%9F%E5%95%A6%EF%BC%81%208%20%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2.%20...%209%20%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0username.github.io%2010%20%E5%86%99%E5%8D%9A%E5%AE%A2%E5%95%A6%EF%BC%81">如何搭建自己的个人网站（上） | Zhang Yi</a><br><a href="https://zhuanlan.zhihu.com/p/35668237">超详细Hexo+Github博客搭建小白教程 - 知乎</a></p>
-<p>这是两个非常细致的教程，手把手喂饭了。对于熟悉git的人，可以看下边一篇简洁版的，重点讲node和npm的安装。<br><a href="https://anjingcuc.gitee.io/courses-wiki/online-publishing/homework/">使用 Hexo 生成博客并发布</a></p>
-<p>要注意的点是npm和nodejs在安装时可能会报错，我认为创建hexo基本都卡在这个上边。我遇到的两个问题:</p>
-<ul>
-<li>hexo、npm和node版本不匹配<br>hexo匹配的node版本：</li>
-</ul>
-<p><img src="/../images/hexo%E5%8C%B9%E9%85%8D%E7%9A%84node%E7%89%88%E6%9C%AC.png" alt="hexo需要的node版本"></p>
-<ul>
-<li>安装npm和node时没有给够权限导致安装失败</li>
-</ul>
-<p>以上问题百度容易解决，但是难发现是这两个问题。</p>
-<h1 id="用hexo创建文章"><a href="#用hexo创建文章" class="headerlink" title="用hexo创建文章"></a>用hexo创建文章</h1><p>这个，一旦hexo部署好，就能在自带的首页上看到hexo的使用方法。<br>无外乎:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;xxxx&quot;</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">hexo d</span><br><span class="line">hexo clean</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+    <title>python语法</title>
+    <url>/2023/01/21/python%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=<span class="string">&#x27;jxl&#x27;</span></span><br><span class="line"><span class="built_in">len</span>(a) <span class="comment">#字符串长度</span></span><br><span class="line">a == <span class="string">&#x27;jxl&#x27;</span> <span class="keyword">and</span> a~= <span class="string">&#x27;jx&#x27;</span> <span class="comment">#并列条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个字符串str1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str1 = <span class="string">&quot;3w.gorly.test.com.cn&quot;</span></span><br><span class="line"><span class="comment">#指定分隔符为&#x27;.&#x27;，并且指定切割次数为1次</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> str1.split(<span class="string">&#x27;.&#x27;</span>,<span class="number">1</span>)</span><br><span class="line">[<span class="string">&#x27;3w&#x27;</span>, <span class="string">&#x27;gorly.test.com.cn&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#一个坑:python里的=是引用</span></span><br><span class="line"><span class="comment">#若想要传值必须写</span></span><br><span class="line">a = copy.deepcopy(b)</span><br></pre></td></tr></table></figure>
 
-<p>有些东西额外注意：</p>
+
 <ul>
-<li>主题目录和项目根目录下各有一个_comfig.yml配置文件，且后者优先级更高。</li>
-<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;themes&#x2F;next&#x2F;languages 下有很多语言文件，可以找到汉语的，然后在配置里改“language:xxx”</li>
-<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;scaffolds目录下都是一些模板，可以修改或增加模板。</li>
-<li>头像、网站图标、摘要都可以再打磨打磨。</li>
-<li>NexT文章目录点击不跳转，可参考<a href="https://www.bilibili.com/read/cv10197254/#:~:text=NexT%E4%B8%AD%E6%96%87%E7%9B%AE%E5%BD%95%E4%B8%8D%E8%B7%B3%E8%BD%AC%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%201%20hexo%3A%205.3.0,2%20node%3A%2012.18.3%203%20var%C2%A0target%C2%A0%3D%C2%A0document.getElementById%28decodeURI%28link.getAttribute%28%27href%27%29%29.replace%28%27%23%27%2C%C2%A0%27%27%29%29%3B">NexT中文目录不跳转的解决方法</a></li>
+<li>通过setup.py来安装python模块，记录产生了哪些文件夹以便卸载</li>
 </ul>
-<p>更多玩法，可以参考这篇<a href="https://blog.csdn.net/weixin_39542608/article/details/111584243">next文章目录跳转_Hexo系列 | Hexo+next主题搭建炫酷的个人博客网站</a></p>
-<p>但我觉得做个人网站的初心是记录好的内容和经历，网站做得太花里胡哨就没意思啦。对网站的美化要适可而止。</p>
-<h1 id="让hexo支持公式"><a href="#让hexo支持公式" class="headerlink" title="让hexo支持公式"></a>让hexo支持公式</h1><p>hexo加nexT，初始没有支持公式。我查了一些资料，发现越早的资料方法越复杂。这说明hexo对公式的支持还是越来越强的。我参考<a href="https://zhuanlan.zhihu.com/p/105986034">在 Hexo 博客中写出好看的Latex 公式</a>，但是比它少安装两个插件，阴差阳错倒也成功了。</p>
-<p>要做以下几步：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">## 记录安装日志</span><br><span class="line"># 安装jieba</span><br><span class="line">python setup.py install --record logName</span><br><span class="line">## 卸载的时候使用日志文件logName</span><br><span class="line">cat logName | xargs rm -rf</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>python调用matlab打包好的模块</li>
+</ul>
 <ol>
-<li>修改 主题配置中 的 mathjax 相关设置</li>
-</ol>
-<p>搜寻主题配置文件里的“math”关键词，取消下方第二行的注释。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># MathJax</span><br><span class="line">mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</span><br><span class="line"># mathjax: </span><br></pre></td></tr></table></figure>
-<p>更改下方第二行为“enable: true”</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mathjax:</span><br><span class="line">  enable: true</span><br><span class="line">  # See: https://mhchem.github.io/MathJax-mhchem/</span><br><span class="line">  mhchem: false</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>在文章头部声明“mathjax: true”</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 跟据全景贴图求球谐系数</span><br><span class="line">date: 2023-02-01 20:11:36</span><br><span class="line">tags:</span><br><span class="line">- SH</span><br><span class="line">mathjax: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>重新编译以下<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></li>
+<li>安装matlab运行库，并把路径写入$PATH这样才不会报找不到运行库的错</li>
+<li>将matlab代码编译出来后，用对应python在编译出的文件夹for_redistribution_files_only下运行<code>python setup.py install --record logName</code>。即可到python中调用该模块。</li>
 </ol>
 <hr>
-<p><em>截止2023年2月4号，配置如下的hexo用以上方法更改主题配置后公式渲染生效。</em></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubuntu@VM-16-2-ubuntu:~/blog/source$  npm list</span><br><span class="line">hexo-site@0.0.0 /home/ubuntu/blog</span><br><span class="line">├── hexo-deployer-git@3.0.0</span><br><span class="line">├── hexo-generator-archive@2.0.0</span><br><span class="line">├── hexo-generator-category@2.0.0</span><br><span class="line">├── hexo-generator-index@3.0.0</span><br><span class="line">├── hexo-generator-search@2.4.3</span><br><span class="line">├── hexo-generator-searchdb@1.4.1</span><br><span class="line">├── hexo-generator-tag@2.0.0</span><br><span class="line">├── hexo-renderer-ejs@2.0.0</span><br><span class="line">├── hexo-renderer-marked@6.0.0</span><br><span class="line">├── hexo-renderer-stylus@2.1.0</span><br><span class="line">├── hexo-server@3.0.0</span><br><span class="line">├── hexo-theme-landscape@0.0.3</span><br><span class="line">├── hexo-theme-next@8.14.1</span><br><span class="line">└── hexo@6.3.0</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
-        <tag>hexo</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>根据全景贴图求球谐系数</title>
+    <url>/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/</url>
+    <content><![CDATA[<p>目前认为室内参数化光照模型主要分为两大类：</p>
+<ul>
+<li>球面谐波</li>
+<li>球面高斯</li>
+</ul>
+<p>目前球面高斯类的方法已经有<a href="https://github.com/fnzhan/Illumination-Estimation">EMlight</a>开源了，球面高斯参数生成、网络训练已经打通。但是我还没有掌握球面谐波类的方法，球面谐波模型主要难点在于求取球谐基函数的系数（spherical harmonics coefficients.）。</p>
+<ol>
+<li>从使用SH光照模型并开源的代码入手，寻找球面谐波系数求取的代码：</li>
+</ol>
+<ul>
+<li><a href="https://github.com/cake-lab/PointAR">PointAR</a><br>代码开源，但是求球谐系数的代码直接写在了PointAR&#x2F;datasets&#x2F;pointar&#x2F;preprocess&#x2F;cuda&#x2F;preprocess.cu里，且疑似根据点云来求</li>
+<li>Learning Scene Illumination by Pairwise Photos from Rear and Front Mobile Cameras<br>靠谷歌的C++库<a href="https://github.com/google/spherical-harmonics%E6%9D%A5%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E3%80%82%E8%BF%99%E4%B8%AA%E5%BA%93%E5%BA%94%E8%AF%A5%E6%98%AF%E9%9D%A0%E8%B0%B1%E7%9A%84%EF%BC%8C%E4%BD%86%E6%98%AF%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3%E6%9C%89%E7%82%B9%E9%9A%BE%E7%9C%8B%E6%87%82%E3%80%82">https://github.com/google/spherical-harmonics来求球谐系数。这个库应该是靠谱的，但是说明文档有点难看懂。</a></li>
+<li>Deep Lighting Environment Map Estimation from Spherical Panoramas<br>代码开源。SH实域系数求法 代码直接开源，可学习借鉴。使用的是LAVAL数据集。</li>
+</ul>
+<ol start="2">
+<li>直接谷歌”python spherical harmonics coefficients”等关键词，在github上也同时寻找，找到了3个python包和一个github代码：</li>
+</ol>
+<ul>
+<li>pyspharm</li>
+<li>pyshtools</li>
+<li>scipy.special.sph_harm</li>
+<li><a href="https://github.com/lianera/SphericalHarmonicsLighting%EF%BC%88C++%EF%BC%89">https://github.com/lianera/SphericalHarmonicsLighting（C++）</a></li>
+</ul>
+<p>阅读相关文档，最终pyshtools跑通。<br>借助pyshtools包，完成了将全景HDR图映射到球谐基上，获取低频部分的球谐系数，并从球谐系数重建出全景HDR、LDR图的代码。</p>
+<p>下面展示一些全景图及其通过5阶球谐系数（共36*3个参数）重建出的图像：</p>
+<ul>
+<li><p>图1<br><img src="/../images/9C4A7069-others-280-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图1-重建<br><img src="/../images/9C4A7069-others-280-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2<br><img src="/../images/AG8A9396-others-240-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2-重建<br><img src="/../images/AG8A9396-others-240-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图2<br><img src="/images/AG8A9438-others-280-2.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图3-重建<br><img src="/images/AG8A9438-others-280-2_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图4<br><img src="/images/AG8A9704-others-40-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+<li><p>图4-重建<br><img src="/images/AG8A9704-others-40-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+</li>
+</ul>
+<p>可以看出5阶球谐系数能反映全景图的低频光照信息，成分上接近环境光。但是无法表示昏暗环境下的光源强度，这是SH光照模型的弱点。<br>Garon在其文章<a href="https://ieeexplore.ieee.org/document/8954392/">Fast Spatially-Varying Indoor Lighting Estimation</a>中也用的是5阶球谐系数，他测试了3阶到8阶的SH，认为5阶SH达到了效率和效果的平衡，最适合他的工作：</p>
+<blockquote>
+<p>We chose order 5 after experimenting with orders ranging from 3 to 8, and empirically confirming that order 5 SH lighting gave us a practical trade-off between rendering time and visual quality (including shading and shadow softness).</p>
+</blockquote>
+<p>其他论文中使用到的SH也基本是2阶（9 $\times$ 3）、3阶（16 $\times$ 3）的。</p>
+]]></content>
+      <tags>
+        <tag>SH</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>周报：球谐系数的求法</title>
+    <url>/2023/02/04/%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E7%9A%84%E6%B1%82%E6%B3%95/</url>
+    <content><![CDATA[<h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
+<ol>
+<li>训练EMLight</li>
+<li>有时间看下手里两个没细看的代码：garder19、styleLight</li>
+</ol>
+<h1 id="本周实际完成工作总结"><a href="#本周实际完成工作总结" class="headerlink" title="本周实际完成工作总结"></a>本周实际完成工作总结</h1><!-- 逐条概述本周实际开展的主要工作 -->
+<ol>
+<li><p>EMLight实际数据集太多，仍在训练。之前已经训练到了图片量为2000的数据集，但是由于实验室主机整体更换，数据集出现了变动，导致之前训练作废，重新训练。</p>
+</li>
+<li><p>garder19、styleLight还未看。</p>
+</li>
+<li><p>这周去看了几篇采用SH光照模型的论文，并做了SH拟合光照并复原光照的实验。</p>
+</li>
+</ol>
+<h1 id="本周实际完成工作详述"><a href="#本周实际完成工作详述" class="headerlink" title="本周实际完成工作详述"></a>本周实际完成工作详述</h1><!-- 根据上述工作概述，逐条详细描述算法设计、实验情况等。可将实验图表及描述作为附件上传 -->
+
+<ol>
+<li>EMLight重新训练的原因</li>
+</ol>
+<p>Laval数据集一共有2100+张hdr全景图。在预处理阶段，每张全景图生成8个crop图，以及对应的八个warped图。所以Laval数据集可为EMLight提供19557</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(emlight) jixinlong@ubun:~/datasets/LavalIndoor/pkl$ <span class="built_in">ls</span> -l|grep <span class="string">&quot;^-&quot;</span>| <span class="built_in">wc</span> -l</span><br><span class="line">19557</span><br></pre></td></tr></table></figure>
+<p>但是19557张图片太多了，一次性投喂给神经网络，让他学怎么做光照估计，就好比让什么都还不会的婴儿学高等数学。它一定会放弃，loss无法收敛。</p>
+<p>所以EMLight论文中建议递进地训练，先拿100张，让模型熟练掌握在100图上的光照估计任务。然后数据集扩增到800张、2500张、10000张……每种规模上的训练一定要到“过拟合”的程度，才能进行下一阶段的训练。</p>
+<p>我正是遵照这个方法在逐步训练EMLight。要注意的是，800张图片应当包含上一阶段的100张图片，2500张图也应该包含800张图，这才符合“递进式”学习的含义。在训练代码的数据集加载部分，有这样一行代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gt_nms = os.listdir(gt_dir)</span><br></pre></td></tr></table></figure>
+<p>它的含义是从图片目录中读取所有的图片名，形成一个文件名列表。紧接着，后边有一行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">self.pairs = self.pairs[: 10000]</span><br></pre></td></tr></table></figure>
+<p>含义是选取文件名列表的前10000个，用于此次训练。这两行代码就是EMLight限定数据集规模的方式。我之前好奇过，这个os.listdir()函数，它返回的文件目录每次都是固定的吗？我搜索到的答案是，返回的结果确实是固定的，而且是按照某种文件名的内在编码进行顺序排序的。我不放心，又自己多次运行这个函数，确定每次返回的结果、顺序都是一模一样的。加上EMLight这个代码是开源的，有那么多双眼睛盯着，作者也不傻，总不能这个地方还出错吧。如果我手动给它加个排序，必然有多出的开销，所以我这里没有改动，遵从原代码。</p>
+<p>Laval数据集，在实验室服务器上有一份，在自己租的服务器上还有一份。本来已经只用实验室服务器了，但是寒假时候实验室服务器整机更新，我就没有备份Laval数据集，而是在更新好之后直接从自己租的服务器把Laval数据集传一份到实验室。整机更新之后我接着训练，就出现问题了，loss不但不收敛，还疯狂飙到很高，模型似乎摆烂了。</p>
+<p>后来发现，原因是实验室服务器整机更新，更新前后系统硬件或操作系统层面的变化，可能导致了os.listdir()函数在完全一样的目录下不同的输出。这就意味着之前在800张图片上训练好的模型，在新的机器上面对800张还很陌生的图片，于是loss飙升。这种情况，没法复原在老机器上os.listdir()函数的输出顺序，之前训练的模型基本就废了。</p>
+<p>好在发现了问题。我在上述两行代码之间加上一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gt_nms.sort() #不排序的话，在另一台机器上解压出大量文件并读取的时候顺序会随机不一样</span><br></pre></td></tr></table></figure>
+<p>这行代码强制对os.listdir()的返回结果进行排序。经测试，这种排序不受机器软硬件环境的影响。加上新机器的3090显卡，很快赶上了之前的训练进度。</p>
+<ol start="2">
+<li>跟据全景贴图求球谐系数</li>
+</ol>
+<p>见<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/">根据全景贴图求球谐系数 </a></p>
+<h2 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h2><p>无</p>
+<h1 id="下周工作计划"><a href="#下周工作计划" class="headerlink" title="下周工作计划"></a>下周工作计划</h1><!-- 针对本周工作存在的问题，概述下周的工作内容 -->
+<ol>
+<li>尝试把EMLight从SG模型改成SH模型，训练网络从crop中回归出SH系数。</li>
+</ol>
+<h1 id="需要协调与支援"><a href="#需要协调与支援" class="headerlink" title="需要协调与支援"></a>需要协调与支援</h1><!-- 额外描述所需硬件、软件及人手 -->]]></content>
+      <tags>
+        <tag>周报</tag>
       </tags>
   </entry>
   <entry>
@@ -442,62 +548,6 @@ wall 向所有终端广播<br>tall 向别的用户发消息</li>
       </tags>
   </entry>
   <entry>
-    <title>根据全景贴图求球谐系数</title>
-    <url>/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/</url>
-    <content><![CDATA[<p>目前认为室内参数化光照模型主要分为两大类：</p>
-<ul>
-<li>球面谐波</li>
-<li>球面高斯</li>
-</ul>
-<p>目前球面高斯类的方法已经有<a href="https://github.com/fnzhan/Illumination-Estimation">EMlight</a>开源了，球面高斯参数生成、网络训练已经打通。但是我还没有掌握球面谐波类的方法，球面谐波模型主要难点在于求取球谐基函数的系数（spherical harmonics coefficients.）。</p>
-<ol>
-<li>从使用SH光照模型并开源的代码入手，寻找球面谐波系数求取的代码：</li>
-</ol>
-<ul>
-<li><a href="https://github.com/cake-lab/PointAR">PointAR</a><br>代码开源，但是求球谐系数的代码直接写在了PointAR&#x2F;datasets&#x2F;pointar&#x2F;preprocess&#x2F;cuda&#x2F;preprocess.cu里，且疑似根据点云来求</li>
-<li>Learning Scene Illumination by Pairwise Photos from Rear and Front Mobile Cameras<br>靠谷歌的C++库<a href="https://github.com/google/spherical-harmonics%E6%9D%A5%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E3%80%82%E8%BF%99%E4%B8%AA%E5%BA%93%E5%BA%94%E8%AF%A5%E6%98%AF%E9%9D%A0%E8%B0%B1%E7%9A%84%EF%BC%8C%E4%BD%86%E6%98%AF%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3%E6%9C%89%E7%82%B9%E9%9A%BE%E7%9C%8B%E6%87%82%E3%80%82">https://github.com/google/spherical-harmonics来求球谐系数。这个库应该是靠谱的，但是说明文档有点难看懂。</a></li>
-<li>Deep Lighting Environment Map Estimation from Spherical Panoramas<br>代码开源。SH实域系数求法 代码直接开源，可学习借鉴。使用的是LAVAL数据集。</li>
-</ul>
-<ol start="2">
-<li>直接谷歌”python spherical harmonics coefficients”等关键词，在github上也同时寻找，找到了3个python包和一个github代码：</li>
-</ol>
-<ul>
-<li>pyspharm</li>
-<li>pyshtools</li>
-<li>scipy.special.sph_harm</li>
-<li><a href="https://github.com/lianera/SphericalHarmonicsLighting%EF%BC%88C++%EF%BC%89">https://github.com/lianera/SphericalHarmonicsLighting（C++）</a></li>
-</ul>
-<p>阅读相关文档，最终pyshtools跑通。<br>借助pyshtools包，完成了将全景HDR图映射到球谐基上，获取低频部分的球谐系数，并从球谐系数重建出全景HDR、LDR图的代码。</p>
-<p>下面展示一些全景图及其通过5阶球谐系数（共36*3个参数）重建出的图像：</p>
-<ul>
-<li><p>图1<br><img src="/../images/9C4A7069-others-280-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图1-重建<br><img src="/../images/9C4A7069-others-280-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图2<br><img src="/../images/AG8A9396-others-240-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图2-重建<br><img src="/../images/AG8A9396-others-240-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图2<br><img src="/images/AG8A9438-others-280-2.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图3-重建<br><img src="/images/AG8A9438-others-280-2_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图4<br><img src="/images/AG8A9704-others-40-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-<li><p>图4-重建<br><img src="/images/AG8A9704-others-40-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
-</li>
-</ul>
-<p>可以看出5阶球谐系数能反映全景图的低频光照信息，成分上接近环境光。但是无法表示昏暗环境下的光源强度，这是SH光照模型的弱点。<br>Garon在其文章<a href="https://ieeexplore.ieee.org/document/8954392/">Fast Spatially-Varying Indoor Lighting Estimation</a>中也用的是5阶球谐系数，他测试了3阶到8阶的SH，认为5阶SH达到了效率和效果的平衡，最适合他的工作：</p>
-<blockquote>
-<p>We chose order 5 after experimenting with orders ranging from 3 to 8, and empirically confirming that order 5 SH lighting gave us a practical trade-off between rendering time and visual quality (including shading and shadow softness).</p>
-</blockquote>
-<p>其他论文中使用到的SH也基本是2阶（9 $\times$ 3）、3阶（16 $\times$ 3）的。</p>
-]]></content>
-      <tags>
-        <tag>SH</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>没有管理员权限也能安装软件</title>
     <url>/2023/02/01/%E6%B2%A1%E6%9C%89%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90%E4%B9%9F%E8%83%BD%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/</url>
     <content><![CDATA[<p>实验室的服务器是大家共用的，一人一个账号。</p>
@@ -510,56 +560,6 @@ wall 向所有终端广播<br>tall 向别的用户发消息</li>
       <tags>
         <tag>ubuntu</tag>
         <tag>server</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>周报：球谐系数的求法</title>
-    <url>/2023/02/04/%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0%E7%9A%84%E6%B1%82%E6%B3%95/</url>
-    <content><![CDATA[<h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
-<ol>
-<li>训练EMLight</li>
-<li>有时间看下手里两个没细看的代码：garder19、styleLight</li>
-</ol>
-<h1 id="本周实际完成工作总结"><a href="#本周实际完成工作总结" class="headerlink" title="本周实际完成工作总结"></a>本周实际完成工作总结</h1><!-- 逐条概述本周实际开展的主要工作 -->
-<ol>
-<li><p>EMLight实际数据集太多，仍在训练。之前已经训练到了图片量为2000的数据集，但是由于实验室主机整体更换，数据集出现了变动，导致之前训练作废，重新训练。</p>
-</li>
-<li><p>garder19、styleLight还未看。</p>
-</li>
-<li><p>这周去看了几篇采用SH光照模型的论文，并做了SH拟合光照并复原光照的实验。</p>
-</li>
-</ol>
-<h1 id="本周实际完成工作详述"><a href="#本周实际完成工作详述" class="headerlink" title="本周实际完成工作详述"></a>本周实际完成工作详述</h1><!-- 根据上述工作概述，逐条详细描述算法设计、实验情况等。可将实验图表及描述作为附件上传 -->
-
-<ol>
-<li>EMLight重新训练的原因</li>
-</ol>
-<p>Laval数据集一共有2100+张hdr全景图。在预处理阶段，每张全景图生成8个crop图，以及对应的八个warped图。所以Laval数据集可为EMLight提供19557</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(emlight) jixinlong@ubun:~/datasets/LavalIndoor/pkl$ <span class="built_in">ls</span> -l|grep <span class="string">&quot;^-&quot;</span>| <span class="built_in">wc</span> -l</span><br><span class="line">19557</span><br></pre></td></tr></table></figure>
-<p>但是19557张图片太多了，一次性投喂给神经网络，让他学怎么做光照估计，就好比让什么都还不会的婴儿学高等数学。它一定会放弃，loss无法收敛。</p>
-<p>所以EMLight论文中建议递进地训练，先拿100张，让模型熟练掌握在100图上的光照估计任务。然后数据集扩增到800张、2500张、10000张……每种规模上的训练一定要到“过拟合”的程度，才能进行下一阶段的训练。</p>
-<p>我正是遵照这个方法在逐步训练EMLight。要注意的是，800张图片应当包含上一阶段的100张图片，2500张图也应该包含800张图，这才符合“递进式”学习的含义。在训练代码的数据集加载部分，有这样一行代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gt_nms = os.listdir(gt_dir)</span><br></pre></td></tr></table></figure>
-<p>它的含义是从图片目录中读取所有的图片名，形成一个文件名列表。紧接着，后边有一行代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">self.pairs = self.pairs[: 10000]</span><br></pre></td></tr></table></figure>
-<p>含义是选取文件名列表的前10000个，用于此次训练。这两行代码就是EMLight限定数据集规模的方式。我之前好奇过，这个os.listdir()函数，它返回的文件目录每次都是固定的吗？我搜索到的答案是，返回的结果确实是固定的，而且是按照某种文件名的内在编码进行顺序排序的。我不放心，又自己多次运行这个函数，确定每次返回的结果、顺序都是一模一样的。加上EMLight这个代码是开源的，有那么多双眼睛盯着，作者也不傻，总不能这个地方还出错吧。如果我手动给它加个排序，必然有多出的开销，所以我这里没有改动，遵从原代码。</p>
-<p>Laval数据集，在实验室服务器上有一份，在自己租的服务器上还有一份。本来已经只用实验室服务器了，但是寒假时候实验室服务器整机更新，我就没有备份Laval数据集，而是在更新好之后直接从自己租的服务器把Laval数据集传一份到实验室。整机更新之后我接着训练，就出现问题了，loss不但不收敛，还疯狂飙到很高，模型似乎摆烂了。</p>
-<p>后来发现，原因是实验室服务器整机更新，更新前后系统硬件或操作系统层面的变化，可能导致了os.listdir()函数在完全一样的目录下不同的输出。这就意味着之前在800张图片上训练好的模型，在新的机器上面对800张还很陌生的图片，于是loss飙升。这种情况，没法复原在老机器上os.listdir()函数的输出顺序，之前训练的模型基本就废了。</p>
-<p>好在发现了问题。我在上述两行代码之间加上一行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gt_nms.sort() #不排序的话，在另一台机器上解压出大量文件并读取的时候顺序会随机不一样</span><br></pre></td></tr></table></figure>
-<p>这行代码强制对os.listdir()的返回结果进行排序。经测试，这种排序不受机器软硬件环境的影响。加上新机器的3090显卡，很快赶上了之前的训练进度。</p>
-<ol start="2">
-<li>跟据全景贴图求球谐系数</li>
-</ol>
-<p>见<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/">根据全景贴图求球谐系数 </a></p>
-<h2 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h2><p>无</p>
-<h1 id="下周工作计划"><a href="#下周工作计划" class="headerlink" title="下周工作计划"></a>下周工作计划</h1><!-- 针对本周工作存在的问题，概述下周的工作内容 -->
-<ol>
-<li>尝试把EMLight从SG模型改成SH模型，训练网络从crop中回归出SH系数。</li>
-</ol>
-<h1 id="需要协调与支援"><a href="#需要协调与支援" class="headerlink" title="需要协调与支援"></a>需要协调与支援</h1><!-- 额外描述所需硬件、软件及人手 -->]]></content>
-      <tags>
-        <tag>周报</tag>
       </tags>
   </entry>
   <entry>
