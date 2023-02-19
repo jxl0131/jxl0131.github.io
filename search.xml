@@ -13,24 +13,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2023/01/20/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>周报： EMLight改为SHLight</title>
     <url>/2023/02/09/EMLight%E6%94%B9%E4%B8%BASHLight/</url>
     <content><![CDATA[<h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
@@ -759,6 +741,53 @@
       <tags>
         <tag>ubuntu</tag>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>x-ui高级设定</title>
+    <url>/2023/02/17/x-ui%E9%AB%98%E7%BA%A7%E8%AE%BE%E5%AE%9A/</url>
+    <content><![CDATA[<p>x-ui是基于xray的套壳管理面板，优点是用起来简单，缺点是每个端口只能设定一个uuid，无法在分享给其他人使用的时候防止滥用，也无法精确监控每个用户的使用情况。</p>
+<p>下面给出一些思路：</p>
+<h1 id="使用者身份设定"><a href="#使用者身份设定" class="headerlink" title="使用者身份设定"></a>使用者身份设定</h1><ul>
+<li>假定使用者是某个学校校园网内的全体学生，那么可以利用校园网来限定使用者身份。</li>
+</ul>
+<ol>
+<li><p>将订阅链接在公网上公开，但是订阅链接的内容只能在内网中成功订阅。方法是在内网运行一个服务器专门发布订阅链接的内容。外加是不是的更新节点内容，这样就能保证只有内网的用户才能用到服务。</p>
+</li>
+<li><p>校园网在公网上一般是一个公网ip区间，倘若能探明这个区间，就能直接从节点、订阅层面限定使用者范围。从订阅层面，同上，在nginx里可以设定订阅链接的内容仅某些ip可访问。从节点层面，可以在xray之前统一经过443端口的nginx反代，由nginx检查使用者的ip。</p>
+</li>
+</ol>
+<ul>
+<li>可以利用校园邮箱来限定使用者身份。<br>为了保护隐私，用邮箱验证需要先自建一个邮箱系统。</li>
+</ul>
+<ol>
+<li>手动验证。要求使用者用校园邮箱发送申请，邮件里包含一个合法的uuid，然后管理员将此uuid添加到后台。目前的x-ui原版的config.json是每次restart时被x-ui.db覆盖的，而x-ui.db不支持一个端口多个用户。所以需要另起config1.json，放在原config一起，让xray启动时合并读取config；还有fork版本的x-ui，支持单个端口后多用户的设定，可以用。</li>
+<li>自动验证。所有的操作最后都应该自动化。可以想办法将邮件内容接收、uuid读取、config添加等工作写成代码，用合并读取config的方式来完成这个工作。</li>
+</ol>
+<h1 id="匿名交易"><a href="#匿名交易" class="headerlink" title="匿名交易"></a>匿名交易</h1><p>倘若需要匿名交易功能，可能需要使用paypal。</p>
+]]></content>
+      <tags>
+        <tag>vpn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于ipv6-ddns的PC建站方式</title>
+    <url>/2023/02/19/%E5%9F%BA%E4%BA%8Eipv6-ddns%E7%9A%84PC%E5%BB%BA%E7%AB%99%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<p>偶然发现实验室的电脑都分配了很多ipv6地址，且有很多是公网地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">eno1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 10.108.11.94  netmask 255.255.254.0  broadcast 10.108.11.255</span><br><span class="line">        inet6 2001:da8:204:1086:ad28:ff67:94a7:1997  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:b9b8:9136:3ef3:6be6  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:f455:5fa0:b6ca:63c  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661::1066  prefixlen 128  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fe80::7258:dd48:9547:6be3  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:41f7:aed6:af12:5f13  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:a1e4:69cb:2d82:3f54  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:fc1b:66d8:b2b5:8904  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        ether e4:54:e8:77:f5:f3  txqueuelen 1000  (以太网)</span><br><span class="line">        RX packets 52881182  bytes 10069311241 (10.0 GB)</span><br><span class="line">        RX errors 0  dropped 26069  overruns 0  frame 0</span><br><span class="line">        TX packets 2549468  bytes 249593912 (249.5 MB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16  memory 0xe5400000-e5420000  </span><br></pre></td></tr></table></figure>
+
+<p>那么就不需要ipv4公网ip了。据说现在ipv6普及，家里的宽带也都有ipv6地址。</p>
+<p>但是ipv6地址都是被分配的，且没法固定，这个时候可以用dns解析托管商的ddns服务。很简单，其实就是获取托管商那里的一些key，然后在本地写脚本获取ipv6地址并PUSH到托管商那里更新ip。<br>具体见：<a href="https://zhuanlan.zhihu.com/p/69379645">基于 Cloudflare DNS API 部署 IPv6 DDNS</a></p>
+<p>但我遇到一个问题，就是直接采用上述链接里的脚本时，会尝试将所有带<global>标记的ip地址加到域名上。而域名解析只能一对一！<br>其实用这种方法无法将输出列表里的fd00开头的地址剔除出去：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0</span><br><span class="line">2001:da8:204:1086:f455:5fa0:b6ca:63c</span><br><span class="line">2001:da8:204:1086:fc1b:66d8:b2b5:8904</span><br><span class="line">2001:da8:204:1086:a1e4:69cb:2d82:3f54</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>但是不知道为什么，fd00这种总在列表头部，实际想要获取的2001开头地址在尾部。那么可以在命令管道后面在再加上一个tail -1，输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;|tail -1</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>获得了想要的ipv6公网地址！</p>
+]]></content>
+      <tags>
+        <tag>server</tag>
+        <tag>ddns</tag>
       </tags>
   </entry>
 </search>
