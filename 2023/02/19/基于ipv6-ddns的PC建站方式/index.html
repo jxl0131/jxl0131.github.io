@@ -30,7 +30,7 @@
 <meta property="og:description" content="用这种方法，frp没有用了，云服务器商也将退场。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-19T07:23:49.000Z">
-<meta property="article:modified_time" content="2023-02-19T15:52:03.696Z">
+<meta property="article:modified_time" content="2023-02-19T16:02:34.966Z">
 <meta property="article:author" content="Ji Xinlong">
 <meta property="article:tag" content="server">
 <meta property="article:tag" content="ddns">
@@ -215,10 +215,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-02-19 15:23:49 / 修改时间：23:52:03" itemprop="dateCreated datePublished" datetime="2023-02-19T15:23:49+08:00">2023-02-19</time>
+              <time title="创建时间：2023-02-19 15:23:49" itemprop="dateCreated datePublished" datetime="2023-02-19T15:23:49+08:00">2023-02-19</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-20 00:02:34" itemprop="dateModified" datetime="2023-02-20T00:02:34+08:00">2023-02-20</time>
+              </span>
 
           
             <div class="post-description">用这种方法，frp没有用了，云服务器商也将退场。</div>
@@ -232,17 +238,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>偶然发现实验室的电脑都分配了很多ipv6地址，且有很多是公网地址。</p>
+        <h1 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h1><p>偶然发现实验室的电脑都分配了很多ipv6地址，且有很多是公网地址。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">eno1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 10.108.11.94  netmask 255.255.254.0  broadcast 10.108.11.255</span><br><span class="line">        inet6 2001:da8:204:1086:ad28:ff67:94a7:1997  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:b9b8:9136:3ef3:6be6  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:f455:5fa0:b6ca:63c  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661::1066  prefixlen 128  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fe80::7258:dd48:9547:6be3  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:41f7:aed6:af12:5f13  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:a1e4:69cb:2d82:3f54  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:fc1b:66d8:b2b5:8904  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        ether e4:54:e8:77:f5:f3  txqueuelen 1000  (以太网)</span><br><span class="line">        RX packets 52881182  bytes 10069311241 (10.0 GB)</span><br><span class="line">        RX errors 0  dropped 26069  overruns 0  frame 0</span><br><span class="line">        TX packets 2549468  bytes 249593912 (249.5 MB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16  memory 0xe5400000-e5420000  </span><br></pre></td></tr></table></figure>
 
 <p>那么就不需要ipv4公网ip了。据说现在ipv6普及，家里的宽带也都有ipv6地址。</p>
 <p>但是ipv6地址都是被分配的，且没法固定，这个时候可以用dns解析托管商的ddns服务。很简单，其实就是获取托管商那里的一些key，然后在本地写脚本获取ipv6地址并PUSH到托管商那里更新ip。<br>具体见：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/69379645">基于 Cloudflare DNS API 部署 IPv6 DDNS</a></p>
-<p>但我遇到一个问题，就是直接采用上述链接里的脚本时，会尝试将所有带<global>标记的ip地址加到域名上。而域名解析只能一对一！<br>其实用这种方法无法将输出列表里的fd00开头的地址剔除出去：</p>
+<h1 id="困难"><a href="#困难" class="headerlink" title="困难"></a>困难</h1><p>但我遇到一个问题，就是直接采用上述链接里的脚本时，会尝试将所有带<global>标记的ip地址加到域名上。而域名解析只能一对一！<br>其实用这种方法无法将输出列表里的fd00开头的地址剔除出去：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0</span><br><span class="line">2001:da8:204:1086:f455:5fa0:b6ca:63c</span><br><span class="line">2001:da8:204:1086:fc1b:66d8:b2b5:8904</span><br><span class="line">2001:da8:204:1086:a1e4:69cb:2d82:3f54</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>但是不知道为什么，fd00这种总在列表头部，实际想要获取的2001开头地址在尾部。那么可以在命令管道后面在再加上一个tail -1，输出结果如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;|tail -1</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>获得了想要的ipv6公网地址！</p>
+<h1 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h1><p>ipv6公网地址通过ddns绑定到域名上，任何闲置主机就都能变成云服务器了。</p>
+<ul>
+<li>ipv6支持ssh，以后在任何地方都能轻松登陆自家电脑</li>
+<li>必须要一个公网云服务器做中转的frp类内网穿透方法将被取代</li>
+<li>mc服务器等可以开在自己的电脑上</li>
+<li>可以在自己的服务器上自建云盘、博客</li>
+<li>旧电脑将可以被利用，收费昂贵性能也有限的阿里云、腾讯云不再成为小服务器玩家的首选。</li>
+</ul>
+<p>缺点也有，就是ipv6开起来的服务不能被只支持ipv4的网络用户访问。当然随着ipv6大力普及，这个缺点越来越小。</p>
+<h1 id="彩蛋"><a href="#彩蛋" class="headerlink" title="彩蛋"></a>彩蛋</h1><p>本来搞ipv6 ddns是想在主机上建一个饥荒服务器的…</p>
+<p>结果照着<a target="_blank" rel="noopener" href="https://github.com/qinming99/dst-admin">饥荒面板服</a>的教程走完，发现饥荒开服根本就不需要服务器有固定公网ip。它实际上是把个人的服务器统一登记在科雷服务器上，然后让玩家去访问科雷。<br>不过因为实验室电脑会自行断网，安装过程总是报网络原因的错误，我还以为是需要挂梯子，挂了也没用。最后重新用脚本连接下校园网，就非常顺滑地安装完了。<br>唉，安装环境总担心是资源在国外需要挂梯子的，也就中国程序员和伊朗程序员了…………</p>
 
     </div>
 
@@ -324,6 +341,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%99%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">教程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%B0%E9%9A%BE"><span class="nav-number">2.</span> <span class="nav-text">困难</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E9%80%94"><span class="nav-number">3.</span> <span class="nav-text">用途</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BD%A9%E8%9B%8B"><span class="nav-number">4.</span> <span class="nav-text">彩蛋</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
