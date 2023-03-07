@@ -189,7 +189,16 @@
   <entry>
     <title>python语法</title>
     <url>/2023/01/21/python%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=<span class="string">&#x27;jxl&#x27;</span></span><br><span class="line"><span class="built_in">len</span>(a) <span class="comment">#字符串长度</span></span><br><span class="line">a == <span class="string">&#x27;jxl&#x27;</span> <span class="keyword">and</span> a~= <span class="string">&#x27;jx&#x27;</span> <span class="comment">#并列条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个字符串str1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str1 = <span class="string">&quot;3w.gorly.test.com.cn&quot;</span></span><br><span class="line"><span class="comment">#指定分隔符为&#x27;.&#x27;，并且指定切割次数为1次</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> str1.split(<span class="string">&#x27;.&#x27;</span>,<span class="number">1</span>)</span><br><span class="line">[<span class="string">&#x27;3w&#x27;</span>, <span class="string">&#x27;gorly.test.com.cn&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#一个坑:python里的=是引用</span></span><br><span class="line"><span class="comment">#若想要传值必须写</span></span><br><span class="line">a = copy.deepcopy(b)</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h1 id="numpy"><a href="#numpy" class="headerlink" title="numpy"></a>numpy</h1><h2 id="转成list"><a href="#转成list" class="headerlink" title="转成list"></a>转成list</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">a = np.array([[1,2,3],[3,4,5]])</span><br><span class="line">a = a.tolist()</span><br><span class="line">print(a)</span><br><span class="line"># 输出</span><br><span class="line">[[1, 2, 3], [3, 4, 5]]</span><br></pre></td></tr></table></figure>
+<h2 id="由list转化来"><a href="#由list转化来" class="headerlink" title="由list转化来"></a>由list转化来</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a=[1,2,3,4,5,6]</span><br><span class="line">b=np.array(a)</span><br></pre></td></tr></table></figure>
+
+<h2 id="直接筛选"><a href="#直接筛选" class="headerlink" title="直接筛选"></a>直接筛选</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;&gt;&gt; a = np.array([1,2,3])</span><br><span class="line">&gt;&gt;&gt; b = a[a&gt;2]</span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line">array([3])</span><br><span class="line">&gt;&gt;&gt; a&gt;2</span><br><span class="line">array([False, False,  True])</span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
+<h2 id="筛选出下标"><a href="#筛选出下标" class="headerlink" title="筛选出下标"></a>筛选出下标</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">np.where(condition, x, y)</span><br><span class="line"></span><br><span class="line">condition：条件</span><br><span class="line">x：满足条件时函数的输出</span><br><span class="line">y：不满足条件时的输出</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; import numpy as np</span><br><span class="line">&gt;&gt;&gt; x = np.arange(6).reshape(2, 3)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">array([[0, 1, 2],</span><br><span class="line">       [3, 4, 5]])</span><br><span class="line">&gt;&gt;&gt; np.where(x &gt; 1, True, False)</span><br><span class="line">array([[False, False,  True],</span><br><span class="line">       [ True,  True,  True]])</span><br><span class="line"></span><br><span class="line">没有x和y参数，则以元组形式输出满足条件的列表索引。</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; np.where(x &gt; 1)</span><br><span class="line">(array([0, 1, 1, 1], dtype=int64), array([2, 0, 1, 2], dtype=int64))</span><br><span class="line"></span><br><span class="line">和2类似，但输出的直接是满足要求的元素的坐标索引，不是元组。</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; np.argwhere(x &gt; 1)</span><br><span class="line">array([[0, 2],</span><br><span class="line">       [1, 0],</span><br><span class="line">       [1, 1],</span><br><span class="line">       [1, 2]], dtype=int64)</span><br></pre></td></tr></table></figure>
+<h1 id="list"><a href="#list" class="headerlink" title="list"></a>list</h1><h2 id="逐个元素操作"><a href="#逐个元素操作" class="headerlink" title="逐个元素操作"></a>逐个元素操作</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">原始列表：</span><br><span class="line"></span><br><span class="line">num_list = [&#x27;0&#x27;, &#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;7&#x27;, &#x27;8&#x27;, &#x27;9&#x27;]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">目的：</span><br><span class="line"></span><br><span class="line">num_list_new = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">方法一：</span><br><span class="line"></span><br><span class="line">num_list_new = list(map(lambda x: int(x), num_list))      # num_list为x迭代的list,lambda输入x,输出int(x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">方法二：</span><br><span class="line"></span><br><span class="line">num_list_new = list(map(int, num_list))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">方法三：</span><br><span class="line"></span><br><span class="line">num_list_new = [int(i) for i in num_list]</span><br></pre></td></tr></table></figure>
+
+<h2 id="元素逐个输出，并用逗号隔开"><a href="#元素逐个输出，并用逗号隔开" class="headerlink" title="元素逐个输出，并用逗号隔开"></a>元素逐个输出，并用逗号隔开</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">list1 = [1,2,3,4,5,6,7,8,9,10]</span><br><span class="line">(&quot;,&quot;.join(str(x) for x in list1))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=<span class="string">&#x27;jxl&#x27;</span></span><br><span class="line"><span class="built_in">len</span>(a) <span class="comment">#字符串长度</span></span><br><span class="line">a == <span class="string">&#x27;jxl&#x27;</span> <span class="keyword">and</span> a~= <span class="string">&#x27;jx&#x27;</span> <span class="comment">#并列条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个字符串str1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str1 = <span class="string">&quot;3w.gorly.test.com.cn&quot;</span></span><br><span class="line"><span class="comment">#指定分隔符为&#x27;.&#x27;，并且指定切割次数为1次</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> str1.split(<span class="string">&#x27;.&#x27;</span>,<span class="number">1</span>)</span><br><span class="line">[<span class="string">&#x27;3w&#x27;</span>, <span class="string">&#x27;gorly.test.com.cn&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#一个坑:python里的=是引用</span></span><br><span class="line"><span class="comment">#若想要传值必须写</span></span><br><span class="line">a = copy.deepcopy(b)</span><br></pre></td></tr></table></figure>
 
 
 <ul>
@@ -275,6 +284,9 @@
 <p>真要训练模型，用实验室的或者租用训练平台的。</p>
 <h3 id="下载东西"><a href="#下载东西" class="headerlink" title="下载东西"></a>下载东西</h3><p>自带中断重连、后台下载，可查看下载状态</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget -t 0 -c -b http://rachmaninoff.gel.ulaval.ca/static/./tmp.InNWaX2Owi/390be30afc9052f92d50e52b25bbe16371ea2836.tar.gz</span><br><span class="line"></span><br><span class="line">tail -f wget-log #查看log</span><br><span class="line">ps aux | grep wget  #查看后台下载还在不在</span><br><span class="line">需要用户名和密码:加上 --http-user xxx --http-passwd xxx </span><br><span class="line">从文件中读取链接来下载:加上 -i </span><br></pre></td></tr></table></figure>
+<h3 id="定时执行"><a href="#定时执行" class="headerlink" title="定时执行"></a>定时执行</h3><h4 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h4><p>普通用户也可以使用，非常简单，所以不需要再用“screen+循环”这种操作来定时、循环某项任务了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">crontab -e #添加某个任务</span><br><span class="line">crontab -l #查看当前有哪些任务</span><br></pre></td></tr></table></figure>
+<h4 id="系统级别的systemmd"><a href="#系统级别的systemmd" class="headerlink" title="系统级别的systemmd"></a>系统级别的systemmd</h4><p>参照<a href="https://www.jixinlong.top/2023/01/22/%E5%9F%BA%E4%BA%8Efrp%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%94%B5%E8%84%91%E5%BB%BA%E7%AB%99%E6%96%B9%E6%A1%88/">博客里的frp开机自启方案</a></p>
 ]]></content>
       <tags>
         <tag>ubuntu</tag>
@@ -625,10 +637,12 @@
   <entry>
     <title>神经网络训练</title>
     <url>/2023/01/22/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83/</url>
-    <content><![CDATA[<p>batch表示一次性投喂给网络的数据量。<span id="more"></span>batch大有利于更快得训练，利用GPU的能力。batch小有利于更精确地收缩。</p>
+    <content><![CDATA[<h1 id="查看显卡情况"><a href="#查看显卡情况" class="headerlink" title="查看显卡情况"></a>查看显卡情况</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nvidia-smi</span><br><span class="line">#查看有多少空余</span><br><span class="line">(base) jixinlong@ubun:~/Illumination-Estimation-1/SHLight$ nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits</span><br><span class="line">373</span><br><span class="line">428</span><br><span class="line">2863</span><br><span class="line">1505</span><br><span class="line">3023</span><br><span class="line">618</span><br><span class="line">1557</span><br><span class="line">4449</span><br><span class="line">1606</span><br><span class="line">15217</span><br><span class="line"></span><br><span class="line">循环查看</span><br><span class="line">watch -n 0.5 nvidia-smi</span><br><span class="line">nvidias-smi -l 1</span><br><span class="line"></span><br><span class="line">gpustat</span><br><span class="line">安装方式：pip install gpustat</span><br></pre></td></tr></table></figure>
+<h1 id="查看cpu使用情况"><a href="#查看cpu使用情况" class="headerlink" title="查看cpu使用情况:"></a>查看cpu使用情况:</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">top</span><br><span class="line">htop #比top更直观</span><br></pre></td></tr></table></figure>
+
+<h1 id="batch设定"><a href="#batch设定" class="headerlink" title="batch设定"></a>batch设定</h1><p>batch表示一次性投喂给网络的数据量。<span id="more"></span>batch大有利于更快得训练，利用GPU的能力。batch小有利于更精确地收缩。</p>
 <p>通过观测训练时的CPU和显卡使用情况，我发现CPU已经跑满了，显卡的GPU和显存的利用率都很低。这种情况下是cpu的限制了整个训练的速度，导致显卡经常无事可做。我关闭了不需要的浏览器界面之后发现CPU利用率仍然是满的，但是显卡利用率变高了。所以训练的时候要根据硬件的情况分配好CPU和显卡的任务，充分利用资源。</p>
-<hr>
-<p>在谷歌colab上使用免费GPU：直接使用已有FaceColab.ipynb即可。上传自己的faceswap文件夹整体，然后利用FaceColab.ipynb的依赖安装、代码执行工具来训练。</p>
+<h1 id="colab"><a href="#colab" class="headerlink" title="colab"></a>colab</h1><p>在谷歌colab上使用免费GPU：直接使用已有FaceColab.ipynb即可。上传自己的faceswap文件夹整体，然后利用FaceColab.ipynb的依赖安装、代码执行工具来训练。</p>
 <p>在训练到感觉loss一直降低不下去、图片总是不清晰的时候，按照软件本身的提示<br><img src="/../images/Screenshot%20from%202022-03-15%2018-57-26.png" alt="Screenshot from 2022-03-15 18-57-26"></p>
 <p>FaceColab.ipynb中的提示：<br><img src="/../images/Screenshot%20from%202022-03-15%2019-07-08.png" alt="Screenshot from 2022-03-15 19-07-08"></p>
 <p>还有论坛上的经验分享<a href="https://forum.faceswap.dev/viewtopic.php?t=1311">faceswap</a>，尝试勾选disabling warp选项，让模型学到更多的面部细节。</p>
@@ -642,11 +656,7 @@
 </ol>
 
 
-<hr>
-<h5 id="在超算云平台上："><a href="#在超算云平台上：" class="headerlink" title="在超算云平台上："></a>在超算云平台上：</h5><p>创建conda环境后进入，执行setup.py可以自行安装所有依赖。<br>查看显卡情况：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">watch -n 0.5 nvidia-smi</span><br><span class="line">nvidias-smi -l 1</span><br></pre></td></tr></table></figure>
-<p>查看cpu使用情况:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">top</span><br></pre></td></tr></table></figure>]]></content>
+]]></content>
       <tags>
         <tag>神经网络</tag>
       </tags>
@@ -804,7 +814,7 @@
   <entry>
     <title>我对神经网络的理解</title>
     <url>/2023/02/20/%E6%88%91%E5%AF%B9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以有实际用起来，或许一直都不能用。”</p>
+    <content><![CDATA[<p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以实际用起来，或许一直都不能用。”</p>
 <h1 id="仿生学"><a href="#仿生学" class="headerlink" title="仿生学"></a>仿生学</h1><p>但是那本书里说到神经网络是模仿大脑里相互连接的神经元的。信号在神经元之间传导，人因此能够识别万物，能够判断是非，能有情感。所以我本科早期曾对这种计算机科学与脑科学、心理学交叉的研究课题感兴趣。当时年轻气盛，一开始就瞄准AI的终极目标AGI（强人工智能）。我现在仍然觉得用机器仿制人类智能和情感这项伟大的事业，倘若缺失能在符号主义深邃的理论里开拓的人，那么最先的突破口应该是人工神经网络。直接从仿生学上模仿人类大脑的结构，够唯物主义，够简单粗暴。多说一句，目前在电脑里深度学习框架上跑的神经网络，实际上还是依靠硅基计算机的内存和速度，这个速度和人类大脑中信号传导速度（化学信号）比起来可能还是不够快。所以我觉得本科时候一位造预警机的院士讲得很对：神经网络最终应该用量子或者其他什么更微观的物质来构建，才能高速运转，性能接近人类大脑。</p>
 <p>所以你看，从仿生学上看，神经网络不仅有依据、有人信，能力还远不止人脸识别、目标检测这种弱AI应用。人家一开始瞄准的是AGI伟大事业。</p>
 <h1 id="统计模式识别"><a href="#统计模式识别" class="headerlink" title="统计模式识别"></a>统计模式识别</h1><p>但是，目前神经网络遍地开花的领域，主要还是各种人脸识别一类的应用。那么在这些更接地气的研究中，神经网络有什么更接地气的解释呢？<br>我觉得至少还可以从统计模式识别和数学建模的角度来看。之所以用两个课程名，是因为这两个课程我上过，很多人肯定也上过，能开课的内容一般都是公认的具有科学性的内容。统计模式识别讲的是如何运用各种技巧来清洗数据、获取特征、处理特征、完成识别任务。其核心是特征。所谓的特征，就是我想识别一个物体，这个物体应该有什么与众不同的地方，能让我将其与其他万事万物相区别。譬如做人脸识别，脸部应当有眉毛、鼻子、眼睛、嘴唇，且这些线条的相对位置关系是固定的。去读（神经网络之前的）经典统计模式识别论文中的做人脸识别的论文(Rapid object detection using a boosted cascade of simple features)，你会发现他的核心还是用下面这样的模板来匹配脸部的特征：<br><img src="/../images/990517-fig-4-source-large.gif" alt="脸部特征模板"><br>而神经网络，例如CNN，其前部的层一般都是用于提取特征的。提取特征用的是各种形状的卷积核，这些卷积核就先相当于上图里的各种模板。在阅读论文的时候，常常看到直接把别人在大规模图片数据集上训练好“预训练模型”拿过来作为网络的全部或前部，在别人的基础上接着训练的做法。这就是因为训练好的网络通常具有抽取图像特征的能力，这种能力可以直接被新的网络借用。</p>
@@ -812,6 +822,80 @@
 ]]></content>
       <tags>
         <tag>神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据可视化tensorboard</title>
+    <url>/2023/02/27/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96tensorboard/</url>
+    <content><![CDATA[<p>数据可视化，指的是训练神经网络过程中对loss、preview等做出的记录和展示。</p>
+<h1 id="为什么需要可视化"><a href="#为什么需要可视化" class="headerlink" title="为什么需要可视化"></a>为什么需要可视化</h1><p>我曾经有很长一段时间是闭着眼睛训练的。原因是初出茅庐，拿到开源的代码之后虔诚学习，不敢改动，生怕代码被我改坏了。于是便按照github上的指示输入类似“python3 train.py”的进行训练。论文已经开源的代码通常能够训练出收敛的效果，因为中间探索正确训练参数的过程已经由论文作者一个人走过了，其中的艰辛甚至不必写入论文。最终只需要把探索过程所用的代码删去，保留美丽的最终成果，挂到github上，并告诉追随者“汝只需输入这样一行训练指令，训练xxx个epoch，便可以证实我论文中说的结果是对的”。</p>
+<p>假如只是复现，后来者确实可以这样闭着眼睛训练出成果。但问题是假如我已经熟读那份开源代码，觉得它有些地方可以改进，但改进之后势必产生不同的训练结果，我又需要观察训练过程中loss是否收敛，训练中实时的效果展示，该怎么做呢？或者有的人就算不改动代码，也想亲眼看看loss收敛下降那美丽的过程，该怎么做呢？</p>
+<h1 id="用tensorboard"><a href="#用tensorboard" class="headerlink" title="用tensorboard!"></a>用tensorboard!</h1><p>tensorboard本是tensorflow的一个组件。现在很多训练用的是pytorch，pytorch也可以用tensorboard来可视化。使用方法可以参照这篇：<a href="https://zhuanlan.zhihu.com/p/103630393">PyTorch下的Tensorboard 使用</a></p>
+<h2 id="loss"><a href="#loss" class="headerlink" title="loss"></a>loss</h2><p>具体操作的时候，比方说我想确定一个自创的网络模型，应当使用多大的学习率lr比较好，那么我就设立多次对比试验，每次存到一个单独的文件夹下：</p>
+<p>\tf-logs\lr&#x3D;0.001<br>\tf-logs\lr&#x3D;0.01<br>……</p>
+<p>但是在写入loss的时候，都写入同一个loss里：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#loss输出到tensorboard可视化</span><br><span class="line">writer.add_scalar(&#x27;shlight_loss/total_loss&#x27;, loss, epoch)</span><br></pre></td></tr></table></figure>
+
+<p>最终效果就像这样：<br><img src="/../images/tensorboard%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="tensorboard"></p>
+<p>将两次（lr不同的）训练结果绘制到同一张图里。可以清晰地看出两种lr设定下loss下降的快慢高低。<br>其中，total_loss子图是shlight_loss图的一部分。只改变total_loss，但是“shlight_loss&#x2F;”保持不变，都会绘制到shlight_loss类别下。</p>
+<h2 id="preview"><a href="#preview" class="headerlink" title="preview"></a>preview</h2><p>多次训练的preview可以统一写成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">writer.add_image(&#x27;preview&#x27;, np.array(im), epoch, walltime=None, dataformats=&#x27;HWC&#x27;) ###当前训练的preview图示仅仅保存最新的几十张</span><br><span class="line">            </span><br></pre></td></tr></table></figure>
+<p>这样的效果是：</p>
+<p><img src="/../images/tensorboard-preview%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="preview"></p>
+<h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><h2 id="tensorboard的版本"><a href="#tensorboard的版本" class="headerlink" title="tensorboard的版本"></a>tensorboard的版本</h2><p>tensorboard的版本需要固定。旧版本tensorboard写入的log用新版本tensorboard很可能就看不了了，反之亦然。</p>
+<p>由于训练很长，或者训练新的项目会搭建新的环境，tensorboard的版本就很容易被改变。这时候要尽量保证tensorboard的版本在写log和读取log时一致。</p>
+<h2 id="与tensorflow的关系"><a href="#与tensorflow的关系" class="headerlink" title="与tensorflow的关系"></a>与tensorflow的关系</h2><p>tensorboard本身是tensorflow的一部分。假如环境中原本有新版本tensorboard，再安装一个旧版本的tensorflow就会把tensorboard版本连带退回到旧版本。</p>
+<p>这时候kill掉之前后台运行的新版本tensorboard，并重新运行tensorboard，后台中跑的就是旧版本tensorboard。再试图用旧版本tensorboard读取之前新版本tensorboard写入的那些log，你将面对一片空白，啥也看不到。</p>
+<p><strong>所以，当环境中已经有了tensorboard，且已经用它写过很多log，这时候安装tensorflow就要小心了。最好新建一个全新的环境安装tensorflow，写入和读取log都在新环境里做，和旧的环境隔离。</strong></p>
+<h2 id="tensorboard不是tensorboard"><a href="#tensorboard不是tensorboard" class="headerlink" title="tensorboard不是tensorboard"></a>tensorboard不是tensorboard</h2><p>仅仅运行一句<code>pip install tensorboard==2.0.2</code>，安装的就仅仅是这一个包。</p>
+<p>但是单独这个包可能没法完成log写入和读取。</p>
+<p>因为执行<code>pip install tensorboard</code>，你会发现装了三个包：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tensorboard              2.11.2</span><br><span class="line">tensorboard-data-server  0.6.1</span><br><span class="line">tensorboard-plugin-wit   1.8.1</span><br></pre></td></tr></table></figure>
+
+<p>所以，假如你的tensorboard没法读取之前写的log了，你要同时确认以上三个包在曾经和现在的版本是否一致。我就是往之前的环境里装tensorflow导致tensorboard读不了log了，手动把以上三个包都卸掉之后，回顾了之前的<a href="https://zhuanlan.zhihu.com/p/103630393">教程</a>，但是只安装了tensorboard&#x3D;&#x3D;2.0.2，发现还是打不开log。最终看了之前用过的另一台服务器上的pip list，发现tensorboard是由以上三个包共同组成的。重新pip install tensorboard不加版本号，自动安装三个包，才把问题解决。</p>
+]]></content>
+      <tags>
+        <tag>神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>错误的loss项可能对训练带来什么影响？</title>
+    <url>/2023/02/28/%E9%94%99%E8%AF%AF%E7%9A%84loss%E9%A1%B9%E5%8F%AF%E8%83%BD%E5%AF%B9%E8%AE%AD%E7%BB%83%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%EF%BC%9F/</url>
+    <content><![CDATA[<p>我训练emlight很长时间了，在小规模数据集上尚能收敛，数据集规模一上升到18000就失控。由于现在很多论文里公布的方法本就无法复现出作者描述的效果，再加上对神经网络弊端的一些了解，emlight在大规模数据集上难以收敛的问题，我也就没有多加怀疑。</p>
+<p>结果上周发现emlight作者上传了一个叫geomloss的包，而这个包本来在python的pip库里有官方版本。由于我是在作者上传之前就fork并下载源代码的，后来也没多想作者这个动作，我一直用的是都是官方版本。上周用相同的输入测试作者上传的geomloss和官方的，结果发现输出不一样。这意味着作者自己无声无息地改写了geomloss包。于是我将官方的geomloss删除，换成了他的，重新开始训练。</p>
+<p>emlight的loss设计分为三部分：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">loss = dist_emloss + dist_l2loss + intensity_loss + rgb_loss + ambient_loss</span><br></pre></td></tr></table></figure>
+<p>dist_emloss + dist_l2loss是光参数里的“光分布”，它表示球面空间上光源的位置和相对亮度。intensity_loss + rgb_loss是光源的整体强度和颜色。ambient_loss是环境光。上述geomloss包是用来计算dist_emloss的。</p>
+<h1 id="更换之后的训练结果"><a href="#更换之后的训练结果" class="headerlink" title="更换之后的训练结果"></a>更换之后的训练结果</h1><p>仍然采用数据集“由小到大”的策略循序渐进地训练emlight，分别在100、1000、2500、10000 上训练emlight，看训练的loss曲线：</p>
+<p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%90%8E.png" alt="更换之后"></p>
+<p>图片左侧标明了四条曲线是在哪种规模数据集上训练的。可以看出，更换了geomloss为作者版本之后，在四种规模数据集上训练的loss基本是重合的，随着数据集规模的增大loss曲线有整体上移的趋势，但上移不大。</p>
+<h1 id="与更换前的训练记录对比"><a href="#与更换前的训练记录对比" class="headerlink" title="与更换前的训练记录对比"></a>与更换前的训练记录对比</h1><p>在更换geomloss之前，我也在这几种规模数据集上训练过。可以将之前的记录显示到这六张loss子图上，对比观察出一些结论。下面依次将之前的训练结果按照数据集由小到大的顺序展示在上图中：</p>
+<h2 id="规模-x3D-100-灰色曲线"><a href="#规模-x3D-100-灰色曲线" class="headerlink" title="规模&#x3D;100(灰色曲线)"></a>规模&#x3D;100(灰色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-100.png" alt="100"><br>规模为100的loss与更换geomloss之后的四次训练基本重合。</p>
+<h2 id="规模-x3D-1000-橙色曲线"><a href="#规模-x3D-1000-橙色曲线" class="headerlink" title="规模&#x3D;1000(橙色曲线)"></a>规模&#x3D;1000(橙色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-1000.png" alt="1000"></p>
+<p>total_loss开始整体上移，其原因应当是dist_l2loss分量的整体上移。dist_l2loss虽然不是geomloss直接计算的，但是倘若geomloss所计算的dist_emloss不对光分布的正确预测起作用或起到反作用，那么dist_emloss下降一定会引起dist_l2loss无法下降。</p>
+<h2 id="规模-x3D-2500-蓝色曲线"><a href="#规模-x3D-2500-蓝色曲线" class="headerlink" title="规模&#x3D;2500(蓝色曲线)"></a>规模&#x3D;2500(蓝色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-2500.png" alt="2500"></p>
+<p>total_loss与四条曲线的差别更大了。此时dist_l2loss和dist_l2loss同时上移，它们也是total_loss上移的主要原因。此时光分布难以被正确预测，而环境光、光源总强度却能预测得与四条曲线一致。</p>
+<h2 id="规模-x3D-10000-红色曲线"><a href="#规模-x3D-10000-红色曲线" class="headerlink" title="规模&#x3D;10000(红色曲线)"></a>规模&#x3D;10000(红色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-10000.png" alt="10000"><br>10000的loss情况和2500很像，都是dist_l2loss和dist_l2loss的上移导致total_loss上移。10000的上移甚至比2500好一点，这个我暂时解释不了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总而言之，本文通过实验观察了当总loss中有一个分量的设计不合理、计算错误时会对训练造成的影响。（当网络采用的是emlight所用的densenet时，）暂且总结出以下几点：</p>
+<ul>
+<li>最终：错误的loss项会误导网络，导致训练不出想要的结果<br>  loss是用来指挥神经网络梯度下降的，给神经网络设一个错误的loss就好比给路人指了错误的方向，结果可能是走了很多弯路，甚至南辕北辙。</li>
+<li>短期看：loss下降不代表loss的设计有意义<br>  total_loss是由很多个loss分量组成的，其中一个分量无意义，但其他分量有意义，此时神经网络仍然可能在有意义的loss分量的指挥下一直梯度下降。在规模为100的数据集上训练，loss与更换geomloss之后的四次训练基本重合，从loss的下降过程来看训练一切顺利。这说明在网络够深而数据集够小的情况下，哪怕你的loss设计得没有意义，loss也会下降。这种下降并不代表网络在loss指引下学到了“规律”（规律指的是输入和输出之间的联系），而仅仅是大力出奇迹，网络被迫记忆了每一张图片及其正确输出。</li>
+<li>loss之间：错误的loss分量可能不影响其他正确loss分量的下降<br>  上面的对比中，更换geomloss之前的四次训练，环境光、光源强度等loss分量的下降均与更换更换geomloss之后的四次训练吻合。不同的唯有光分布对应的dist_l2loss和dist_l2loss两项。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SOME IDEAS</title>
+    <url>/2023/03/06/SOME-IDEAS/</url>
+    <content><![CDATA[<ol>
+<li>emlight:目前intensity一项难以收敛，可能是loss设计的缺少内在逻辑。所以怎样设计能让它更好的收敛呢？</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>ideas</tag>
       </tags>
   </entry>
 </search>

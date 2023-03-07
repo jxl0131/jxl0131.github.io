@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="假如从一开始就是错误的...">
+<meta property="og:type" content="article">
+<meta property="og:title" content="错误的loss项可能对训练带来什么影响？">
+<meta property="og:url" content="http://example.com/2023/02/28/%E9%94%99%E8%AF%AF%E7%9A%84loss%E9%A1%B9%E5%8F%AF%E8%83%BD%E5%AF%B9%E8%AE%AD%E7%BB%83%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%EF%BC%9F/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="假如从一开始就是错误的...">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%90%8E.png">
+<meta property="og:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-100.png">
+<meta property="og:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-1000.png">
+<meta property="og:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-2500.png">
+<meta property="og:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-10000.png">
+<meta property="article:published_time" content="2023-02-28T17:49:48.000Z">
+<meta property="article:modified_time" content="2023-03-01T03:01:29.746Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="神经网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%90%8E.png">
+
+<link rel="canonical" href="http://example.com/2023/02/28/%E9%94%99%E8%AF%AF%E7%9A%84loss%E9%A1%B9%E5%8F%AF%E8%83%BD%E5%AF%B9%E8%AE%AD%E7%BB%83%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%EF%BC%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>错误的loss项可能对训练带来什么影响？ | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/28/%E9%94%99%E8%AF%AF%E7%9A%84loss%E9%A1%B9%E5%8F%AF%E8%83%BD%E5%AF%B9%E8%AE%AD%E7%BB%83%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          错误的loss项可能对训练带来什么影响？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-03-01 01:49:48 / 修改时间：11:01:29" itemprop="dateCreated datePublished" datetime="2023-03-01T01:49:48+08:00">2023-03-01</time>
+            </span>
+
+          
+            <div class="post-description">假如从一开始就是错误的...</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我训练emlight很长时间了，在小规模数据集上尚能收敛，数据集规模一上升到18000就失控。由于现在很多论文里公布的方法本就无法复现出作者描述的效果，再加上对神经网络弊端的一些了解，emlight在大规模数据集上难以收敛的问题，我也就没有多加怀疑。</p>
+<p>结果上周发现emlight作者上传了一个叫geomloss的包，而这个包本来在python的pip库里有官方版本。由于我是在作者上传之前就fork并下载源代码的，后来也没多想作者这个动作，我一直用的是都是官方版本。上周用相同的输入测试作者上传的geomloss和官方的，结果发现输出不一样。这意味着作者自己无声无息地改写了geomloss包。于是我将官方的geomloss删除，换成了他的，重新开始训练。</p>
+<p>emlight的loss设计分为三部分：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loss = dist_emloss + dist_l2loss + intensity_loss + rgb_loss + ambient_loss</span><br></pre></td></tr></table></figure>
+<p>dist_emloss + dist_l2loss是光参数里的“光分布”，它表示球面空间上光源的位置和相对亮度。intensity_loss + rgb_loss是光源的整体强度和颜色。ambient_loss是环境光。上述geomloss包是用来计算dist_emloss的。</p>
+<h1 id="更换之后的训练结果"><a href="#更换之后的训练结果" class="headerlink" title="更换之后的训练结果"></a>更换之后的训练结果</h1><p>仍然采用数据集“由小到大”的策略循序渐进地训练emlight，分别在100、1000、2500、10000 上训练emlight，看训练的loss曲线：</p>
+<p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%90%8E.png" alt="更换之后"></p>
+<p>图片左侧标明了四条曲线是在哪种规模数据集上训练的。可以看出，更换了geomloss为作者版本之后，在四种规模数据集上训练的loss基本是重合的，随着数据集规模的增大loss曲线有整体上移的趋势，但上移不大。</p>
+<h1 id="与更换前的训练记录对比"><a href="#与更换前的训练记录对比" class="headerlink" title="与更换前的训练记录对比"></a>与更换前的训练记录对比</h1><p>在更换geomloss之前，我也在这几种规模数据集上训练过。可以将之前的记录显示到这六张loss子图上，对比观察出一些结论。下面依次将之前的训练结果按照数据集由小到大的顺序展示在上图中：</p>
+<h2 id="规模-x3D-100-灰色曲线"><a href="#规模-x3D-100-灰色曲线" class="headerlink" title="规模&#x3D;100(灰色曲线)"></a>规模&#x3D;100(灰色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-100.png" alt="100"><br>规模为100的loss与更换geomloss之后的四次训练基本重合。</p>
+<h2 id="规模-x3D-1000-橙色曲线"><a href="#规模-x3D-1000-橙色曲线" class="headerlink" title="规模&#x3D;1000(橙色曲线)"></a>规模&#x3D;1000(橙色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-1000.png" alt="1000"></p>
+<p>total_loss开始整体上移，其原因应当是dist_l2loss分量的整体上移。dist_l2loss虽然不是geomloss直接计算的，但是倘若geomloss所计算的dist_emloss不对光分布的正确预测起作用或起到反作用，那么dist_emloss下降一定会引起dist_l2loss无法下降。</p>
+<h2 id="规模-x3D-2500-蓝色曲线"><a href="#规模-x3D-2500-蓝色曲线" class="headerlink" title="规模&#x3D;2500(蓝色曲线)"></a>规模&#x3D;2500(蓝色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-2500.png" alt="2500"></p>
+<p>total_loss与四条曲线的差别更大了。此时dist_l2loss和dist_l2loss同时上移，它们也是total_loss上移的主要原因。此时光分布难以被正确预测，而环境光、光源总强度却能预测得与四条曲线一致。</p>
+<h2 id="规模-x3D-10000-红色曲线"><a href="#规模-x3D-10000-红色曲线" class="headerlink" title="规模&#x3D;10000(红色曲线)"></a>规模&#x3D;10000(红色曲线)</h2><p><img src="/../images/emlight-%E6%9B%B4%E6%8D%A2geomloss%E4%B9%8B%E5%89%8D-10000.png" alt="10000"><br>10000的loss情况和2500很像，都是dist_l2loss和dist_l2loss的上移导致total_loss上移。10000的上移甚至比2500好一点，这个我暂时解释不了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总而言之，本文通过实验观察了当总loss中有一个分量的设计不合理、计算错误时会对训练造成的影响。（当网络采用的是emlight所用的densenet时，）暂且总结出以下几点：</p>
+<ul>
+<li>最终：错误的loss项会误导网络，导致训练不出想要的结果<br>  loss是用来指挥神经网络梯度下降的，给神经网络设一个错误的loss就好比给路人指了错误的方向，结果可能是走了很多弯路，甚至南辕北辙。</li>
+<li>短期看：loss下降不代表loss的设计有意义<br>  total_loss是由很多个loss分量组成的，其中一个分量无意义，但其他分量有意义，此时神经网络仍然可能在有意义的loss分量的指挥下一直梯度下降。在规模为100的数据集上训练，loss与更换geomloss之后的四次训练基本重合，从loss的下降过程来看训练一切顺利。这说明在网络够深而数据集够小的情况下，哪怕你的loss设计得没有意义，loss也会下降。这种下降并不代表网络在loss指引下学到了“规律”（规律指的是输入和输出之间的联系），而仅仅是大力出奇迹，网络被迫记忆了每一张图片及其正确输出。</li>
+<li>loss之间：错误的loss分量可能不影响其他正确loss分量的下降<br>  上面的对比中，更换geomloss之前的四次训练，环境光、光源强度等loss分量的下降均与更换更换geomloss之后的四次训练吻合。不同的唯有光分布对应的dist_l2loss和dist_l2loss两项。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 神经网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/27/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96tensorboard/" rel="prev" title="数据可视化tensorboard">
+      <i class="fa fa-chevron-left"></i> 数据可视化tensorboard
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/06/SOME-IDEAS/" rel="next" title="SOME IDEAS">
+      SOME IDEAS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2%E4%B9%8B%E5%90%8E%E7%9A%84%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C"><span class="nav-number">1.</span> <span class="nav-text">更换之后的训练结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8E%E6%9B%B4%E6%8D%A2%E5%89%8D%E7%9A%84%E8%AE%AD%E7%BB%83%E8%AE%B0%E5%BD%95%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">与更换前的训练记录对比</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E6%A8%A1-x3D-100-%E7%81%B0%E8%89%B2%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.1.</span> <span class="nav-text">规模&#x3D;100(灰色曲线)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E6%A8%A1-x3D-1000-%E6%A9%99%E8%89%B2%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.2.</span> <span class="nav-text">规模&#x3D;1000(橙色曲线)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E6%A8%A1-x3D-2500-%E8%93%9D%E8%89%B2%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.3.</span> <span class="nav-text">规模&#x3D;2500(蓝色曲线)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E6%A8%A1-x3D-10000-%E7%BA%A2%E8%89%B2%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.4.</span> <span class="nav-text">规模&#x3D;10000(红色曲线)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

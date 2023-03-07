@@ -31,7 +31,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/990517-fig-4-source-large.gif">
 <meta property="article:published_time" content="2023-02-20T18:30:12.000Z">
-<meta property="article:modified_time" content="2023-02-21T03:29:30.809Z">
+<meta property="article:modified_time" content="2023-02-21T03:30:45.624Z">
 <meta property="article:author" content="Ji Xinlong">
 <meta property="article:tag" content="神经网络">
 <meta name="twitter:card" content="summary">
@@ -218,7 +218,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-02-21 02:30:12 / 修改时间：11:29:30" itemprop="dateCreated datePublished" datetime="2023-02-21T02:30:12+08:00">2023-02-21</time>
+              <time title="创建时间：2023-02-21 02:30:12 / 修改时间：11:30:45" itemprop="dateCreated datePublished" datetime="2023-02-21T02:30:12+08:00">2023-02-21</time>
             </span>
 
           
@@ -233,7 +233,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以有实际用起来，或许一直都不能用。”</p>
+        <p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以实际用起来，或许一直都不能用。”</p>
 <h1 id="仿生学"><a href="#仿生学" class="headerlink" title="仿生学"></a>仿生学</h1><p>但是那本书里说到神经网络是模仿大脑里相互连接的神经元的。信号在神经元之间传导，人因此能够识别万物，能够判断是非，能有情感。所以我本科早期曾对这种计算机科学与脑科学、心理学交叉的研究课题感兴趣。当时年轻气盛，一开始就瞄准AI的终极目标AGI（强人工智能）。我现在仍然觉得用机器仿制人类智能和情感这项伟大的事业，倘若缺失能在符号主义深邃的理论里开拓的人，那么最先的突破口应该是人工神经网络。直接从仿生学上模仿人类大脑的结构，够唯物主义，够简单粗暴。多说一句，目前在电脑里深度学习框架上跑的神经网络，实际上还是依靠硅基计算机的内存和速度，这个速度和人类大脑中信号传导速度（化学信号）比起来可能还是不够快。所以我觉得本科时候一位造预警机的院士讲得很对：神经网络最终应该用量子或者其他什么更微观的物质来构建，才能高速运转，性能接近人类大脑。</p>
 <p>所以你看，从仿生学上看，神经网络不仅有依据、有人信，能力还远不止人脸识别、目标检测这种弱AI应用。人家一开始瞄准的是AGI伟大事业。</p>
 <h1 id="统计模式识别"><a href="#统计模式识别" class="headerlink" title="统计模式识别"></a>统计模式识别</h1><p>但是，目前神经网络遍地开花的领域，主要还是各种人脸识别一类的应用。那么在这些更接地气的研究中，神经网络有什么更接地气的解释呢？<br>我觉得至少还可以从统计模式识别和数学建模的角度来看。之所以用两个课程名，是因为这两个课程我上过，很多人肯定也上过，能开课的内容一般都是公认的具有科学性的内容。统计模式识别讲的是如何运用各种技巧来清洗数据、获取特征、处理特征、完成识别任务。其核心是特征。所谓的特征，就是我想识别一个物体，这个物体应该有什么与众不同的地方，能让我将其与其他万事万物相区别。譬如做人脸识别，脸部应当有眉毛、鼻子、眼睛、嘴唇，且这些线条的相对位置关系是固定的。去读（神经网络之前的）经典统计模式识别论文中的做人脸识别的论文(Rapid object detection using a boosted cascade of simple features)，你会发现他的核心还是用下面这样的模板来匹配脸部的特征：<br><img src="/../images/990517-fig-4-source-large.gif" alt="脸部特征模板"><br>而神经网络，例如CNN，其前部的层一般都是用于提取特征的。提取特征用的是各种形状的卷积核，这些卷积核就先相当于上图里的各种模板。在阅读论文的时候，常常看到直接把别人在大规模图片数据集上训练好“预训练模型”拿过来作为网络的全部或前部，在别人的基础上接着训练的做法。这就是因为训练好的网络通常具有抽取图像特征的能力，这种能力可以直接被新的网络借用。</p>
@@ -259,7 +259,10 @@
     <a href="/2023/02/19/%E5%9F%BA%E4%BA%8Eipv6-ddns%E7%9A%84PC%E5%BB%BA%E7%AB%99%E6%96%B9%E5%BC%8F/" rel="prev" title="基于ipv6-ddns的PC建站方式">
       <i class="fa fa-chevron-left"></i> 基于ipv6-ddns的PC建站方式
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/27/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96tensorboard/" rel="next" title="数据可视化tensorboard">
+      数据可视化tensorboard <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -334,14 +337,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
