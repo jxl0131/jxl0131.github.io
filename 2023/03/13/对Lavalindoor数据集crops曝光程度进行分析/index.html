@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对Lavalindoor数据集crops曝光程度进行分析">
+<meta property="og:url" content="http://example.com/2023/03/13/%E5%AF%B9Lavalindoor%E6%95%B0%E6%8D%AE%E9%9B%86crops%E6%9B%9D%E5%85%89%E7%A8%8B%E5%BA%A6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="数据分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-13T04:59:36.000Z">
+<meta property="article:modified_time" content="2023-03-14T02:24:45.703Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/03/13/%E5%AF%B9Lavalindoor%E6%95%B0%E6%8D%AE%E9%9B%86crops%E6%9B%9D%E5%85%89%E7%A8%8B%E5%BA%A6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>对Lavalindoor数据集crops曝光程度进行分析 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/13/%E5%AF%B9Lavalindoor%E6%95%B0%E6%8D%AE%E9%9B%86crops%E6%9B%9D%E5%85%89%E7%A8%8B%E5%BA%A6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          对Lavalindoor数据集crops曝光程度进行分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-13 12:59:36" itemprop="dateCreated datePublished" datetime="2023-03-13T12:59:36+08:00">2023-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-14 10:24:45" itemprop="dateModified" datetime="2023-03-14T10:24:45+08:00">2023-03-14</time>
+              </span>
+
+          
+            <div class="post-description">数据分析</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在分析emlight的intensity项loss为何不下降的过程中，我发现有一张全黑的crop，经过tonemapping后仍然为全黑的，但是重新曝光系数ahpla竟然能达到10的6次方数量级。</p>
+<p>我觉得这是由于不合理的tonemapping函数设计导致的。参照另一个人的tonemapping函数设计方法，我在检测到全黑crop时直接将re-expose系数设置为1。</p>
+<p>修改后函数如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class TonemapHDR(object):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">        Tonemap HDR image globally. First, we find alpha that maps the (max(numpy_img) * percentile) to max_mapping.</span><br><span class="line">        Then, we calculate I_out = alpha * I_in ^ (1/gamma)</span><br><span class="line">        input : nd.array batch of images : [H, W, C]</span><br><span class="line">        output : nd.array batch of images : [H, W, C]</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, gamma=2.4, percentile=50, max_mapping=0.5):</span><br><span class="line">        self.gamma = gamma</span><br><span class="line">        self.percentile = percentile</span><br><span class="line">        self.max_mapping = max_mapping  # the value to which alpha will map the (max(numpy_img) * percentile) to</span><br><span class="line"></span><br><span class="line">    def __call__(self, numpy_img, clip=True, alpha=None, gamma=True):</span><br><span class="line">        if gamma:</span><br><span class="line">            power_numpy_img = np.power(numpy_img, 1 / self.gamma)</span><br><span class="line">        else:</span><br><span class="line">            power_numpy_img = numpy_img</span><br><span class="line">        non_zero = power_numpy_img &gt; 0</span><br><span class="line">        if non_zero.any():</span><br><span class="line">            r_percentile = np.percentile(power_numpy_img[non_zero], self.percentile)</span><br><span class="line">        else:</span><br><span class="line">            # r_percentile = np.percentile(power_numpy_img, self.percentile)</span><br><span class="line">            # https://github.com/weberhen/Illumination-Estimation-1/blob/9bd3bc4533960afd72b3496ff8601f03b6e799f6/gen_hdr_crops.py#L8</span><br><span class="line">            # 全零输入，直接不变动</span><br><span class="line">            alpha = 1</span><br><span class="line">            </span><br><span class="line">        if alpha is None:</span><br><span class="line">            alpha = self.max_mapping / (r_percentile + 1e-10)</span><br><span class="line">        tonemapped_img = np.multiply(alpha, power_numpy_img)</span><br><span class="line"></span><br><span class="line">        if clip:</span><br><span class="line">            tonemapped_img = np.clip(tonemapped_img, 0, 1)</span><br><span class="line"></span><br><span class="line">        return tonemapped_img.astype(&#x27;float32&#x27;), alpha</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这种修改应该能禁止全黑crop干扰emlight的学习了。为了看看我这次改动ban掉了多少坏crops，我专门写了点代码遍历了一遍数据集，搜寻这种全黑crop。结果只发现了之前发现的那一张。所以说，就一张坏图片，对emlight的影响应该没那么大？</p>
+<p>接着我想看看有多少crops的ahpla是大于100或小于0.01的。这种图我觉得算是太亮或者太暗的图。结果一张都没有。数据集还是不错的。</p>
+<p>然后缩小范围，用20个线程分布式地检查整个数据集的不同区间，搜一下有多少crops的ahpla是大于50或小于0.02的。下面列出了输出结果，先是被查出的图片名称及其ahpla系数，接着是20个线程各自查出多少张（可以看出“坏数据”在整个数据集上的分布），最后还统计了总的张数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br></pre></td><td class="code"><pre><span class="line">AG8A0159-others-320-1    59.52106566873854</span><br><span class="line">AG8A3897-others-120-1    54.21067904036069</span><br><span class="line">AG8A0251-others-240-2    63.29404408421544</span><br><span class="line">9C4A8715-others-80-1    54.52313750036537</span><br><span class="line">AG8A9361-others-320-1    69.897020251167</span><br><span class="line">9C4A8673-others-240-2    50.71437620814117</span><br><span class="line">AG8A0781-others-160-2    53.904227630950764</span><br><span class="line">AG8A0907-others-40-1    55.95169051131642</span><br><span class="line">AG8A9487-others-40-2    60.097283122808314</span><br><span class="line">AG8A9746-others-80-1    61.94711944112786</span><br><span class="line">9C4A9751-others-200-1    56.29987194255647</span><br><span class="line">AG8A8113-others-120-1    56.775796094339576</span><br><span class="line">9C4A6681-others-120-1    58.55627943106775</span><br><span class="line">AG8A7177-others-280-1    54.52313750036537</span><br><span class="line">AG8A9109-others-00-1    62.947978191196626</span><br><span class="line">9C4A8967-others-120-1    63.4695208240741</span><br><span class="line">9C4A1187-others-280-1    53.01900870581253</span><br><span class="line">9C4A9709-others-200-2    55.83724905204878</span><br><span class="line">AG8A4366-others-280-1    52.92366673902601</span><br><span class="line">9C4A2158-others-40-1    64.3724313136348</span><br><span class="line">9C4A8624-others-80-1    62.440731624923764</span><br><span class="line">AG8A7681-others-00-1    78.8903822032828</span><br><span class="line">9C4A2158-others-200-2    68.25202044003838</span><br><span class="line">AG8A9872-others-160-1    60.392608722473895</span><br><span class="line">9C4A8715-others-00-1    63.6466598767675</span><br><span class="line">AG8A9704-others-320-2    55.38729787186675</span><br><span class="line">AG8A9361-others-200-1    71.68512492472499</span><br><span class="line">AG8A0293-others-280-2    62.274710888086645</span><br><span class="line">AG8A0781-others-120-2    50.149691875628925</span><br><span class="line">AG8A8197-others-280-1    58.15874175266221</span><br><span class="line">AG8A1806-others-240-1    59.52106566873854</span><br><span class="line">9C4A9373-others-00-1    51.47326169317001</span><br><span class="line">AG8A9746-others-00-1    71.68512492472499</span><br><span class="line">AG8A8941-others-40-1    56.18299192134972</span><br><span class="line">9C4A8967-others-160-1    67.3690127490823</span><br><span class="line">AG8A9529-others-320-1    67.58612249688619</span><br><span class="line">9C4A8925-others-200-1    71.68512492472499</span><br><span class="line">9C4A2158-others-80-2    65.51595327495049</span><br><span class="line">AG8A0083-others-160-1    51.046937918071244</span><br><span class="line">AG8A0907-others-00-1    54.73488042832818</span><br><span class="line">9C4A8967-others-40-1    58.42274478888599</span><br><span class="line">AG8A9788-others-00-2    66.3179101202389</span><br><span class="line">9C4A9709-others-00-1    59.379920759525675</span><br><span class="line">9C4A2116-others-240-1    82.47374789984309</span><br><span class="line">AG8A9788-others-160-1    64.93563386069304</span><br><span class="line">AG8A2937-others-240-1    67.80562950082691</span><br><span class="line">9C4A2116-others-320-1    52.82890618336761</span><br><span class="line">AG8A9184-others-00-2    50.87973512453133</span><br><span class="line">AG8A9361-others-240-1    76.11116288715907</span><br><span class="line">AG8A8983-others-200-2    64.74604133176966</span><br><span class="line">AG8A7681-others-320-1    76.11116288715907</span><br><span class="line">9C4A8540-others-280-1    56.89693094853549</span><br><span class="line">9C4A9009-others-240-1    59.52106566873854</span><br><span class="line">AG8A5608-others-40-1    53.01900870581253</span><br><span class="line">AG8A7681-others-280-1    73.34870621789909</span><br><span class="line">AG8A7723-others-240-1    62.11018141933448</span><br><span class="line">9C4A8239-others-80-1    58.55627943106775</span><br><span class="line">AG8A9151-others-320-1    50.38907056264851</span><br><span class="line">AG8A0041-others-200-1    62.274710888086645</span><br><span class="line">AG8A8113-others-160-1    59.52106566873854</span><br><span class="line">AG8A9830-others-160-1    52.091011626246505</span><br><span class="line">9C4A8582-others-320-2    70.3924047660264</span><br><span class="line">AG8A4366-others-120-2    55.61072681522241</span><br><span class="line">AG8A9788-others-120-1    69.17565881787097</span><br><span class="line">AG8A9788-others-40-1    62.11018141933448</span><br><span class="line">9C4A8715-others-40-1    56.41758314133693</span><br><span class="line">9C4A9373-others-160-1    71.15840799045587</span><br><span class="line">9C4A2158-others-120-2    59.95145395042885</span><br><span class="line">9C4A9709-others-320-1    70.3924047660264</span><br><span class="line">AG8A9445-others-240-1    55.27672199457408</span><br><span class="line">AG8A0251-others-320-2    57.26567409864556</span><br><span class="line">9C4A8715-others-320-2    73.63896886593696</span><br><span class="line">AG8A9746-others-280-1    53.01900870581253</span><br><span class="line">AG8A9746-others-320-1    60.84499975427419</span><br><span class="line">AG8A1806-others-200-1    59.23990777528832</span><br><span class="line">9C4A9709-others-80-1    50.632383277580864</span><br><span class="line">AG8A9487-others-320-1    68.25202044003838</span><br><span class="line">AG8A9235-others-320-1    56.18299192134972</span><br><span class="line">9C4A6723-others-280-1    53.904227630950764</span><br><span class="line">AG8A9529-others-280-1    66.52367512570203</span><br><span class="line">AG8A9529-others-00-1    69.65373181055384</span><br><span class="line">AG8A0151-others-240-2    52.82890618336761</span><br><span class="line">AG8A9445-others-00-1    61.94711944112786</span><br><span class="line">9C4A8925-others-40-1    68.94076571897297</span><br><span class="line">AG8A7723-others-200-1    56.775796094339576</span><br><span class="line">AG8A9109-others-280-2    50.070755389724226</span><br><span class="line">9C4A8925-others-240-1    76.44050481264026</span><br><span class="line">AG8A9746-others-240-1    68.25202044003838</span><br><span class="line">AG8A1932-others-280-1    58.42274478888599</span><br><span class="line">AG8A7135-others-280-1    55.72359288919754</span><br><span class="line">9C4A8365-others-80-2    57.64268123863262</span><br><span class="line">9C4A8582-others-200-1    62.11018141933448</span><br><span class="line">9C4A9261-others-280-1    62.60826782694604</span><br><span class="line">9C4A8155-others-320-1    51.73494991199591</span><br><span class="line">AG8A9487-others-00-1    51.64722164972049</span><br><span class="line">AG8A9487-others-160-1    58.42274478888599</span><br><span class="line">AG8A3897-others-280-2    52.64110142130879</span><br><span class="line">AG8A9361-others-160-1    59.379920759525675</span><br><span class="line">AG8A0251-others-280-1    69.17565881787097</span><br><span class="line">AG8A9529-others-200-1    66.73162920445048</span><br><span class="line">9C4A8239-others-40-2    61.15307361066433</span><br><span class="line">9C4A8967-others-240-1    59.806817141111736</span><br><span class="line">AG8A9746-others-200-1   9C4A9583-others-200-1  65.32055771938946</span><br><span class="line">   51.64722164972049</span><br><span class="line">AG8A2937-others-00-2 9C4A2158-others-240-1    76.44050481264026</span><br><span class="line">   50.22905621671314</span><br><span class="line">AG8A9025-others-00-1    56.29987194255647</span><br><span class="line">AG8A8983-others-120-1    62.274710888086645</span><br><span class="line">9C4A2116-others-200-2    70.14322385072398</span><br><span class="line">AG8A7051-others-80-1    57.516073643446866</span><br><span class="line">AG8A2937-others-280-1    62.947978191196626</span><br><span class="line">9C4A8624-others-160-2    65.91278500140373</span><br><span class="line">AG8A9487-others-240-1    66.11429340057413</span><br><span class="line">AG8A8941-others-00-2    52.82890618336761</span><br><span class="line">9C4A8925-others-160-2    65.32055771938946</span><br><span class="line">9C4A9583-others-240-2   9C4A8624-others-320-1    50.22905621671314</span><br><span class="line"> 54.10787130177366</span><br><span class="line">9C4A2116-others-280-1    73.63896886593696</span><br><span class="line">AG8A4366-others-240-1    73.63896886593696</span><br><span class="line">9C4A9373-others-40-1    54.73488042832818</span><br><span class="line">9C4A6216-others-320-2    60.392608722473895</span><br><span class="line">AG8A0041-others-160-1    62.77734412061457</span><br><span class="line">9C4A8582-others-00-1    72.7796584112398</span><br><span class="line">AG8A9330-others-280-2    58.42274478888599</span><br><span class="line">AG8A7681-others-240-1    55.72359288919754</span><br><span class="line">AG8A9361-others-00-1    63.8254961244078</span><br><span class="line">9C4A8925-others-120-1    77.45842713113146</span><br><span class="line">AG8A0083-others-120-1    51.046937918071244</span><br><span class="line">9C4A8582-others-280-2    69.65373181055384</span><br><span class="line">9C4A6216-others-240-1    55.057804196312304</span><br><span class="line">AG8A9830-others-40-2    67.80562950082691</span><br><span class="line">9C4A8967-others-320-2    65.12713003817497</span><br><span class="line">9C4A9583-others-280-2    54.949444191393724</span><br><span class="line">9C4A6216-others-00-1    50.38907056264851</span><br><span class="line">AG8A9529-others-120-1    60.24433048485841</span><br><span class="line">AG8A9830-others-80-1    65.91278500140373</span><br><span class="line">AG8A9235-others-240-1    59.52106566873854</span><br><span class="line">AG8A7681-others-40-1    66.3179101202389</span><br><span class="line">AG8A9361-others-280-1    75.46667986552272</span><br><span class="line">9C4A9261-others-00-1    61.78550158595973</span><br><span class="line">9C4A2116-others-80-2    51.55999342944569</span><br><span class="line">9C4A6174-others-200-2    61.30912004791065</span><br><span class="line">AG8A9872-others-40-1    68.70856157408781</span><br><span class="line">9C4A8365-others-120-1    55.057804196312304</span><br><span class="line">AG8A0159-others-200-1    50.632383277580864</span><br><span class="line">9C4A8967-others-80-1    60.097283122808314</span><br><span class="line">9C4A8925-others-80-1    62.11018141933448</span><br><span class="line">9C4A8673-others-40-1    63.6466598767675</span><br><span class="line">9C4A9835-others-280-1    55.057804196312304</span><br><span class="line">AG8A7261-others-280-2    68.47899946200108</span><br><span class="line">9C4A1203-others-00-1    55.61072681522241</span><br><span class="line">9C4A9877-others-00-1    57.018947149273814</span><br><span class="line">9C4A7619-others-00-1    61.46652084417405</span><br><span class="line">AG8A0697-others-320-2    54.21067904036069</span><br><span class="line">9C4A8239-others-320-1    68.02757980392502</span><br><span class="line">AG8A3897-others-40-1    58.96321322763749</span><br><span class="line">9C4A8582-others-80-1    65.51595327495049</span><br><span class="line">9C4A9261-others-320-2    68.70856157408781</span><br><span class="line">9C4A6723-others-120-1    57.516073643446866</span><br><span class="line">AG8A9193-others-200-1    56.41758314133693</span><br><span class="line">AG8A9788-others-200-1    59.23990777528832</span><br><span class="line">9C4A8715-others-200-1    66.3179101202389</span><br><span class="line">9C4A8715-others-280-1    73.06229877077423</span><br><span class="line">AG8A9788-others-80-1    65.12713003817497</span><br><span class="line">AG8A0159-others-280-1    68.25202044003838</span><br><span class="line">9C4A8673-others-80-1    64.00604986249729</span><br><span class="line">AG8A9872-others-80-1    71.15840799045587</span><br><span class="line">9C4A8582-others-240-1    69.65373181055384</span><br><span class="line">9C4A2158-others-280-1    73.63896886593696</span><br><span class="line">AG8A8899-others-200-1    51.91194607304803</span><br><span class="line">AG8A9487-others-80-2    57.770232868617896</span><br><span class="line">AG8A9330-others-00-1    65.32055771938946</span><br><span class="line">AG8A2811-others-200-1    61.30912004791065</span><br><span class="line">AG8A8603-others-240-1    53.40629634227548</span><br><span class="line">AG8A9529-others-40-1    50.96310262486813</span><br><span class="line">9C4A8239-others-00-1    73.63896886593696</span><br><span class="line">AG8A9445-others-280-2    66.52367512570203</span><br><span class="line">AG8A9704-others-200-2    58.42274478888599</span><br><span class="line">AG8A9529-others-240-1    67.58612249688619</span><br><span class="line">AG8A9704-others-00-1    66.52367512570203</span><br><span class="line">AG8A9109-others-320-1    65.51595327495049</span><br><span class="line">AG8A9193-others-240-1    51.82319181513371</span><br><span class="line">AG8A9487-others-200-1    67.58612249688619</span><br><span class="line">AG8A3897-others-80-1    62.947978191196626</span><br><span class="line">9C4A8239-others-120-1    53.703169352270685</span><br><span class="line">AG8A2937-others-320-1    77.45842713113146</span><br><span class="line">AG8A9487-others-280-1    64.18834940534127</span><br><span class="line">AG8A4366-others-200-1    74.53378341049564</span><br><span class="line">AG8A9361-others-40-2    56.89693094853549</span><br><span class="line">9C4A2074-others-280-1    56.29987194255647</span><br><span class="line">AG8A1806-others-280-1 AG8A9830-others-00-1    51.21602499759086</span><br><span class="line">   55.72359288919754</span><br><span class="line">AG8A9025-others-80-1    50.308846581013185</span><br><span class="line">AG8A7051-others-40-1    50.070755389724226</span><br><span class="line">9C4A8540-others-240-2    57.64268123863262</span><br><span class="line">AG8A9582-others-40-1    53.30857310427664</span><br><span class="line">AG8A9830-others-120-1    64.55831734135951</span><br><span class="line">AG8A7051-others-120-1    57.770232868617896</span><br><span class="line">9C4A8673-others-320-1    52.64110142130879</span><br><span class="line">AG8A0697-others-120-2    53.40629634227548</span><br><span class="line">AG8A8983-others-240-1    52.73471745690875</span><br><span class="line">AG8A9529-others-160-2    57.770232868617896</span><br><span class="line">9C4A8715-others-240-1    76.11116288715907</span><br><span class="line">9C4A8624-others-200-1    65.51595327495049</span><br><span class="line">AG8A8983-others-160-1    61.46652084417405</span><br><span class="line">9C4A8925-others-280-1    65.12713003817497</span><br><span class="line">AG8A7135-others-320-1    51.046937918071244</span><br><span class="line">9C4A6723-others-80-1    64.00604986249729</span><br><span class="line">AG8A9788-others-320-1    63.8254961244078</span><br><span class="line">9C4A9709-others-280-1    66.11429340057413</span><br><span class="line">9C4A8925-others-00-1    79.26268618502056</span><br><span class="line">9C4A9835-others-120-2    62.947978191196626</span><br><span class="line">AG8A9872-others-120-1    59.23990777528832</span><br><span class="line">9C4A8673-others-00-1    61.94711944112786</span><br><span class="line">AG8A9151-others-120-1    60.097283122808314</span><br><span class="line">AG8A9025-others-120-1    62.77734412061457</span><br><span class="line">9C4A8673-others-120-1    61.30912004791065</span><br><span class="line">9C4A9709-others-120-1    56.29987194255647</span><br><span class="line">AG8A0251-others-00-1    57.26567409864556</span><br><span class="line">9C4A8624-others-120-1    64.74604133176966</span><br><span class="line">9C4A8967-others-280-1    60.84499975427419</span><br><span class="line">9C4A9625-others-320-1    61.6253119608176</span><br><span class="line">AG8A0655-others-160-1    50.55083591566897</span><br><span class="line">AG8A0697-others-00-1    51.13124427466885</span><br><span class="line">9C4A9373-others-200-1    70.6446173180134</span><br><span class="line">AG8A7681-others-120-2    61.6253119608176</span><br><span class="line">AG8A9372-others-200-1    56.775796094339576</span><br><span class="line">9C4A8582-others-40-1    70.6446173180134</span><br><span class="line">AG8A1932-others-200-2    50.070755389724226</span><br><span class="line">9C4A7787-others-00-1    54.628659258679996</span><br><span class="line">AG8A4366-others-160-1    61.6253119608176</span><br><span class="line">9C4A2158-others-320-1    56.18299192134972</span><br><span class="line">AG8A9746-others-40-1    69.65373181055384</span><br><span class="line">9C4A6723-others-40-1    52.272202347256666</span><br><span class="line">AG8A9704-others-280-1    61.94711944112786</span><br><span class="line">AG8A9704-others-240-1   9C4A9835-others-160-1     53.114931278458094</span><br><span class="line">63.6466598767675</span><br><span class="line">MyThread17 :11</span><br><span class="line">MyThread12 :15AG8A9445-others-320-2</span><br><span class="line">    63.120202854156545</span><br><span class="line">AG8A9330-others-320-1    71.95351091236348</span><br><span class="line">MyThread5 :13</span><br><span class="line">MyThread0 :6</span><br><span class="line">MyThread6 :12</span><br><span class="line">MyThread10 :6</span><br><span class="line">MyThread7AG8A1932-others-240-1    66.94180564168063 :17</span><br><span class="line"></span><br><span class="line">MyThread13 :13</span><br><span class="line">MyThread18 :9</span><br><span class="line">MyThread1 :11</span><br><span class="line">MyThread3 :13</span><br><span class="line">9C4A8673-others-280-2 AG8A0293-others-240-1    61.94711944112786</span><br><span class="line">   57.64268123863262</span><br><span class="line">MyThread11 :10</span><br><span class="line">MyThread15 :11</span><br><span class="line">MyThread16 :7</span><br><span class="line">MyThread4 :20</span><br><span class="line">MyThread8 :14</span><br><span class="line">MyThread2 :15</span><br><span class="line">MyThread19 :11</span><br><span class="line">MyThread9 :13</span><br><span class="line">MyThread14 :15</span><br><span class="line">(emlight) jixinlong@ubun:~/Illumination-Estimation-1/RegressionNetwork/representation$ ls tmp|wc -l</span><br><span class="line">191</span><br></pre></td></tr></table></figure>
+
+<p>有191张，且绝大部分是太暗的，需要用50~70的系数重曝光。坏数据在数据集上的分布基本均匀。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/07/%E5%88%9D%E7%BA%A7%E9%85%BF%E9%80%A0%E5%B7%A5%E8%89%BA/" rel="prev" title="初级酿造工艺">
+      <i class="fa fa-chevron-left"></i> 初级酿造工艺
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/20/%E7%94%9F%E6%B4%BB%E8%A1%A8/" rel="next" title="生活表">
+      生活表 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

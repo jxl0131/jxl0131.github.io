@@ -13,45 +13,6 @@
       </tags>
   </entry>
   <entry>
-    <title>周报： EMLight改为SHLight</title>
-    <url>/2023/02/09/EMLight%E6%94%B9%E4%B8%BASHLight/</url>
-    <content><![CDATA[<h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
-<ol>
-<li>尝试把EMLight从SG模型改成SH模型，训练网络从crop中回归出SH系数。</li>
-</ol>
-<h1 id="本周实际完成工作总结"><a href="#本周实际完成工作总结" class="headerlink" title="本周实际完成工作总结"></a>本周实际完成工作总结</h1><!-- 逐条概述本周实际开展的主要工作 -->
-
-<p>按照以下步骤完成：</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> LavalinDoor数据集预处理代码：求hdr全景贴图的SH系数</li>
-<li><input checked="" disabled="" type="checkbox"> 改写EMLight的data.py、Densenet.py、train.py，分别实现模型加载sh系数、模型预测参数调整、SHLight模型训练。</li>
-<li><input checked="" disabled="" type="checkbox"> 初次训练，设定epoch为2000次。数据集规模为800张图片。</li>
-</ul>
-<h1 id="本周实际完成工作详述"><a href="#本周实际完成工作详述" class="headerlink" title="本周实际完成工作详述"></a>本周实际完成工作详述</h1><!-- 根据上述工作概述，逐条详细描述算法设计、实验情况等。可将实验图表及描述作为附件上传 -->
-
-<h2 id="SH细究"><a href="#SH细究" class="headerlink" title="SH细究"></a>SH细究</h2><p>上周的工作是学会使用pyshtools包，从全景图中求球谐系数并用较少的低阶系数复原图像。实验结果已经挂在我的这篇<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/#SH%E5%88%9D%E6%8E%A2">博客</a>上“SH初探”部分。从结果看，复原效果符合预期。</p>
-<p>但是pyshtools包及其类似工具在做球谐变换的时候提供了很多参数，这些我之前没有用到。例如球谐基底的不同normalization形式，以及Condon-Shortley phase是否在球谐基底中启用，这些都表明SH是一种方法，但是SH的基底可以有多种形式。</p>
-<p>后来我联系到论文V. Gkitsas, N. Zioulis, F. Alvarez, D. Zarpalas, and P. Daras, “Deep Lighting Environment Map Estimation from Spherical Panoramas,” May 2020, doi: 10.48550&#x2F;arXiv.2005.08000.的作者，在他指引下找到他们见刊论文使用的SH代码。通过阅读代码和做实验，我确认了他们在做球谐光照时使用的normalization方式和Condon-Shortley phase，与他们保持一致。<br>这部分的详细过程也记录在<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/#%E7%90%83%E8%B0%90%E5%9F%BA%E5%BA%95%E4%B8%8D%E6%AD%A2%E4%B8%80%E7%A7%8D">博客</a>中，写在“SH初探”部分后面的两部分。</p>
-<h2 id="EMLight改写"><a href="#EMLight改写" class="headerlink" title="EMLight改写"></a>EMLight改写</h2><p>使用上述代码处理了LAVAL数据集，得到19557张全景环境贴图的SH系数，和EMLight保存光参数的方式一样，保存为pkl文件。</p>
-<p>EMLight是开源的SG光照模型代码。我保持使用的模型框架不动，将模型输出从原先的光分布、光强、颜色等参数改为简单的27个SH系数，命名新的模型为SHLight。然后改写了data.py，使得模型能够调用data.py加载数据集到模型中。接着改写train.py，和EMLight一样训练的过程中将预测出的SH系数重建成环境贴图，使得训练过程中结果能够预览。loss等写入tensorboard，能够观察loss的变化趋势。</p>
-<h3 id="SHLight初次训练效果"><a href="#SHLight初次训练效果" class="headerlink" title="SHLight初次训练效果"></a>SHLight初次训练效果</h3><p>在800张图像上训练，训练2000轮，结束后在另外100张图像上测试模型对SH系数的预测效果。每张图的右上部分是GT效果，右下部分是根据预测出的SH系数可视化效果图。可以看到预测效果是不理想的。<br><img src="/../images/SHLight%E5%88%9D%E6%AC%A1%E8%AE%AD%E7%BB%83%E6%95%88%E6%9E%9C.png" alt="SHLight初次训练效果"></p>
-<p>但是该模型的loss又是一直收敛的：<br><img src="/../images/SHLight%E5%88%9D%E6%AC%A1%E8%AE%AD%E7%BB%83loss.png" alt="SHLight初次训练loss"></p>
-<p>分析原因可能是：</p>
-<ol>
-<li>训练次数还不够，没达到收敛</li>
-<li>loss函数设计的过于简单，SH不同阶的loss可能需要施加不同的权重，或者在添加别的类项的loss例如render loss。这个下周参考下别的论文。</li>
-</ol>
-<h2 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h2><p>无</p>
-<h1 id="下周工作计划"><a href="#下周工作计划" class="headerlink" title="下周工作计划"></a>下周工作计划</h1><!-- 针对本周工作存在的问题，概述下周的工作内容 -->
-<ol>
-<li>简单阅读下开源SH光照网络模型“shlight”的代码，比较他们的网络训练和我的SHLight的不同。</li>
-</ol>
-<h1 id="需要协调与支援"><a href="#需要协调与支援" class="headerlink" title="需要协调与支援"></a>需要协调与支援</h1><!-- 额外描述所需硬件、软件及人手 -->]]></content>
-      <tags>
-        <tag>周报</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mc服务器维护</title>
     <url>/2023/01/20/mc%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/</url>
     <content><![CDATA[<h2 id="开服"><a href="#开服" class="headerlink" title="开服"></a>开服</h2><p>在ubuntu上启动一个所有人可进的游戏java版mc服务器</p>
@@ -122,22 +83,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mc插件服插件体验</title>
-    <url>/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/</url>
-    <content><![CDATA[<p>mc的服务器可以分为原版、模组服、插件服、混合服。</p>
-<p>前三者都相对稳定，但是没法同时兼容模组和插件两种好玩的添加。模组服，例如forge和fabric两大派，是比较常见的，且前者比后者早出现。有很多很多往mc里添加了新内容的模组，开一个模组服意味着可玩的内容一下子无穷无尽了。但是服务器端用的模组必须复制一份到客户端，这是它的缺点。</p>
-<p>插件服是完全针对服务器的概念，客户端无需添加插件。所以插件原版服务器逻辑的渗透更深，让客户端什么都不需要添加就能享受新玩法。深度改写原版服务器逻辑并不容易，所以一方面很多插件都只是对原版做了些功能性的完善，例如白名单插件、登陆插件。另一方面，也有些插件增添了实质性的新内容。插件的另外一个好处是，最新版本的插件往往向下兼容旧版本的服务器，这意味着不需要像找模组那样寻找旧版的模组。</p>
-<p>混合服，例如mohist和catserver等，兼容了模组和插件，但是没法完全兼容两者，导致版本匹配的插件、模组没法使用在混合服中。</p>
-<p>近日尝试了一些有趣的插件，特作记录。</p>
-<h2 id="权限管理插件"><a href="#权限管理插件" class="headerlink" title="权限管理插件"></a>权限管理插件</h2><p>权限管理有很多插件可用。低版本的可以选essentials+groupmanager，高版本的例如1.16.5可以使用essentialx+luckporms。</p>
-<p>折腾一圈之后，终于在1.16.5上用起了essentialx+luckporms组合。luckporms有个前置插件叫vaults需要安装。</p>
-<p>原版通过玩家是否是管理员来粗略地控制权限。但是op拥有所有权利，非op却连传送都不行，这是让人玩不舒服的。加装了权限管理之后，可以把所有指令的使用权交给luckporms来管辖，腐竹拥有使用luckporms来管辖其他玩家能使用什么指令的权力。所有人都设为非op。</p>
-]]></content>
-      <tags>
-        <tag>mc</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mc魔改主菜单的ui和进度加载界面</title>
     <url>/2023/01/20/mc%E9%AD%94%E6%94%B9%E4%B8%BB%E8%8F%9C%E5%8D%95%E7%9A%84ui%E5%92%8C%E8%BF%9B%E5%BA%A6%E5%8A%A0%E8%BD%BD%E7%95%8C%E9%9D%A2/</url>
     <content><![CDATA[<h1 id="魔改主菜单的ui"><a href="#魔改主菜单的ui" class="headerlink" title="魔改主菜单的ui"></a>魔改主菜单的ui</h1><p>使用mod实现ui界面自定义:<br>fancymenu_forge_2.11.0_MC_1.12-1.12.2<br>两个前置也要装<br>konkrete_forge_1.3.3_MC_1.12-1.12.2<br>_MixinBootstrap-1.1.0</p>
@@ -187,6 +132,61 @@
       </tags>
   </entry>
   <entry>
+    <title>mc插件服插件体验</title>
+    <url>/2023/01/20/mc%E6%8F%92%E4%BB%B6%E6%9C%8D%E6%8F%92%E4%BB%B6%E4%BD%93%E9%AA%8C/</url>
+    <content><![CDATA[<p>mc的服务器可以分为原版、模组服、插件服、混合服。</p>
+<p>前三者都相对稳定，但是没法同时兼容模组和插件两种好玩的添加。模组服，例如forge和fabric两大派，是比较常见的，且前者比后者早出现。有很多很多往mc里添加了新内容的模组，开一个模组服意味着可玩的内容一下子无穷无尽了。但是服务器端用的模组必须复制一份到客户端，这是它的缺点。</p>
+<p>插件服是完全针对服务器的概念，客户端无需添加插件。所以插件原版服务器逻辑的渗透更深，让客户端什么都不需要添加就能享受新玩法。深度改写原版服务器逻辑并不容易，所以一方面很多插件都只是对原版做了些功能性的完善，例如白名单插件、登陆插件。另一方面，也有些插件增添了实质性的新内容。插件的另外一个好处是，最新版本的插件往往向下兼容旧版本的服务器，这意味着不需要像找模组那样寻找旧版的模组。</p>
+<p>混合服，例如mohist和catserver等，兼容了模组和插件，但是没法完全兼容两者，导致版本匹配的插件、模组没法使用在混合服中。</p>
+<p>近日尝试了一些有趣的插件，特作记录。</p>
+<h2 id="权限管理插件"><a href="#权限管理插件" class="headerlink" title="权限管理插件"></a>权限管理插件</h2><p>权限管理有很多插件可用。低版本的可以选essentials+groupmanager，高版本的例如1.16.5可以使用essentialx+luckporms。</p>
+<p>折腾一圈之后，终于在1.16.5上用起了essentialx+luckporms组合。luckporms有个前置插件叫vaults需要安装。</p>
+<p>原版通过玩家是否是管理员来粗略地控制权限。但是op拥有所有权利，非op却连传送都不行，这是让人玩不舒服的。加装了权限管理之后，可以把所有指令的使用权交给luckporms来管辖，腐竹拥有使用luckporms来管辖其他玩家能使用什么指令的权力。所有人都设为非op。</p>
+]]></content>
+      <tags>
+        <tag>mc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>周报： EMLight改为SHLight</title>
+    <url>/2023/02/09/EMLight%E6%94%B9%E4%B8%BASHLight/</url>
+    <content><![CDATA[<h1 id="本周拟定工作计划"><a href="#本周拟定工作计划" class="headerlink" title="本周拟定工作计划"></a>本周拟定工作计划</h1><!-- 填写上周周报中制定的本周工作计划 -->
+<ol>
+<li>尝试把EMLight从SG模型改成SH模型，训练网络从crop中回归出SH系数。</li>
+</ol>
+<h1 id="本周实际完成工作总结"><a href="#本周实际完成工作总结" class="headerlink" title="本周实际完成工作总结"></a>本周实际完成工作总结</h1><!-- 逐条概述本周实际开展的主要工作 -->
+
+<p>按照以下步骤完成：</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> LavalinDoor数据集预处理代码：求hdr全景贴图的SH系数</li>
+<li><input checked="" disabled="" type="checkbox"> 改写EMLight的data.py、Densenet.py、train.py，分别实现模型加载sh系数、模型预测参数调整、SHLight模型训练。</li>
+<li><input checked="" disabled="" type="checkbox"> 初次训练，设定epoch为2000次。数据集规模为800张图片。</li>
+</ul>
+<h1 id="本周实际完成工作详述"><a href="#本周实际完成工作详述" class="headerlink" title="本周实际完成工作详述"></a>本周实际完成工作详述</h1><!-- 根据上述工作概述，逐条详细描述算法设计、实验情况等。可将实验图表及描述作为附件上传 -->
+
+<h2 id="SH细究"><a href="#SH细究" class="headerlink" title="SH细究"></a>SH细究</h2><p>上周的工作是学会使用pyshtools包，从全景图中求球谐系数并用较少的低阶系数复原图像。实验结果已经挂在我的这篇<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/#SH%E5%88%9D%E6%8E%A2">博客</a>上“SH初探”部分。从结果看，复原效果符合预期。</p>
+<p>但是pyshtools包及其类似工具在做球谐变换的时候提供了很多参数，这些我之前没有用到。例如球谐基底的不同normalization形式，以及Condon-Shortley phase是否在球谐基底中启用，这些都表明SH是一种方法，但是SH的基底可以有多种形式。</p>
+<p>后来我联系到论文V. Gkitsas, N. Zioulis, F. Alvarez, D. Zarpalas, and P. Daras, “Deep Lighting Environment Map Estimation from Spherical Panoramas,” May 2020, doi: 10.48550&#x2F;arXiv.2005.08000.的作者，在他指引下找到他们见刊论文使用的SH代码。通过阅读代码和做实验，我确认了他们在做球谐光照时使用的normalization方式和Condon-Shortley phase，与他们保持一致。<br>这部分的详细过程也记录在<a href="https://www.jixinlong.top/2023/02/01/%E6%A0%B9%E6%8D%AE%E5%85%A8%E6%99%AF%E8%B4%B4%E5%9B%BE%E6%B1%82%E7%90%83%E8%B0%90%E7%B3%BB%E6%95%B0/#%E7%90%83%E8%B0%90%E5%9F%BA%E5%BA%95%E4%B8%8D%E6%AD%A2%E4%B8%80%E7%A7%8D">博客</a>中，写在“SH初探”部分后面的两部分。</p>
+<h2 id="EMLight改写"><a href="#EMLight改写" class="headerlink" title="EMLight改写"></a>EMLight改写</h2><p>使用上述代码处理了LAVAL数据集，得到19557张全景环境贴图的SH系数，和EMLight保存光参数的方式一样，保存为pkl文件。</p>
+<p>EMLight是开源的SG光照模型代码。我保持使用的模型框架不动，将模型输出从原先的光分布、光强、颜色等参数改为简单的27个SH系数，命名新的模型为SHLight。然后改写了data.py，使得模型能够调用data.py加载数据集到模型中。接着改写train.py，和EMLight一样训练的过程中将预测出的SH系数重建成环境贴图，使得训练过程中结果能够预览。loss等写入tensorboard，能够观察loss的变化趋势。</p>
+<h3 id="SHLight初次训练效果"><a href="#SHLight初次训练效果" class="headerlink" title="SHLight初次训练效果"></a>SHLight初次训练效果</h3><p>在800张图像上训练，训练2000轮，结束后在另外100张图像上测试模型对SH系数的预测效果。每张图的右上部分是GT效果，右下部分是根据预测出的SH系数可视化效果图。可以看到预测效果是不理想的。<br><img src="/../images/SHLight%E5%88%9D%E6%AC%A1%E8%AE%AD%E7%BB%83%E6%95%88%E6%9E%9C.png" alt="SHLight初次训练效果"></p>
+<p>但是该模型的loss又是一直收敛的：<br><img src="/../images/SHLight%E5%88%9D%E6%AC%A1%E8%AE%AD%E7%BB%83loss.png" alt="SHLight初次训练loss"></p>
+<p>分析原因可能是：</p>
+<ol>
+<li>训练次数还不够，没达到收敛</li>
+<li>loss函数设计的过于简单，SH不同阶的loss可能需要施加不同的权重，或者在添加别的类项的loss例如render loss。这个下周参考下别的论文。</li>
+</ol>
+<h2 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h2><p>无</p>
+<h1 id="下周工作计划"><a href="#下周工作计划" class="headerlink" title="下周工作计划"></a>下周工作计划</h1><!-- 针对本周工作存在的问题，概述下周的工作内容 -->
+<ol>
+<li>简单阅读下开源SH光照网络模型“shlight”的代码，比较他们的网络训练和我的SHLight的不同。</li>
+</ol>
+<h1 id="需要协调与支援"><a href="#需要协调与支援" class="headerlink" title="需要协调与支援"></a>需要协调与支援</h1><!-- 额外描述所需硬件、软件及人手 -->]]></content>
+      <tags>
+        <tag>周报</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python语法</title>
     <url>/2023/01/21/python%E8%AF%AD%E6%B3%95/</url>
     <content><![CDATA[<h1 id="numpy"><a href="#numpy" class="headerlink" title="numpy"></a>numpy</h1><h2 id="转成list"><a href="#转成list" class="headerlink" title="转成list"></a>转成list</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">a = np.array([[1,2,3],[3,4,5]])</span><br><span class="line">a = a.tolist()</span><br><span class="line">print(a)</span><br><span class="line"># 输出</span><br><span class="line">[[1, 2, 3], [3, 4, 5]]</span><br></pre></td></tr></table></figure>
@@ -199,6 +199,10 @@
 <h2 id="元素逐个输出，并用逗号隔开"><a href="#元素逐个输出，并用逗号隔开" class="headerlink" title="元素逐个输出，并用逗号隔开"></a>元素逐个输出，并用逗号隔开</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">list1 = [1,2,3,4,5,6,7,8,9,10]</span><br><span class="line">(&quot;,&quot;.join(str(x) for x in list1))</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=<span class="string">&#x27;jxl&#x27;</span></span><br><span class="line"><span class="built_in">len</span>(a) <span class="comment">#字符串长度</span></span><br><span class="line">a == <span class="string">&#x27;jxl&#x27;</span> <span class="keyword">and</span> a~= <span class="string">&#x27;jx&#x27;</span> <span class="comment">#并列条件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定义一个字符串str1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str1 = <span class="string">&quot;3w.gorly.test.com.cn&quot;</span></span><br><span class="line"><span class="comment">#指定分隔符为&#x27;.&#x27;，并且指定切割次数为1次</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span> str1.split(<span class="string">&#x27;.&#x27;</span>,<span class="number">1</span>)</span><br><span class="line">[<span class="string">&#x27;3w&#x27;</span>, <span class="string">&#x27;gorly.test.com.cn&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#一个坑:python里的=是引用</span></span><br><span class="line"><span class="comment">#若想要传值必须写</span></span><br><span class="line">a = copy.deepcopy(b)</span><br></pre></td></tr></table></figure>
+
+<h1 id="程序计时"><a href="#程序计时" class="headerlink" title="程序计时"></a>程序计时</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line">T1 = time.time()</span><br><span class="line">#程序</span><br><span class="line"></span><br><span class="line">T2 = time.time()</span><br><span class="line">print(&#x27;程序运行时间:%s毫秒&#x27; % ((T2 - T1)*1000))</span><br></pre></td></tr></table></figure>
+
+<h1 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import threading</span><br><span class="line"></span><br><span class="line">class MyThread(threading.Thread):</span><br><span class="line">    def __init__(self , threadName, processRange):</span><br><span class="line">        super(MyThread,self).__init__(name=threadName)</span><br><span class="line">    &quot;&quot;&quot;一旦这个MyThread类被调用，自动的就会运行底下的run方法中的代码，</span><br><span class="line">    因为这个run方法所属的的MyThread类继承了threading.Thread&quot;&quot;&quot;</span><br><span class="line">    def run(self):</span><br><span class="line">        for nm in nms[processRange]:</span><br><span class="line">            if nm.endswith(&#x27;.exr&#x27;):</span><br><span class="line"></span><br><span class="line">                h = util.PanoramaHandler()</span><br><span class="line">                # hdr = h.read_exr(hdr_path)</span><br><span class="line">                </span><br><span class="line">                crop_path = crop_dir + nm</span><br><span class="line">                crop = h.read_exr(crop_path)</span><br><span class="line">                nm_ = nm.split(&#x27;.&#x27;)[0]</span><br><span class="line">                crop1 ,aphla = tone(crop) </span><br><span class="line">                </span><br><span class="line">                # 检查有多少全黑图像</span><br><span class="line">                if aphla &gt;= 100 or aphla &lt;= 0.01:</span><br><span class="line">                    crop1 = crop1* 255.0</span><br><span class="line">                    crop1 = Image.fromarray(crop1.astype(&#x27;uint8&#x27;))</span><br><span class="line">                    print(nm_,&#x27;  &#x27;,aphla)</span><br><span class="line">                    crop1.save(&#x27;./tmp/&#123;&#125;_crop_alpha=&#123;&#125;.png&#x27;.format(nm_,aphla))</span><br><span class="line">                </span><br><span class="line">#线程数量</span><br><span class="line">thrNum = 20</span><br><span class="line">slic = int(len(nms)/thrNum)</span><br><span class="line"></span><br><span class="line">for i in range(thrNum):</span><br><span class="line">    processRange = slice(i*slic,(i+1)*slic)</span><br><span class="line">    MyThread(&quot;MyThreadName:&quot; + str(i),processRange=processRange).start()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 <ul>
@@ -290,6 +294,219 @@
 ]]></content>
       <tags>
         <tag>ubuntu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>从fov图中估计周围环境光源强度</title>
+    <url>/2023/04/09/%E4%BB%8Efov%E5%9B%BE%E4%B8%AD%E4%BC%B0%E8%AE%A1%E5%91%A8%E5%9B%B4%E7%8E%AF%E5%A2%83%E5%85%89%E6%BA%90%E5%BC%BA%E5%BA%A6/</url>
+    <content><![CDATA[<p>今天发现emlight回归器对光源强度的估计不准确，开始思考是否能从fov图估计出周围环境光源强度这个问题。</p>
+<p>我觉得可以通过fov图中的对比度估计出光源强度。假设场景中有反照率为0的理想黑体和反照率为1的理想纯白物体，那么纯白物体的像素值越高光源的强度就越大。</p>
+<p>我还问了chatgpt这个问题</p>
+<p>对同样的场景，相机的曝光度不同，拍摄得到的照片就不一样，所以有办法从照片中预测周围环境中的光源强度吗？</p>
+<p>他的回答是：</p>
+<p>从一张照片中准确预测周围环境中的光源强度是一个具有挑战性的任务，因为照片是一个 2D 投影，丢失了很多关于 3D 环境的信息。然而，有一些方法可以尝试从照片中估计光源强度。</p>
+<pre><code>基于反射球的方法：这种方法需要在照片中包含一个已知材质的反射球（如镜面反射球或漫反射球）。通过观察反射球上的亮点或阴影，可以估计光源的相对位置、强度和方向。然而，这种方法需要在拍摄照片时已经考虑到光源估计。
+
+基于图像处理的方法：可以使用一些基于图像处理的方法来估计光源强度。这些方法通常分析照片中的亮度、对比度和阴影，以便估计光源的大致位置和强度。然而，这些方法通常受到场景复杂性、照片质量和其他因素的影响，因此准确性有限。
+
+基于深度学习的方法：可以使用深度学习方法，如卷积神经网络（CNN），从照片中学习光源强度的信息。这种方法通常需要大量带有光源强度标签的训练数据。虽然深度学习方法可以在一定程度上提高估计的准确性，但它们仍然受到场景复杂性和照片质量的影响。
+</code></pre>
+<p>虽然上述方法可以在一定程度上帮助你从照片中估计光源强度，但它们都有局限性。为了获得更准确的光源强度估计，可能需要使用其他技术（如光线传感器）或多张照片（例如光度立体数据）。</p>
+]]></content>
+      <tags>
+        <tag>光照估计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>光照估计算法测评</title>
+    <url>/2023/04/21/%E5%85%89%E7%85%A7%E4%BC%B0%E8%AE%A1%E7%AE%97%E6%B3%95%E6%B5%8B%E8%AF%84/</url>
+    <content><![CDATA[<h1 id="算法及其改进版本效果对比评估"><a href="#算法及其改进版本效果对比评估" class="headerlink" title="算法及其改进版本效果对比评估"></a>算法及其改进版本效果对比评估</h1><table>
+<thead>
+<tr>
+<th></th>
+<th>styleLight</th>
+<th></th>
+<th></th>
+<th>emlight</th>
+<th></th>
+<th></th>
+<th>ours</th>
+<th></th>
+<th></th>
+<th>ours-1</th>
+<th></th>
+<th></th>
+<th>ours-1&amp;2</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>指标\球体材质</td>
+<td>朗伯</td>
+<td>哑银</td>
+<td>镜面</td>
+<td>朗伯</td>
+<td>哑银</td>
+<td>镜面</td>
+<td>朗伯</td>
+<td>哑银</td>
+<td>镜面</td>
+<td>朗伯</td>
+<td>哑银</td>
+<td>镜面</td>
+<td>朗伯</td>
+<td>哑银</td>
+<td>镜面</td>
+</tr>
+<tr>
+<td>RMSE</td>
+<td>0.181</td>
+<td>0.218</td>
+<td>0.207</td>
+<td>0.202</td>
+<td>0.274</td>
+<td>0.275</td>
+<td>0.214</td>
+<td>0.330</td>
+<td>0.352</td>
+<td>0.216</td>
+<td>0.331</td>
+<td>0.352</td>
+<td>0.158</td>
+<td>0.258</td>
+<td>0.281</td>
+</tr>
+<tr>
+<td>si-RMSE</td>
+<td>0.055</td>
+<td>0.147</td>
+<td>0.155</td>
+<td>0.065</td>
+<td>0.147</td>
+<td>0.160</td>
+<td>0.058</td>
+<td>0.150</td>
+<td>0.160</td>
+<td>0.057</td>
+<td>0.149</td>
+<td>0.160</td>
+<td>0.040</td>
+<td>0.137</td>
+<td>0.154</td>
+</tr>
+<tr>
+<td>Angular error</td>
+<td>5.25</td>
+<td>6.63</td>
+<td>8.04</td>
+<td>12.46</td>
+<td>14.19</td>
+<td>17.51</td>
+<td>11.71</td>
+<td>17.12</td>
+<td>19.41</td>
+<td>11.08</td>
+<td>16.72</td>
+<td>19.19</td>
+<td>5.49</td>
+<td>9.33</td>
+<td>12.45</td>
+</tr>
+</tbody></table>
+<p><strong>结果分析</strong></p>
+<p>ours-1在纠正了一些被估计成负数的高频高斯光源，使得三种材质上的si-RMSE和Angular error两个指标较ours都有进步。虽有进步，但是哑银和镜面两种材质上仍未能超过emlight。<br>RMSE不降低反而升高，这是因为RMSE主要衡量对光源强度估计的准确性。ours对光源强度的估计是偏大的，ours中的“负光源”被修改为0之后，对光强的估计更加偏大，导致RMSE恶化。</p>
+<p>ours-1&amp;2在ours-1的基础上改进了低频shlight部分，使得三个指标在三种材质上都得到了大幅改善，并超过了emlight。这说明低频shlight对整个组合光照模型的影响很大。</p>
+<p><strong>注</strong><br>几种改进措施：</p>
+<ol>
+<li>emlight负值纠正</li>
+<li>shlight训练时sh系数*reexpose;<br> 新的loss设计，包括新增渲染loss分量，以及更符合球面空间的weighted_l2loss。</li>
+</ol>
+<h2 id="各组详情"><a href="#各组详情" class="headerlink" title="各组详情"></a>各组详情</h2><p>ours组使用的是：</p>
+<ul>
+<li>shlight-on10000imgs-2000epochs的第1200个epoch上的训练结果</li>
+<li>ln128-on10000imgs上的1200_net.pth</li>
+</ul>
+<h2 id="基于ours-1-amp-2寻找最优shlight模型"><a href="#基于ours-1-amp-2寻找最优shlight模型" class="headerlink" title="基于ours-1&amp;2寻找最优shlight模型"></a>基于ours-1&amp;2寻找最优shlight模型</h2><ol>
+<li>shlight-on19356imgs-rd*10-*alpah&#x2F;10_net.pth<br>（最好的一个模型）<br>render_sph_hdr_pred            diffuse<br>Average Masked RMSE: 0.158<br>Average Masked si-RMSE: 0.040<br>Average Masked Angular Error: 5.49</li>
+</ol>
+<p>render_sph_hdr_pred            glossy<br>Average Masked RMSE: 0.258<br>Average Masked si-RMSE: 0.137<br>Average Masked Angular Error: 9.33</p>
+<p>render_sph_hdr_pred            mirror<br>Average Masked RMSE: 0.281<br>Average Masked si-RMSE: 0.154<br>Average Masked Angular Error: 12.45</p>
+<ol start="2">
+<li>shlight-on19356imgs-rd*10-*alpah&#x2F;latest_net.pth<br>render_sph_hdr_pred            diffuse<br>Average Masked RMSE: 0.162<br>Average Masked si-RMSE: 0.042<br>Average Masked Angular Error: 5.78</li>
+</ol>
+<p>render_sph_hdr_pred            glossy<br>Average Masked RMSE: 0.263<br>Average Masked si-RMSE: 0.139<br>Average Masked Angular Error: 9.68</p>
+<p>render_sph_hdr_pred            mirror<br>Average Masked RMSE: 0.286<br>Average Masked si-RMSE: 0.154<br>Average Masked Angular Error: 12.67</p>
+<p>根据验证集loss选择过拟合之前的10_net.pth，得到的渲染效果更好，这说明验证集能帮助选择最佳模型。</p>
+<ol start="3">
+<li>shlight-on10000imgs-rd*10-*alpah&#x2F;0_net.pth<br>render_sph_hdr_pred            diffuse<br>Average Masked RMSE: 0.165<br>Average Masked si-RMSE: 0.040<br>Average Masked Angular Error: 5.47</li>
+</ol>
+<p>render_sph_hdr_pred            glossy<br>Average Masked RMSE: 0.264<br>Average Masked si-RMSE: 0.134<br>Average Masked Angular Error: 8.77</p>
+<p>render_sph_hdr_pred            mirror<br>Average Masked RMSE: 0.285<br>Average Masked si-RMSE: 0.150<br>Average Masked Angular Error: 11.55</p>
+<ol start="4">
+<li>shlight-on10000imgs-rd*10-*alpah&#x2F;latest_net.pth<br>render_sph_hdr_pred            diffuse<br>Average Masked RMSE: 0.164<br>Average Masked si-RMSE: 0.041<br>Average Masked Angular Error: 5.68</li>
+</ol>
+<p>render_sph_hdr_pred            glossy<br>Average Masked RMSE: 0.266<br>Average Masked si-RMSE: 0.140<br>Average Masked Angular Error: 10.57</p>
+<p>render_sph_hdr_pred            mirror<br>Average Masked RMSE: 0.288<br>Average Masked si-RMSE: 0.155<br>Average Masked Angular Error: 13.84</p>
+<p>在测试集上的测试结果和验证集上的loss正相关</p>
+]]></content>
+      <tags>
+        <tag>光照估计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>创建hexo，并让hexo支持公式</title>
+    <url>/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="创建hexo"><a href="#创建hexo" class="headerlink" title="创建hexo"></a>创建hexo</h1><p>网上相关教程很多。<br>hexo项目的主页在<a href="https://github.com/hexojs/hexo">https://github.com/hexojs/hexo</a><br>本来没什么可说的，就是依赖比较多：需要git、github账号、nodejs、npm</p>
+<p>光我自己参考过的教程就很多了，比方说：</p>
+<p><a href="http://codewithzhangyi.com/2018/04/19/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89/#:~:text=%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89%201%20%E5%87%86%E5%A4%87%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%202%20%E6%B3%A8%E5%86%8Cgithub%203%20%E5%88%9B%E5%BB%BARepository%204,Key%E9%85%8D%E7%BD%AE%E6%88%90%E5%8A%9F%E5%95%A6%EF%BC%81%208%20%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2.%20...%209%20%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0username.github.io%2010%20%E5%86%99%E5%8D%9A%E5%AE%A2%E5%95%A6%EF%BC%81">如何搭建自己的个人网站（上） | Zhang Yi</a><br><a href="https://zhuanlan.zhihu.com/p/35668237">超详细Hexo+Github博客搭建小白教程 - 知乎</a></p>
+<p>这是两个非常细致的教程，手把手喂饭了。对于熟悉git的人，可以看下边一篇简洁版的，重点讲node和npm的安装。<br><a href="https://anjingcuc.gitee.io/courses-wiki/online-publishing/homework/">使用 Hexo 生成博客并发布</a></p>
+<p>要注意的点是npm和nodejs在安装时可能会报错，我认为创建hexo基本都卡在这个上边。我遇到的两个问题:</p>
+<ul>
+<li>hexo、npm和node版本不匹配<br>hexo匹配的node版本：</li>
+</ul>
+<p><img src="/../images/hexo%E5%8C%B9%E9%85%8D%E7%9A%84node%E7%89%88%E6%9C%AC.png" alt="hexo需要的node版本"></p>
+<ul>
+<li>安装npm和node时没有给够权限导致安装失败</li>
+</ul>
+<p>以上问题百度容易解决，但是难发现是这两个问题。</p>
+<h1 id="用hexo创建文章"><a href="#用hexo创建文章" class="headerlink" title="用hexo创建文章"></a>用hexo创建文章</h1><p>这个，一旦hexo部署好，就能在自带的首页上看到hexo的使用方法。<br>无外乎:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;xxxx&quot;</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">hexo d</span><br><span class="line">hexo clean</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+
+<p>有些东西额外注意：</p>
+<ul>
+<li>主题目录和项目根目录下各有一个_comfig.yml配置文件，且后者优先级更高。</li>
+<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;themes&#x2F;next&#x2F;languages 下有很多语言文件，可以找到汉语的，然后在配置里改“language:xxx”</li>
+<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;scaffolds目录下都是一些模板，可以修改或增加模板。</li>
+<li>头像、网站图标、摘要都可以再打磨打磨。</li>
+<li>NexT文章目录点击不跳转，可参考<a href="https://www.bilibili.com/read/cv10197254/#:~:text=NexT%E4%B8%AD%E6%96%87%E7%9B%AE%E5%BD%95%E4%B8%8D%E8%B7%B3%E8%BD%AC%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%201%20hexo%3A%205.3.0,2%20node%3A%2012.18.3%203%20var%C2%A0target%C2%A0%3D%C2%A0document.getElementById%28decodeURI%28link.getAttribute%28%27href%27%29%29.replace%28%27%23%27%2C%C2%A0%27%27%29%29%3B">NexT中文目录不跳转的解决方法</a></li>
+</ul>
+<p>更多玩法，可以参考这篇<a href="https://blog.csdn.net/weixin_39542608/article/details/111584243">next文章目录跳转_Hexo系列 | Hexo+next主题搭建炫酷的个人博客网站</a></p>
+<p>但我觉得做个人网站的初心是记录好的内容和经历，网站做得太花里胡哨就没意思啦。对网站的美化要适可而止。</p>
+<h1 id="让hexo支持公式"><a href="#让hexo支持公式" class="headerlink" title="让hexo支持公式"></a>让hexo支持公式</h1><p>hexo加nexT，初始没有支持公式。我查了一些资料，发现越早的资料方法越复杂。这说明hexo对公式的支持还是越来越强的。我参考<a href="https://zhuanlan.zhihu.com/p/105986034">在 Hexo 博客中写出好看的Latex 公式</a>，但是比它少安装两个插件，阴差阳错倒也成功了。</p>
+<p>要做以下几步：</p>
+<ol>
+<li>修改 主题配置中 的 mathjax 相关设置</li>
+</ol>
+<p>搜寻主题配置文件里的“math”关键词，取消下方第二行的注释。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># MathJax</span><br><span class="line">mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</span><br><span class="line"># mathjax: </span><br></pre></td></tr></table></figure>
+<p>更改下方第二行为“enable: true”</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mathjax:</span><br><span class="line">  enable: true</span><br><span class="line">  # See: https://mhchem.github.io/MathJax-mhchem/</span><br><span class="line">  mhchem: false</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在文章头部声明“mathjax: true”</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 跟据全景贴图求球谐系数</span><br><span class="line">date: 2023-02-01 20:11:36</span><br><span class="line">tags:</span><br><span class="line">- SH</span><br><span class="line">mathjax: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>重新编译以下<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<p><em>截止2023年2月4号，配置如下的hexo用以上方法更改主题配置后公式渲染生效。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubuntu@VM-16-2-ubuntu:~/blog/source$  npm list</span><br><span class="line">hexo-site@0.0.0 /home/ubuntu/blog</span><br><span class="line">├── hexo-deployer-git@3.0.0</span><br><span class="line">├── hexo-generator-archive@2.0.0</span><br><span class="line">├── hexo-generator-category@2.0.0</span><br><span class="line">├── hexo-generator-index@3.0.0</span><br><span class="line">├── hexo-generator-search@2.4.3</span><br><span class="line">├── hexo-generator-searchdb@1.4.1</span><br><span class="line">├── hexo-generator-tag@2.0.0</span><br><span class="line">├── hexo-renderer-ejs@2.0.0</span><br><span class="line">├── hexo-renderer-marked@6.0.0</span><br><span class="line">├── hexo-renderer-stylus@2.1.0</span><br><span class="line">├── hexo-server@3.0.0</span><br><span class="line">├── hexo-theme-landscape@0.0.3</span><br><span class="line">├── hexo-theme-next@8.14.1</span><br><span class="line">└── hexo@6.3.0</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -410,58 +627,115 @@
       </tags>
   </entry>
   <entry>
-    <title>创建hexo，并让hexo支持公式</title>
-    <url>/2023/02/03/%E5%88%9B%E5%BB%BAhexo%EF%BC%8C%E5%B9%B6%E8%AE%A9hexo%E6%94%AF%E6%8C%81%E5%85%AC%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="创建hexo"><a href="#创建hexo" class="headerlink" title="创建hexo"></a>创建hexo</h1><p>网上相关教程很多。<br>hexo项目的主页在<a href="https://github.com/hexojs/hexo">https://github.com/hexojs/hexo</a><br>本来没什么可说的，就是依赖比较多：需要git、github账号、nodejs、npm</p>
-<p>光我自己参考过的教程就很多了，比方说：</p>
-<p><a href="http://codewithzhangyi.com/2018/04/19/%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89/#:~:text=%E5%A6%82%E4%BD%95%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%EF%BC%88%E4%B8%8A%EF%BC%89%201%20%E5%87%86%E5%A4%87%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%202%20%E6%B3%A8%E5%86%8Cgithub%203%20%E5%88%9B%E5%BB%BARepository%204,Key%E9%85%8D%E7%BD%AE%E6%88%90%E5%8A%9F%E5%95%A6%EF%BC%81%208%20%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2.%20...%209%20%E5%B0%86%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E5%88%B0username.github.io%2010%20%E5%86%99%E5%8D%9A%E5%AE%A2%E5%95%A6%EF%BC%81">如何搭建自己的个人网站（上） | Zhang Yi</a><br><a href="https://zhuanlan.zhihu.com/p/35668237">超详细Hexo+Github博客搭建小白教程 - 知乎</a></p>
-<p>这是两个非常细致的教程，手把手喂饭了。对于熟悉git的人，可以看下边一篇简洁版的，重点讲node和npm的安装。<br><a href="https://anjingcuc.gitee.io/courses-wiki/online-publishing/homework/">使用 Hexo 生成博客并发布</a></p>
-<p>要注意的点是npm和nodejs在安装时可能会报错，我认为创建hexo基本都卡在这个上边。我遇到的两个问题:</p>
-<ul>
-<li>hexo、npm和node版本不匹配<br>hexo匹配的node版本：</li>
-</ul>
-<p><img src="/../images/hexo%E5%8C%B9%E9%85%8D%E7%9A%84node%E7%89%88%E6%9C%AC.png" alt="hexo需要的node版本"></p>
-<ul>
-<li>安装npm和node时没有给够权限导致安装失败</li>
-</ul>
-<p>以上问题百度容易解决，但是难发现是这两个问题。</p>
-<h1 id="用hexo创建文章"><a href="#用hexo创建文章" class="headerlink" title="用hexo创建文章"></a>用hexo创建文章</h1><p>这个，一旦hexo部署好，就能在自带的首页上看到hexo的使用方法。<br>无外乎:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;xxxx&quot;</span><br><span class="line">hexo g</span><br><span class="line">hexo s</span><br><span class="line">hexo d</span><br><span class="line">hexo clean</span><br><span class="line">hexo init</span><br></pre></td></tr></table></figure>
-
-<p>有些东西额外注意：</p>
-<ul>
-<li>主题目录和项目根目录下各有一个_comfig.yml配置文件，且后者优先级更高。</li>
-<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;themes&#x2F;next&#x2F;languages 下有很多语言文件，可以找到汉语的，然后在配置里改“language:xxx”</li>
-<li>&#x2F;home&#x2F;ubuntu&#x2F;blog&#x2F;scaffolds目录下都是一些模板，可以修改或增加模板。</li>
-<li>头像、网站图标、摘要都可以再打磨打磨。</li>
-<li>NexT文章目录点击不跳转，可参考<a href="https://www.bilibili.com/read/cv10197254/#:~:text=NexT%E4%B8%AD%E6%96%87%E7%9B%AE%E5%BD%95%E4%B8%8D%E8%B7%B3%E8%BD%AC%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%201%20hexo%3A%205.3.0,2%20node%3A%2012.18.3%203%20var%C2%A0target%C2%A0%3D%C2%A0document.getElementById%28decodeURI%28link.getAttribute%28%27href%27%29%29.replace%28%27%23%27%2C%C2%A0%27%27%29%29%3B">NexT中文目录不跳转的解决方法</a></li>
-</ul>
-<p>更多玩法，可以参考这篇<a href="https://blog.csdn.net/weixin_39542608/article/details/111584243">next文章目录跳转_Hexo系列 | Hexo+next主题搭建炫酷的个人博客网站</a></p>
-<p>但我觉得做个人网站的初心是记录好的内容和经历，网站做得太花里胡哨就没意思啦。对网站的美化要适可而止。</p>
-<h1 id="让hexo支持公式"><a href="#让hexo支持公式" class="headerlink" title="让hexo支持公式"></a>让hexo支持公式</h1><p>hexo加nexT，初始没有支持公式。我查了一些资料，发现越早的资料方法越复杂。这说明hexo对公式的支持还是越来越强的。我参考<a href="https://zhuanlan.zhihu.com/p/105986034">在 Hexo 博客中写出好看的Latex 公式</a>，但是比它少安装两个插件，阴差阳错倒也成功了。</p>
-<p>要做以下几步：</p>
-<ol>
-<li>修改 主题配置中 的 mathjax 相关设置</li>
-</ol>
-<p>搜寻主题配置文件里的“math”关键词，取消下方第二行的注释。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># MathJax</span><br><span class="line">mathjax: //cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</span><br><span class="line"># mathjax: </span><br></pre></td></tr></table></figure>
-<p>更改下方第二行为“enable: true”</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mathjax:</span><br><span class="line">  enable: true</span><br><span class="line">  # See: https://mhchem.github.io/MathJax-mhchem/</span><br><span class="line">  mhchem: false</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>在文章头部声明“mathjax: true”</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 跟据全景贴图求球谐系数</span><br><span class="line">date: 2023-02-01 20:11:36</span><br><span class="line">tags:</span><br><span class="line">- SH</span><br><span class="line">mathjax: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>重新编译以下<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure></li>
-</ol>
-<hr>
-<p><em>截止2023年2月4号，配置如下的hexo用以上方法更改主题配置后公式渲染生效。</em></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ubuntu@VM-16-2-ubuntu:~/blog/source$  npm list</span><br><span class="line">hexo-site@0.0.0 /home/ubuntu/blog</span><br><span class="line">├── hexo-deployer-git@3.0.0</span><br><span class="line">├── hexo-generator-archive@2.0.0</span><br><span class="line">├── hexo-generator-category@2.0.0</span><br><span class="line">├── hexo-generator-index@3.0.0</span><br><span class="line">├── hexo-generator-search@2.4.3</span><br><span class="line">├── hexo-generator-searchdb@1.4.1</span><br><span class="line">├── hexo-generator-tag@2.0.0</span><br><span class="line">├── hexo-renderer-ejs@2.0.0</span><br><span class="line">├── hexo-renderer-marked@6.0.0</span><br><span class="line">├── hexo-renderer-stylus@2.1.0</span><br><span class="line">├── hexo-server@3.0.0</span><br><span class="line">├── hexo-theme-landscape@0.0.3</span><br><span class="line">├── hexo-theme-next@8.14.1</span><br><span class="line">└── hexo@6.3.0</span><br></pre></td></tr></table></figure>
+    <title>初级酿造工艺</title>
+    <url>/2023/03/07/%E5%88%9D%E7%BA%A7%E9%85%BF%E9%80%A0%E5%B7%A5%E8%89%BA/</url>
+    <content><![CDATA[<p>酒，酸奶，都是酿造工艺的产物。</p>
+<h1 id="米酒"><a href="#米酒" class="headerlink" title="米酒"></a>米酒</h1><p>高中的时候我选修生物，就对果酒的酿造很感兴趣。当时我们去做实验，将学校采买的苹果和葡萄榨出汁，然后把酵母菌封在凝胶球里，两样混合在一起，静待发酵。生物教室里全是果香味。酵母菌凝胶球的制作也颇为讲究，大概是高中生物的经典考点了。用注射器挤出凝胶的时候，离水面不能太高，太高容易凝结成水滴状的小球；也不能太低，太低容易变成扁平小球。我到现在都记得这些啊。</p>
+<p>受小森林影响，女主用吃不完的米饭做酸甜的米酒，在盛夏咕噜咕噜的冰镇了喝，太美了。</p>
+<p>于是我也学着做，过程跟小森林里的一样简单，网购了安琪的甜酒曲，从食堂打包了二两的米饭，二者加水混合。北京温暖的室内静置五天，米饭变得透明轻盈，表面浮起一层厚厚的白色霉菌层。在我看来，这就算做成了。</p>
+<p>可是我一直不敢喝。拿给zyc看，他说他要喝，喝完二话不说去厕所漱口，说太酸了，还有腐臭味。可是闻起来确实是米酒味道。</p>
+<p>我忍不住也喝了一口，没有腐臭味。酸味也没有他说的“比醋还酸”。这种淡淡的酸跟我在一家小酒馆里喝的一模一样。在我看来，算是成功了。<br>以后可以试试一次多做一点，同时多放点酒曲，让米酒在白色霉菌长出来之前做好。</p>
+<h1 id="酸奶"><a href="#酸奶" class="headerlink" title="酸奶"></a>酸奶</h1><p>酸奶太简单了，主要是成型很多不必担心鲜奶先腐败。<br>–fullchain-file &#x2F;root&#x2F;cert&#x2F;fullchain.cer<br>鲜奶，可以用奶粉。加上安琪买的酸奶发酵粉，放了两天，就有酸奶的模样了。–key-file biter.online.cer</p>
 ]]></content>
       <tags>
-        <tag>hexo</tag>
+        <tag>酿造</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于ipv6-ddns的PC建站方式</title>
+    <url>/2023/02/19/%E5%9F%BA%E4%BA%8Eipv6-ddns%E7%9A%84PC%E5%BB%BA%E7%AB%99%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h1><p>偶然发现实验室的电脑都分配了很多ipv6地址，且有很多是公网地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">eno1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 10.108.11.94  netmask 255.255.254.0  broadcast 10.108.11.255</span><br><span class="line">        inet6 2001:da8:204:1086:ad28:ff67:94a7:1997  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:b9b8:9136:3ef3:6be6  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:f455:5fa0:b6ca:63c  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661::1066  prefixlen 128  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fe80::7258:dd48:9547:6be3  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:41f7:aed6:af12:5f13  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:a1e4:69cb:2d82:3f54  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:fc1b:66d8:b2b5:8904  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        ether e4:54:e8:77:f5:f3  txqueuelen 1000  (以太网)</span><br><span class="line">        RX packets 52881182  bytes 10069311241 (10.0 GB)</span><br><span class="line">        RX errors 0  dropped 26069  overruns 0  frame 0</span><br><span class="line">        TX packets 2549468  bytes 249593912 (249.5 MB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16  memory 0xe5400000-e5420000  </span><br></pre></td></tr></table></figure>
+
+<p>那么就不需要ipv4公网ip了。据说现在ipv6普及，家里的宽带也都有ipv6地址。</p>
+<p>但是ipv6地址都是被分配的，且没法固定，这个时候可以用dns解析托管商的ddns服务。很简单，其实就是获取托管商那里的一些key，然后在本地写脚本获取ipv6地址并PUSH到托管商那里更新ip。<br>具体见：<a href="https://zhuanlan.zhihu.com/p/69379645">基于 Cloudflare DNS API 部署 IPv6 DDNS</a></p>
+<h1 id="困难"><a href="#困难" class="headerlink" title="困难"></a>困难</h1><p>但我遇到一个问题，就是直接采用上述链接里的脚本时，会尝试将所有带<global>标记的ip地址加到域名上。而域名解析只能一对一！<br>其实用这种方法无法将输出列表里的fd00开头的地址剔除出去：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0</span><br><span class="line">2001:da8:204:1086:f455:5fa0:b6ca:63c</span><br><span class="line">2001:da8:204:1086:fc1b:66d8:b2b5:8904</span><br><span class="line">2001:da8:204:1086:a1e4:69cb:2d82:3f54</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>但是不知道为什么，fd00这种总在列表头部，实际想要获取的2001开头地址在尾部。那么可以在命令管道后面在再加上一个tail -1，输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;|tail -1</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>获得了想要的ipv6公网地址！</p>
+<h1 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h1><p>ipv6公网地址通过ddns绑定到域名上，任何闲置主机就都能变成云服务器了。</p>
+<ul>
+<li>ipv6支持ssh，以后在任何地方都能轻松登陆自家电脑</li>
+<li>必须要一个公网云服务器做中转的frp类内网穿透方法将被取代</li>
+<li>mc服务器等可以开在自己的电脑上</li>
+<li>可以在自己的服务器上自建云盘、博客</li>
+<li>旧电脑将可以被利用，收费昂贵性能也有限的阿里云、腾讯云不再成为小服务器玩家的首选。</li>
+</ul>
+<p>缺点也有，就是ipv6开起来的服务不能被只支持ipv4的网络用户访问。当然随着ipv6大力普及，这个缺点越来越小。</p>
+<h1 id="彩蛋"><a href="#彩蛋" class="headerlink" title="彩蛋"></a>彩蛋</h1><p>本来搞ipv6 ddns是想在主机上建一个饥荒服务器的…</p>
+<p>结果照着<a href="https://github.com/qinming99/dst-admin">饥荒面板服</a>的教程走完，发现饥荒开服根本就不需要服务器有固定公网ip。它实际上是把个人的服务器统一登记在科雷服务器上，然后让玩家去访问科雷。<br>不过因为实验室电脑会自行断网，安装过程总是报网络原因的错误，我还以为是需要挂梯子，挂了也没用。最后重新用脚本连接下校园网，就非常顺滑地安装完了。<br>唉，安装环境总担心是资源在国外需要挂梯子的，也就中国程序员和伊朗程序员了…………</p>
+<h1 id="补充：ipv4"><a href="#补充：ipv4" class="headerlink" title="补充：ipv4"></a>补充：ipv4</h1><p>只需要把教程里的6改成4，把AAAA改为A就可以了。不需要公网ipv4，内网依旧有效。</p>
+]]></content>
+      <tags>
+        <tag>server</tag>
+        <tag>ddns</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何创建Ubuntu系统代理并运行v2ray的脚本</title>
+    <url>/2023/04/16/%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BAUbuntu%E7%B3%BB%E7%BB%9F%E4%BB%A3%E7%90%86%E5%B9%B6%E8%BF%90%E8%A1%8Cv2ray%E7%9A%84%E8%84%9A%E6%9C%AC/</url>
+    <content><![CDATA[<p>在Ubuntu系统中设置代理可能会有一些麻烦，特别是当你需要经常切换代理时。在本篇博客中，我们将介绍如何使用一个shell脚本来快速设置Ubuntu系统代理并运行v2ray，以及如何将别名链接到这些脚本中以便更方便地使用它们。</p>
+<h2 id="第一步：创建脚本"><a href="#第一步：创建脚本" class="headerlink" title="第一步：创建脚本"></a>第一步：创建脚本</h2><p>首先，我们需要创建两个shell脚本，一个用于设置系统代理并运行v2ray，另一个用于取消设置并停止v2ray。我们将这些脚本放在<code>~/v2ray/</code>目录下，以便稍后使用别名时方便调用。以下是设置脚本的代码：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置系统代理为手动模式</span></span><br><span class="line">gsettings set org.gnome.system.proxy mode &#x27;manual&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动v2ray</span></span><br><span class="line">~/v2ray/v2ray run &amp;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>以下是重置脚本的代码：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置系统代理为自动模式</span></span><br><span class="line">gsettings set org.gnome.system.proxy mode &#x27;auto&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">杀死v2ray进程</span></span><br><span class="line">killall v2ray</span><br></pre></td></tr></table></figure>
+<p>在上述代码中，我们使用了gsettings命令来设置Ubuntu系统代理。如果你的系统上还没有安装这个命令，请使用以下命令进行安装：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sudo apt<span class="operator">-</span><span class="keyword">get</span> <span class="keyword">update</span></span><br><span class="line">sudo apt<span class="operator">-</span><span class="keyword">get</span> install <span class="operator">-</span>y gsettings<span class="operator">-</span>desktop<span class="operator">-</span>schemas</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后我们需要将这些脚本设置为可执行。使用以下命令来实现：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">chmod</span> +x ~/v2ray/setup.sh</span><br><span class="line">sudo <span class="built_in">chmod</span> +x ~/v2ray/reset.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="创建别名"><a href="#创建别名" class="headerlink" title="创建别名"></a>创建别名</h2><p>现在我们已经创建了两个脚本，我们可以使用别名来链接它们以方便使用。在这个例子中，我们将别名命名为v2raysetup和v2rayreset。以下是在.bashrc文件中创建别名的代码：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo &#x27;alias v2raysetup=&quot;sudo ~/v2ray/setup.sh&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">echo &#x27;alias v2rayreset=&quot;sudo ~/v2ray/reset.sh&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上述代码将别名添加到你的.bashrc文件中。你可以通过运行以下命令来使别名生效：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>现在你可以在命令行中输入v2raysetup来执行设置脚本，输入v2rayreset来执行重置脚本。请注意，由于这些脚本需要sudo权限，因此在执行别名时你需要输入sudo密码。</p>
+<h2 id="自动化过程"><a href="#自动化过程" class="headerlink" title="自动化过程"></a>自动化过程</h2><p>以上过程可以用以下shell脚本自动化：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建设置脚本</span></span><br><span class="line">echo &#x27;#!/bin/bash</span><br><span class="line">gsettings set org.gnome.system.proxy mode &quot;manual&quot;</span><br><span class="line">~/v2ray/v2ray -run &amp;&#x27; | sudo tee ~/v2ray/setup.sh &gt; /dev/null</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建重置脚本</span></span><br><span class="line">echo &#x27;#!/bin/bash</span><br><span class="line">gsettings set org.gnome.system.proxy mode &quot;auto&quot;</span><br><span class="line">killall v2ray&#x27; | sudo tee ~/v2ray/reset.sh &gt; /dev/null</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置脚本为可执行</span></span><br><span class="line">sudo chmod +x ~/v2ray/setup.sh</span><br><span class="line">sudo chmod +x ~/v2ray/reset.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将别名添加到.bashrc文件中</span></span><br><span class="line">echo &#x27;alias v2raysetup=&quot;sudo ~/v2ray/setup.sh&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line">echo &#x27;alias v2rayreset=&quot;sudo ~/v2ray/reset.sh&quot;&#x27; &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重新加载.bashrc文件</span></span><br><span class="line">source ~/.bashrc</span><br><span class="line"></span><br><span class="line">echo &quot;脚本创建成功！&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>将上述代码保存为一个文件，例如setup-v2ray.sh，然后在终端中运行以下命令以使其可执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">chmod +x setup-v2ray.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>接下来，你可以运行以下命令来运行脚本：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./setup-v2ray.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>脚本将自动创建两个脚本文件和别名，并将它们添加到你的.bashrc文件中。当你需要使用这些脚本时，只需在终端中输入v2raysetup和v2rayreset即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过创建一个设置Ubuntu系统代理并运行v2ray的shell脚本，并将别名链接到这些脚本中，我们可以更方便地控制系统代理和v2ray进程。使用上述过程，我们可以快速创建这些脚本并将它们自动添加到.bashrc文件中，这将极大地提高我们的效率。</p>
+]]></content>
+      <tags>
+        <tag>ubuntu</tag>
+        <tag>v2ray</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>对Lavalindoor数据集crops曝光程度进行分析</title>
+    <url>/2023/03/13/%E5%AF%B9Lavalindoor%E6%95%B0%E6%8D%AE%E9%9B%86crops%E6%9B%9D%E5%85%89%E7%A8%8B%E5%BA%A6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<p>在分析emlight的intensity项loss为何不下降的过程中，我发现有一张全黑的crop，经过tonemapping后仍然为全黑的，但是重新曝光系数ahpla竟然能达到10的6次方数量级。</p>
+<p>我觉得这是由于不合理的tonemapping函数设计导致的。参照另一个人的tonemapping函数设计方法，我在检测到全黑crop时直接将re-expose系数设置为1。</p>
+<p>修改后函数如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class TonemapHDR(object):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">        Tonemap HDR image globally. First, we find alpha that maps the (max(numpy_img) * percentile) to max_mapping.</span><br><span class="line">        Then, we calculate I_out = alpha * I_in ^ (1/gamma)</span><br><span class="line">        input : nd.array batch of images : [H, W, C]</span><br><span class="line">        output : nd.array batch of images : [H, W, C]</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, gamma=2.4, percentile=50, max_mapping=0.5):</span><br><span class="line">        self.gamma = gamma</span><br><span class="line">        self.percentile = percentile</span><br><span class="line">        self.max_mapping = max_mapping  # the value to which alpha will map the (max(numpy_img) * percentile) to</span><br><span class="line"></span><br><span class="line">    def __call__(self, numpy_img, clip=True, alpha=None, gamma=True):</span><br><span class="line">        if gamma:</span><br><span class="line">            power_numpy_img = np.power(numpy_img, 1 / self.gamma)</span><br><span class="line">        else:</span><br><span class="line">            power_numpy_img = numpy_img</span><br><span class="line">        non_zero = power_numpy_img &gt; 0</span><br><span class="line">        if non_zero.any():</span><br><span class="line">            r_percentile = np.percentile(power_numpy_img[non_zero], self.percentile)</span><br><span class="line">        else:</span><br><span class="line">            # r_percentile = np.percentile(power_numpy_img, self.percentile)</span><br><span class="line">            # https://github.com/weberhen/Illumination-Estimation-1/blob/9bd3bc4533960afd72b3496ff8601f03b6e799f6/gen_hdr_crops.py#L8</span><br><span class="line">            # 全零输入，直接不变动</span><br><span class="line">            alpha = 1</span><br><span class="line">            </span><br><span class="line">        if alpha is None:</span><br><span class="line">            alpha = self.max_mapping / (r_percentile + 1e-10)</span><br><span class="line">        tonemapped_img = np.multiply(alpha, power_numpy_img)</span><br><span class="line"></span><br><span class="line">        if clip:</span><br><span class="line">            tonemapped_img = np.clip(tonemapped_img, 0, 1)</span><br><span class="line"></span><br><span class="line">        return tonemapped_img.astype(&#x27;float32&#x27;), alpha</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这种修改应该能禁止全黑crop干扰emlight的学习了。为了看看我这次改动ban掉了多少坏crops，我专门写了点代码遍历了一遍数据集，搜寻这种全黑crop。结果只发现了之前发现的那一张。所以说，就一张坏图片，对emlight的影响应该没那么大？</p>
+<p>接着我想看看有多少crops的ahpla是大于100或小于0.01的。这种图我觉得算是太亮或者太暗的图。结果一张都没有。数据集还是不错的。</p>
+<p>然后缩小范围，用20个线程分布式地检查整个数据集的不同区间，搜一下有多少crops的ahpla是大于50或小于0.02的。下面列出了输出结果，先是被查出的图片名称及其ahpla系数，接着是20个线程各自查出多少张（可以看出“坏数据”在整个数据集上的分布），最后还统计了总的张数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AG8A0159-others-320-1    59.52106566873854</span><br><span class="line">AG8A3897-others-120-1    54.21067904036069</span><br><span class="line">AG8A0251-others-240-2    63.29404408421544</span><br><span class="line">9C4A8715-others-80-1    54.52313750036537</span><br><span class="line">AG8A9361-others-320-1    69.897020251167</span><br><span class="line">9C4A8673-others-240-2    50.71437620814117</span><br><span class="line">AG8A0781-others-160-2    53.904227630950764</span><br><span class="line">AG8A0907-others-40-1    55.95169051131642</span><br><span class="line">AG8A9487-others-40-2    60.097283122808314</span><br><span class="line">AG8A9746-others-80-1    61.94711944112786</span><br><span class="line">9C4A9751-others-200-1    56.29987194255647</span><br><span class="line">AG8A8113-others-120-1    56.775796094339576</span><br><span class="line">9C4A6681-others-120-1    58.55627943106775</span><br><span class="line">AG8A7177-others-280-1    54.52313750036537</span><br><span class="line">AG8A9109-others-00-1    62.947978191196626</span><br><span class="line">9C4A8967-others-120-1    63.4695208240741</span><br><span class="line">9C4A1187-others-280-1    53.01900870581253</span><br><span class="line">9C4A9709-others-200-2    55.83724905204878</span><br><span class="line">AG8A4366-others-280-1    52.92366673902601</span><br><span class="line">9C4A2158-others-40-1    64.3724313136348</span><br><span class="line">9C4A8624-others-80-1    62.440731624923764</span><br><span class="line">AG8A7681-others-00-1    78.8903822032828</span><br><span class="line">9C4A2158-others-200-2    68.25202044003838</span><br><span class="line">AG8A9872-others-160-1    60.392608722473895</span><br><span class="line">9C4A8715-others-00-1    63.6466598767675</span><br><span class="line">AG8A9704-others-320-2    55.38729787186675</span><br><span class="line">AG8A9361-others-200-1    71.68512492472499</span><br><span class="line">AG8A0293-others-280-2    62.274710888086645</span><br><span class="line">AG8A0781-others-120-2    50.149691875628925</span><br><span class="line">AG8A8197-others-280-1    58.15874175266221</span><br><span class="line">AG8A1806-others-240-1    59.52106566873854</span><br><span class="line">9C4A9373-others-00-1    51.47326169317001</span><br><span class="line">AG8A9746-others-00-1    71.68512492472499</span><br><span class="line">AG8A8941-others-40-1    56.18299192134972</span><br><span class="line">9C4A8967-others-160-1    67.3690127490823</span><br><span class="line">AG8A9529-others-320-1    67.58612249688619</span><br><span class="line">9C4A8925-others-200-1    71.68512492472499</span><br><span class="line">9C4A2158-others-80-2    65.51595327495049</span><br><span class="line">AG8A0083-others-160-1    51.046937918071244</span><br><span class="line">AG8A0907-others-00-1    54.73488042832818</span><br><span class="line">9C4A8967-others-40-1    58.42274478888599</span><br><span class="line">AG8A9788-others-00-2    66.3179101202389</span><br><span class="line">9C4A9709-others-00-1    59.379920759525675</span><br><span class="line">9C4A2116-others-240-1    82.47374789984309</span><br><span class="line">AG8A9788-others-160-1    64.93563386069304</span><br><span class="line">AG8A2937-others-240-1    67.80562950082691</span><br><span class="line">9C4A2116-others-320-1    52.82890618336761</span><br><span class="line">AG8A9184-others-00-2    50.87973512453133</span><br><span class="line">AG8A9361-others-240-1    76.11116288715907</span><br><span class="line">AG8A8983-others-200-2    64.74604133176966</span><br><span class="line">AG8A7681-others-320-1    76.11116288715907</span><br><span class="line">9C4A8540-others-280-1    56.89693094853549</span><br><span class="line">9C4A9009-others-240-1    59.52106566873854</span><br><span class="line">AG8A5608-others-40-1    53.01900870581253</span><br><span class="line">AG8A7681-others-280-1    73.34870621789909</span><br><span class="line">AG8A7723-others-240-1    62.11018141933448</span><br><span class="line">9C4A8239-others-80-1    58.55627943106775</span><br><span class="line">AG8A9151-others-320-1    50.38907056264851</span><br><span class="line">AG8A0041-others-200-1    62.274710888086645</span><br><span class="line">AG8A8113-others-160-1    59.52106566873854</span><br><span class="line">AG8A9830-others-160-1    52.091011626246505</span><br><span class="line">9C4A8582-others-320-2    70.3924047660264</span><br><span class="line">AG8A4366-others-120-2    55.61072681522241</span><br><span class="line">AG8A9788-others-120-1    69.17565881787097</span><br><span class="line">AG8A9788-others-40-1    62.11018141933448</span><br><span class="line">9C4A8715-others-40-1    56.41758314133693</span><br><span class="line">9C4A9373-others-160-1    71.15840799045587</span><br><span class="line">9C4A2158-others-120-2    59.95145395042885</span><br><span class="line">9C4A9709-others-320-1    70.3924047660264</span><br><span class="line">AG8A9445-others-240-1    55.27672199457408</span><br><span class="line">AG8A0251-others-320-2    57.26567409864556</span><br><span class="line">9C4A8715-others-320-2    73.63896886593696</span><br><span class="line">AG8A9746-others-280-1    53.01900870581253</span><br><span class="line">AG8A9746-others-320-1    60.84499975427419</span><br><span class="line">AG8A1806-others-200-1    59.23990777528832</span><br><span class="line">9C4A9709-others-80-1    50.632383277580864</span><br><span class="line">AG8A9487-others-320-1    68.25202044003838</span><br><span class="line">AG8A9235-others-320-1    56.18299192134972</span><br><span class="line">9C4A6723-others-280-1    53.904227630950764</span><br><span class="line">AG8A9529-others-280-1    66.52367512570203</span><br><span class="line">AG8A9529-others-00-1    69.65373181055384</span><br><span class="line">AG8A0151-others-240-2    52.82890618336761</span><br><span class="line">AG8A9445-others-00-1    61.94711944112786</span><br><span class="line">9C4A8925-others-40-1    68.94076571897297</span><br><span class="line">AG8A7723-others-200-1    56.775796094339576</span><br><span class="line">AG8A9109-others-280-2    50.070755389724226</span><br><span class="line">9C4A8925-others-240-1    76.44050481264026</span><br><span class="line">AG8A9746-others-240-1    68.25202044003838</span><br><span class="line">AG8A1932-others-280-1    58.42274478888599</span><br><span class="line">AG8A7135-others-280-1    55.72359288919754</span><br><span class="line">9C4A8365-others-80-2    57.64268123863262</span><br><span class="line">9C4A8582-others-200-1    62.11018141933448</span><br><span class="line">9C4A9261-others-280-1    62.60826782694604</span><br><span class="line">9C4A8155-others-320-1    51.73494991199591</span><br><span class="line">AG8A9487-others-00-1    51.64722164972049</span><br><span class="line">AG8A9487-others-160-1    58.42274478888599</span><br><span class="line">AG8A3897-others-280-2    52.64110142130879</span><br><span class="line">AG8A9361-others-160-1    59.379920759525675</span><br><span class="line">AG8A0251-others-280-1    69.17565881787097</span><br><span class="line">AG8A9529-others-200-1    66.73162920445048</span><br><span class="line">9C4A8239-others-40-2    61.15307361066433</span><br><span class="line">9C4A8967-others-240-1    59.806817141111736</span><br><span class="line">AG8A9746-others-200-1   9C4A9583-others-200-1  65.32055771938946</span><br><span class="line">   51.64722164972049</span><br><span class="line">AG8A2937-others-00-2 9C4A2158-others-240-1    76.44050481264026</span><br><span class="line">   50.22905621671314</span><br><span class="line">AG8A9025-others-00-1    56.29987194255647</span><br><span class="line">AG8A8983-others-120-1    62.274710888086645</span><br><span class="line">9C4A2116-others-200-2    70.14322385072398</span><br><span class="line">AG8A7051-others-80-1    57.516073643446866</span><br><span class="line">AG8A2937-others-280-1    62.947978191196626</span><br><span class="line">9C4A8624-others-160-2    65.91278500140373</span><br><span class="line">AG8A9487-others-240-1    66.11429340057413</span><br><span class="line">AG8A8941-others-00-2    52.82890618336761</span><br><span class="line">9C4A8925-others-160-2    65.32055771938946</span><br><span class="line">9C4A9583-others-240-2   9C4A8624-others-320-1    50.22905621671314</span><br><span class="line"> 54.10787130177366</span><br><span class="line">9C4A2116-others-280-1    73.63896886593696</span><br><span class="line">AG8A4366-others-240-1    73.63896886593696</span><br><span class="line">9C4A9373-others-40-1    54.73488042832818</span><br><span class="line">9C4A6216-others-320-2    60.392608722473895</span><br><span class="line">AG8A0041-others-160-1    62.77734412061457</span><br><span class="line">9C4A8582-others-00-1    72.7796584112398</span><br><span class="line">AG8A9330-others-280-2    58.42274478888599</span><br><span class="line">AG8A7681-others-240-1    55.72359288919754</span><br><span class="line">AG8A9361-others-00-1    63.8254961244078</span><br><span class="line">9C4A8925-others-120-1    77.45842713113146</span><br><span class="line">AG8A0083-others-120-1    51.046937918071244</span><br><span class="line">9C4A8582-others-280-2    69.65373181055384</span><br><span class="line">9C4A6216-others-240-1    55.057804196312304</span><br><span class="line">AG8A9830-others-40-2    67.80562950082691</span><br><span class="line">9C4A8967-others-320-2    65.12713003817497</span><br><span class="line">9C4A9583-others-280-2    54.949444191393724</span><br><span class="line">9C4A6216-others-00-1    50.38907056264851</span><br><span class="line">AG8A9529-others-120-1    60.24433048485841</span><br><span class="line">AG8A9830-others-80-1    65.91278500140373</span><br><span class="line">AG8A9235-others-240-1    59.52106566873854</span><br><span class="line">AG8A7681-others-40-1    66.3179101202389</span><br><span class="line">AG8A9361-others-280-1    75.46667986552272</span><br><span class="line">9C4A9261-others-00-1    61.78550158595973</span><br><span class="line">9C4A2116-others-80-2    51.55999342944569</span><br><span class="line">9C4A6174-others-200-2    61.30912004791065</span><br><span class="line">AG8A9872-others-40-1    68.70856157408781</span><br><span class="line">9C4A8365-others-120-1    55.057804196312304</span><br><span class="line">AG8A0159-others-200-1    50.632383277580864</span><br><span class="line">9C4A8967-others-80-1    60.097283122808314</span><br><span class="line">9C4A8925-others-80-1    62.11018141933448</span><br><span class="line">9C4A8673-others-40-1    63.6466598767675</span><br><span class="line">9C4A9835-others-280-1    55.057804196312304</span><br><span class="line">AG8A7261-others-280-2    68.47899946200108</span><br><span class="line">9C4A1203-others-00-1    55.61072681522241</span><br><span class="line">9C4A9877-others-00-1    57.018947149273814</span><br><span class="line">9C4A7619-others-00-1    61.46652084417405</span><br><span class="line">AG8A0697-others-320-2    54.21067904036069</span><br><span class="line">9C4A8239-others-320-1    68.02757980392502</span><br><span class="line">AG8A3897-others-40-1    58.96321322763749</span><br><span class="line">9C4A8582-others-80-1    65.51595327495049</span><br><span class="line">9C4A9261-others-320-2    68.70856157408781</span><br><span class="line">9C4A6723-others-120-1    57.516073643446866</span><br><span class="line">AG8A9193-others-200-1    56.41758314133693</span><br><span class="line">AG8A9788-others-200-1    59.23990777528832</span><br><span class="line">9C4A8715-others-200-1    66.3179101202389</span><br><span class="line">9C4A8715-others-280-1    73.06229877077423</span><br><span class="line">AG8A9788-others-80-1    65.12713003817497</span><br><span class="line">AG8A0159-others-280-1    68.25202044003838</span><br><span class="line">9C4A8673-others-80-1    64.00604986249729</span><br><span class="line">AG8A9872-others-80-1    71.15840799045587</span><br><span class="line">9C4A8582-others-240-1    69.65373181055384</span><br><span class="line">9C4A2158-others-280-1    73.63896886593696</span><br><span class="line">AG8A8899-others-200-1    51.91194607304803</span><br><span class="line">AG8A9487-others-80-2    57.770232868617896</span><br><span class="line">AG8A9330-others-00-1    65.32055771938946</span><br><span class="line">AG8A2811-others-200-1    61.30912004791065</span><br><span class="line">AG8A8603-others-240-1    53.40629634227548</span><br><span class="line">AG8A9529-others-40-1    50.96310262486813</span><br><span class="line">9C4A8239-others-00-1    73.63896886593696</span><br><span class="line">AG8A9445-others-280-2    66.52367512570203</span><br><span class="line">AG8A9704-others-200-2    58.42274478888599</span><br><span class="line">AG8A9529-others-240-1    67.58612249688619</span><br><span class="line">AG8A9704-others-00-1    66.52367512570203</span><br><span class="line">AG8A9109-others-320-1    65.51595327495049</span><br><span class="line">AG8A9193-others-240-1    51.82319181513371</span><br><span class="line">AG8A9487-others-200-1    67.58612249688619</span><br><span class="line">AG8A3897-others-80-1    62.947978191196626</span><br><span class="line">9C4A8239-others-120-1    53.703169352270685</span><br><span class="line">AG8A2937-others-320-1    77.45842713113146</span><br><span class="line">AG8A9487-others-280-1    64.18834940534127</span><br><span class="line">AG8A4366-others-200-1    74.53378341049564</span><br><span class="line">AG8A9361-others-40-2    56.89693094853549</span><br><span class="line">9C4A2074-others-280-1    56.29987194255647</span><br><span class="line">AG8A1806-others-280-1 AG8A9830-others-00-1    51.21602499759086</span><br><span class="line">   55.72359288919754</span><br><span class="line">AG8A9025-others-80-1    50.308846581013185</span><br><span class="line">AG8A7051-others-40-1    50.070755389724226</span><br><span class="line">9C4A8540-others-240-2    57.64268123863262</span><br><span class="line">AG8A9582-others-40-1    53.30857310427664</span><br><span class="line">AG8A9830-others-120-1    64.55831734135951</span><br><span class="line">AG8A7051-others-120-1    57.770232868617896</span><br><span class="line">9C4A8673-others-320-1    52.64110142130879</span><br><span class="line">AG8A0697-others-120-2    53.40629634227548</span><br><span class="line">AG8A8983-others-240-1    52.73471745690875</span><br><span class="line">AG8A9529-others-160-2    57.770232868617896</span><br><span class="line">9C4A8715-others-240-1    76.11116288715907</span><br><span class="line">9C4A8624-others-200-1    65.51595327495049</span><br><span class="line">AG8A8983-others-160-1    61.46652084417405</span><br><span class="line">9C4A8925-others-280-1    65.12713003817497</span><br><span class="line">AG8A7135-others-320-1    51.046937918071244</span><br><span class="line">9C4A6723-others-80-1    64.00604986249729</span><br><span class="line">AG8A9788-others-320-1    63.8254961244078</span><br><span class="line">9C4A9709-others-280-1    66.11429340057413</span><br><span class="line">9C4A8925-others-00-1    79.26268618502056</span><br><span class="line">9C4A9835-others-120-2    62.947978191196626</span><br><span class="line">AG8A9872-others-120-1    59.23990777528832</span><br><span class="line">9C4A8673-others-00-1    61.94711944112786</span><br><span class="line">AG8A9151-others-120-1    60.097283122808314</span><br><span class="line">AG8A9025-others-120-1    62.77734412061457</span><br><span class="line">9C4A8673-others-120-1    61.30912004791065</span><br><span class="line">9C4A9709-others-120-1    56.29987194255647</span><br><span class="line">AG8A0251-others-00-1    57.26567409864556</span><br><span class="line">9C4A8624-others-120-1    64.74604133176966</span><br><span class="line">9C4A8967-others-280-1    60.84499975427419</span><br><span class="line">9C4A9625-others-320-1    61.6253119608176</span><br><span class="line">AG8A0655-others-160-1    50.55083591566897</span><br><span class="line">AG8A0697-others-00-1    51.13124427466885</span><br><span class="line">9C4A9373-others-200-1    70.6446173180134</span><br><span class="line">AG8A7681-others-120-2    61.6253119608176</span><br><span class="line">AG8A9372-others-200-1    56.775796094339576</span><br><span class="line">9C4A8582-others-40-1    70.6446173180134</span><br><span class="line">AG8A1932-others-200-2    50.070755389724226</span><br><span class="line">9C4A7787-others-00-1    54.628659258679996</span><br><span class="line">AG8A4366-others-160-1    61.6253119608176</span><br><span class="line">9C4A2158-others-320-1    56.18299192134972</span><br><span class="line">AG8A9746-others-40-1    69.65373181055384</span><br><span class="line">9C4A6723-others-40-1    52.272202347256666</span><br><span class="line">AG8A9704-others-280-1    61.94711944112786</span><br><span class="line">AG8A9704-others-240-1   9C4A9835-others-160-1     53.114931278458094</span><br><span class="line">63.6466598767675</span><br><span class="line">MyThread17 :11</span><br><span class="line">MyThread12 :15AG8A9445-others-320-2</span><br><span class="line">    63.120202854156545</span><br><span class="line">AG8A9330-others-320-1    71.95351091236348</span><br><span class="line">MyThread5 :13</span><br><span class="line">MyThread0 :6</span><br><span class="line">MyThread6 :12</span><br><span class="line">MyThread10 :6</span><br><span class="line">MyThread7AG8A1932-others-240-1    66.94180564168063 :17</span><br><span class="line"></span><br><span class="line">MyThread13 :13</span><br><span class="line">MyThread18 :9</span><br><span class="line">MyThread1 :11</span><br><span class="line">MyThread3 :13</span><br><span class="line">9C4A8673-others-280-2 AG8A0293-others-240-1    61.94711944112786</span><br><span class="line">   57.64268123863262</span><br><span class="line">MyThread11 :10</span><br><span class="line">MyThread15 :11</span><br><span class="line">MyThread16 :7</span><br><span class="line">MyThread4 :20</span><br><span class="line">MyThread8 :14</span><br><span class="line">MyThread2 :15</span><br><span class="line">MyThread19 :11</span><br><span class="line">MyThread9 :13</span><br><span class="line">MyThread14 :15</span><br><span class="line">(emlight) jixinlong@ubun:~/Illumination-Estimation-1/RegressionNetwork/representation$ ls tmp|wc -l</span><br><span class="line">191</span><br></pre></td></tr></table></figure>
+
+<p>有191张，且绝大部分是太暗的，需要用50~70的系数重曝光。坏数据在数据集上的分布基本均匀。</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我对神经网络的理解</title>
+    <url>/2023/02/20/%E6%88%91%E5%AF%B9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以实际用起来，或许一直都不能用。”</p>
+<h1 id="仿生学"><a href="#仿生学" class="headerlink" title="仿生学"></a>仿生学</h1><p>但是那本书里说到神经网络是模仿大脑里相互连接的神经元的。信号在神经元之间传导，人因此能够识别万物，能够判断是非，能有情感。所以我本科早期曾对这种计算机科学与脑科学、心理学交叉的研究课题感兴趣。当时年轻气盛，一开始就瞄准AI的终极目标AGI（强人工智能）。我现在仍然觉得用机器仿制人类智能和情感这项伟大的事业，倘若缺失能在符号主义深邃的理论里开拓的人，那么最先的突破口应该是人工神经网络。直接从仿生学上模仿人类大脑的结构，够唯物主义，够简单粗暴。多说一句，目前在电脑里深度学习框架上跑的神经网络，实际上还是依靠硅基计算机的内存和速度，这个速度和人类大脑中信号传导速度（化学信号）比起来可能还是不够快。所以我觉得本科时候一位造预警机的院士讲得很对：神经网络最终应该用量子或者其他什么更微观的物质来构建，才能高速运转，性能接近人类大脑。</p>
+<p>所以你看，从仿生学上看，神经网络不仅有依据、有人信，能力还远不止人脸识别、目标检测这种弱AI应用。人家一开始瞄准的是AGI伟大事业。</p>
+<h1 id="统计模式识别"><a href="#统计模式识别" class="headerlink" title="统计模式识别"></a>统计模式识别</h1><p>但是，目前神经网络遍地开花的领域，主要还是各种人脸识别一类的应用。那么在这些更接地气的研究中，神经网络有什么更接地气的解释呢？<br>我觉得至少还可以从统计模式识别和数学建模的角度来看。之所以用两个课程名，是因为这两个课程我上过，很多人肯定也上过，能开课的内容一般都是公认的具有科学性的内容。统计模式识别讲的是如何运用各种技巧来清洗数据、获取特征、处理特征、完成识别任务。其核心是特征。所谓的特征，就是我想识别一个物体，这个物体应该有什么与众不同的地方，能让我将其与其他万事万物相区别。譬如做人脸识别，脸部应当有眉毛、鼻子、眼睛、嘴唇，且这些线条的相对位置关系是固定的。去读（神经网络之前的）经典统计模式识别论文中的做人脸识别的论文(Rapid object detection using a boosted cascade of simple features)，你会发现他的核心还是用下面这样的模板来匹配脸部的特征：<br><img src="/../images/990517-fig-4-source-large.gif" alt="脸部特征模板"><br>而神经网络，例如CNN，其前部的层一般都是用于提取特征的。提取特征用的是各种形状的卷积核，这些卷积核就先相当于上图里的各种模板。在阅读论文的时候，常常看到直接把别人在大规模图片数据集上训练好“预训练模型”拿过来作为网络的全部或前部，在别人的基础上接着训练的做法。这就是因为训练好的网络通常具有抽取图像特征的能力，这种能力可以直接被新的网络借用。</p>
+<h1 id="数学建模"><a href="#数学建模" class="headerlink" title="数学建模"></a>数学建模</h1><p>很多研究工作可以用建模解决。譬如做分类任务，可以看成给定一个样本X，要求输出样本所属类别Y。这就是一种数学建模。那么研究的目标就是用尽方法探知Y与X的关系。关系无非两种：线性关系和非线性关系。倘若我们对这个分类任务较为了解，掌握很多先验，我们就能猜出X与Y大概属于哪种关系，不确定的就是一些系数细节。系数待定，并可以通过大量已知的数据样本回归出来，统计模式识别里这种回归通常叫“训练”。而神经网络就比较简单粗暴了，它直接用全连接表示X经过线性变换得到Y，用激活函数表示非线性变换，并在网络里反复叠加线性层和非线性层，增加网络深度和广度。只要网络足够深和广，其理论上能表征的X与Y的关系表达式就越多。最后借助GPU，暴力求解权重和偏移，存储于网络结构上的Y&#x3D;f(X)。</p>
+]]></content>
+      <tags>
+        <tag>神经网络</tag>
       </tags>
   </entry>
   <entry>
@@ -501,13 +775,13 @@
 </li>
 <li><p>图2-重建<br><img src="/../images/AG8A9396-others-240-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
 </li>
-<li><p>图2<br><img src="/images/AG8A9438-others-280-2.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+<li><p>图2<br><img src="/../images/AG8A9438-others-280-2.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
 </li>
-<li><p>图3-重建<br><img src="/images/AG8A9438-others-280-2_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+<li><p>图3-重建<br><img src="/../images/AG8A9438-others-280-2_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
 </li>
-<li><p>图4<br><img src="/images/AG8A9704-others-40-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+<li><p>图4<br><img src="/../images/AG8A9704-others-40-1.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
 </li>
-<li><p>图4-重建<br><img src="/images/AG8A9704-others-40-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
+<li><p>图4-重建<br><img src="/../images/AG8A9704-others-40-1_rec.png" alt="C:\Users\ji_xi\Desktop\9C4A7069-others-280-1"></p>
 </li>
 </ul>
 <p>可以看出5阶球谐系数能反映全景图的低频光照信息，成分上接近环境光。但是无法表示昏暗环境下的光源强度，这是SH光照模型的弱点。<br>Garon在其文章<a href="https://ieeexplore.ieee.org/document/8954392/">Fast Spatially-Varying Indoor Lighting Estimation</a>中也用的是5阶球谐系数，他测试了3阶到8阶的SH，认为5阶SH达到了效率和效果的平衡，最适合他的工作：</p>
@@ -532,6 +806,158 @@
 ]]></content>
       <tags>
         <tag>SH</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo迁移加速</title>
+    <url>/2023/02/05/Hexo%E8%BF%81%E7%A7%BB%E5%8A%A0%E9%80%9F/</url>
+    <content><![CDATA[<h1 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h1><p>之前的hexo是创建在国内的腾讯云上的，当时撸羊毛，学生机一年40。眼看着要到期了，打算把博客环境迁移到国外的一台小主机上。主要那台小主机我本来就有，是刚需，且价格一年70左右，比腾讯云良心很多。</p>
+<p>迁移的主要原因是网站的访问速度太慢了，有人反映半天加载不出来。托管在github上的网页确实是这样的，网速时好时坏。所以我打算把网页直接运行在自己的国外主机上，然后用cloudflare的cdn给网站加速、加密，这样比Github绝对是要快的。</p>
+<h1 id="网络代理"><a href="#网络代理" class="headerlink" title="网络代理"></a>网络代理</h1><p>国外的小主机，ip已经被封死了。为了能ssh到它，需要挂梯子，然后在本机上走网络代理去ssh它。<br>xshell自带网络代理功能，但是我的编辑器vscode没有自带的网络代理。写博客vscode又必不可少。所以我搜了些文章，给vscode的国外主机远程配置里边添了一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#走代理</span><br><span class="line">ProxyCommand ncat --proxy-type socks5 --proxy 127.0.0.1:10808 %h %p </span><br></pre></td></tr></table></figure>
+<p>这里的ncat是一个软件，我看过了，必须安装它。然后端口根据个人情况，一般梯子里都会看到本地socks5是哪个端口。</p>
+<p>这一行添加之后，就可以用vscode远程ip被墙的主机了。</p>
+<h1 id="Hexo工程迁移"><a href="#Hexo工程迁移" class="headerlink" title="Hexo工程迁移"></a>Hexo工程迁移</h1><p>Hexo的工程文件都还是在本地的，只有public文件夹下生成的静态文件是托管在github的，所以不能直接从Github克隆整个hexo工程。</p>
+<p>最简单的方法是直接拷贝包含以下几个重要的文件、目录的Hexo文件夹到到新的机器上，其他的都丢掉：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_config.yml</span><br><span class="line">package.json </span><br><span class="line">scaffolds/ </span><br><span class="line">source/</span><br><span class="line">themes/</span><br></pre></td></tr></table></figure>
+<p>然后重复之前的工作，安装node&#x2F;npm&#x2F;hexo-cli…<br>这个时候hexo-deployer-git其实没必要装了，想装也能装。<br>由于新主机是国外的，各种源也都是国外的，这次直接参考<a href="https://blog.csdn.net/weixin_42176112/article/details/122200295">这篇文章</a>里的第一个nvm方法，直接从就把node和npm装好了，速度快得一批，不像之前在腾讯云上遇到各种问题。<br>此时，hexo工程就已经完整的迁移好了。</p>
+<h1 id="用nginx部署Hexo"><a href="#用nginx部署Hexo" class="headerlink" title="用nginx部署Hexo"></a>用nginx部署Hexo</h1><p>原本以为直接在新机器上<code>hexo s -p 80</code>就能搞定，结果试了下没这么简单。搜了一下，基本都用了nginx，有修改hexo自身文件的方法，我不想改动hexo自身的文件太多。</p>
+<ul>
+<li>先下载nginx</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt install nginx</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>看看配置文件在哪<br>-t 是test的意思，让nginx测试一下自己的配置对不对。会显示配置文件的位置“&#x2F;etc&#x2F;nginx&#x2F;nginx.conf”。vscode里直接单击这个文件，就能打开编辑。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@racknerd-88d4c8:~/blog# nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改nginx配置</li>
+</ul>
+<p>首先，把第一行改成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user root;</span><br></pre></td></tr></table></figure>
+<p>因为我的博客都放在root目录下。</p>
+<p>然后，在<code>http &#123;...&#125;</code>里边加上一段：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name www.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/blog/public/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重点是端口443，域名设置，ssl证书位置（我的证书虽然名字是二级域名，但是实际上是通用域名，适用所有的*.jixinlong.top（我的猜的））。</p>
+<p>重中之重是站点目录，要写到public目录下。假如还想实现http自动跳转https，再加下边一段，和上边的并列。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 80;</span><br><span class="line">	server_name  www.jixinlong.top;</span><br><span class="line">	rewrite ^(.*)$ https://$&#123;server_name&#125;$1 permanent; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，<code>service nginx restart</code>，开启nginx。此nginx服务运行在国外主机的443端口后，并能将80端的访问改到443。外置cloudflare的cdn加速解析，将域名<a href="http://www.jixinlong.top解析到主机ip:443上。```sudo">www.jixinlong.top解析到主机ip:443上。```sudo</a> systemctl enable nginx&#96;&#96;&#96;可以设置nginx开机自启动。</p>
+<p>爷从此和腾讯云说拜拜了。</p>
+<h1 id="用nginx部署其他服务"><a href="#用nginx部署其他服务" class="headerlink" title="用nginx部署其他服务"></a>用nginx部署其他服务</h1><p>上一节中，nginx被配置成监听443端口，并让443端口和系统位置“&#x2F;root&#x2F;blog&#x2F;public&#x2F;”下的静态网页关联起来，实现nginx对hexo所生成的静态的网页的代理。该方法实际上是用自己的nginx服务替换了github pages的托管服务。</p>
+<p>nginx还可以有其他代理方式。例如，也可以直接执行<code>hexo s</code>命令，让hexo运行一个在4000端口后的网页服务。然后将域名<a href="http://www.jixinlong.top在443上的location改成：">www.jixinlong.top在443上的location改成：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">	location / &#123;</span><br><span class="line">		proxy_pass http://127.0.0.1:8000;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样便很容易的将<a href="https://www.jixinlong.top和本地已经能成功运行的hexo自带服务器关联起来.hexo仅负责提供网页内容,https所需要的证书依然是在nginx中配置./">https://www.jixinlong.top和本地已经能成功运行的hexo自带服务器关联起来。hexo仅负责提供网页内容，https所需要的证书依然是在nginx中配置。</a></p>
+<p>受此启发，一个服务器上便可以架设更多的服务或应用，这些服务先都在本地不同端口下调试成功。同时，设定不同的域名来对应不同的服务，虽然这些域名解析到同一个ip，但是可以在nginx里设置，让他们对应上服务器上不同端口后的服务。例如，<a href="http://www.jixinlong.top用于个人博客,master.jixinlong.top用于挂导师评价网的静态文件/">www.jixinlong.top用于个人博客，master.jixinlong.top用于挂导师评价网的静态文件</a>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name jump.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	# return 500;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/blog/public/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name master.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	# return 500;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/导师评价/html/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>!!! 1 注意，在原先已经为jump.jixinlong.top配置过ssl证书的基础上，新增二级域名来对应服务器上新的服务时，无需重新申请ssl证书，只需要在域名解析那里用一个CNAME记录将新域名指向原域名。即：</p>
+<p>jump.jixinlong.top（申请ssl证书）–&gt; 真实ip    https访问网站成功</p>
+<p>再添加功能：<br><a href="http://www.jixinlong.top/">www.jixinlong.top</a> –&gt; jump.jixinlong.top  nginx代理<a href="http://www.jixinlong.top/">www.jixinlong.top</a><br>master.jixinlong.top –&gt; jump.jixinlong.top  nginx代理master.jixinlong.top</p>
+<p>nginx检查第一次输入CNAME前的域名来区分不同的服务，而ssl证书主要看CNAME的最终域名。</p>
+<h1 id="禁用IP直接访问网站"><a href="#禁用IP直接访问网站" class="headerlink" title="禁用IP直接访问网站"></a>禁用IP直接访问网站</h1><p>网站到IP的解析已经被加密。<br>为了防止IP暴露时有人反向试探出该IP上的网站，需要在nginx里设置禁用IP直接访问网站。<strong>单独添加</strong>以下两段：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#http</span><br><span class="line">server &#123;</span><br><span class="line">	listen 80 default_server;</span><br><span class="line">	server_name  _; #禁止ip方式访问网站</span><br><span class="line">	return 403;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># https </span><br><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl default;#default表示该端口确定，但是域名、证书等不确定时都显示此服务。</span><br><span class="line">	server_name _;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	return 403;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>其含义是，涉及80端口和443端口上的访问默认展示403界面。配合着其他“server”段对 域名-代理端口-服务地址或端口 的明确指定，就能保住用户指定的域名访问之外所有访问都返回以403。</p>
+]]></content>
+      <tags>
+        <tag>ubuntu</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SOME IDEAS</title>
+    <url>/2023/03/06/SOME-IDEAS/</url>
+    <content><![CDATA[<ol>
+<li>emlight:目前intensity一项难以收敛，可能是loss设计的缺少内在逻辑。所以怎样设计能让它更好的收敛呢？</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>ideas</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据可视化tensorboard</title>
+    <url>/2023/02/27/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96tensorboard/</url>
+    <content><![CDATA[<p>数据可视化，指的是训练神经网络过程中对loss、preview等做出的记录和展示。</p>
+<h1 id="为什么需要可视化"><a href="#为什么需要可视化" class="headerlink" title="为什么需要可视化"></a>为什么需要可视化</h1><p>我曾经有很长一段时间是闭着眼睛训练的。原因是初出茅庐，拿到开源的代码之后虔诚学习，不敢改动，生怕代码被我改坏了。于是便按照github上的指示输入类似“python3 train.py”的进行训练。论文已经开源的代码通常能够训练出收敛的效果，因为中间探索正确训练参数的过程已经由论文作者一个人走过了，其中的艰辛甚至不必写入论文。最终只需要把探索过程所用的代码删去，保留美丽的最终成果，挂到github上，并告诉追随者“汝只需输入这样一行训练指令，训练xxx个epoch，便可以证实我论文中说的结果是对的”。</p>
+<p>假如只是复现，后来者确实可以这样闭着眼睛训练出成果。但问题是假如我已经熟读那份开源代码，觉得它有些地方可以改进，但改进之后势必产生不同的训练结果，我又需要观察训练过程中loss是否收敛，训练中实时的效果展示，该怎么做呢？或者有的人就算不改动代码，也想亲眼看看loss收敛下降那美丽的过程，该怎么做呢？</p>
+<h1 id="用tensorboard"><a href="#用tensorboard" class="headerlink" title="用tensorboard!"></a>用tensorboard!</h1><p>tensorboard本是tensorflow的一个组件。现在很多训练用的是pytorch，pytorch也可以用tensorboard来可视化。使用方法可以参照这篇：<a href="https://zhuanlan.zhihu.com/p/103630393">PyTorch下的Tensorboard 使用</a></p>
+<h2 id="loss"><a href="#loss" class="headerlink" title="loss"></a>loss</h2><p>具体操作的时候，比方说我想确定一个自创的网络模型，应当使用多大的学习率lr比较好，那么我就设立多次对比试验，每次存到一个单独的文件夹下：</p>
+<p>\tf-logs\lr&#x3D;0.001<br>\tf-logs\lr&#x3D;0.01<br>……</p>
+<p>但是在写入loss的时候，都写入同一个loss里：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#loss输出到tensorboard可视化</span><br><span class="line">writer.add_scalar(&#x27;shlight_loss/total_loss&#x27;, loss, epoch)</span><br></pre></td></tr></table></figure>
+
+<p>最终效果就像这样：<br><img src="/../images/tensorboard%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="tensorboard"></p>
+<p>将两次（lr不同的）训练结果绘制到同一张图里。可以清晰地看出两种lr设定下loss下降的快慢高低。<br>其中，total_loss子图是shlight_loss图的一部分。只改变total_loss，但是“shlight_loss&#x2F;”保持不变，都会绘制到shlight_loss类别下。</p>
+<h2 id="preview"><a href="#preview" class="headerlink" title="preview"></a>preview</h2><p>多次训练的preview可以统一写成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">writer.add_image(&#x27;preview&#x27;, np.array(im), epoch, walltime=None, dataformats=&#x27;HWC&#x27;) ###当前训练的preview图示仅仅保存最新的几十张</span><br><span class="line">            </span><br></pre></td></tr></table></figure>
+<p>这样的效果是：</p>
+<p><img src="/../images/tensorboard-preview%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="preview"></p>
+<h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><h2 id="tensorboard的版本"><a href="#tensorboard的版本" class="headerlink" title="tensorboard的版本"></a>tensorboard的版本</h2><p>tensorboard的版本需要固定。旧版本tensorboard写入的log用新版本tensorboard很可能就看不了了，反之亦然。</p>
+<p>由于训练很长，或者训练新的项目会搭建新的环境，tensorboard的版本就很容易被改变。这时候要尽量保证tensorboard的版本在写log和读取log时一致。</p>
+<h2 id="与tensorflow的关系"><a href="#与tensorflow的关系" class="headerlink" title="与tensorflow的关系"></a>与tensorflow的关系</h2><p>tensorboard本身是tensorflow的一部分。假如环境中原本有新版本tensorboard，再安装一个旧版本的tensorflow就会把tensorboard版本连带退回到旧版本。</p>
+<p>这时候kill掉之前后台运行的新版本tensorboard，并重新运行tensorboard，后台中跑的就是旧版本tensorboard。再试图用旧版本tensorboard读取之前新版本tensorboard写入的那些log，你将面对一片空白，啥也看不到。</p>
+<p><strong>所以，当环境中已经有了tensorboard，且已经用它写过很多log，这时候安装tensorflow就要小心了。最好新建一个全新的环境安装tensorflow，写入和读取log都在新环境里做，和旧的环境隔离。</strong></p>
+<h2 id="tensorboard不是tensorboard"><a href="#tensorboard不是tensorboard" class="headerlink" title="tensorboard不是tensorboard"></a>tensorboard不是tensorboard</h2><p>仅仅运行一句<code>pip install tensorboard==2.0.2</code>，安装的就仅仅是这一个包。</p>
+<p>但是单独这个包可能没法完成log写入和读取。</p>
+<p>因为执行<code>pip install tensorboard</code>，你会发现装了三个包：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tensorboard              2.11.2</span><br><span class="line">tensorboard-data-server  0.6.1</span><br><span class="line">tensorboard-plugin-wit   1.8.1</span><br></pre></td></tr></table></figure>
+
+<p>所以，假如你的tensorboard没法读取之前写的log了，你要同时确认以上三个包在曾经和现在的版本是否一致。我就是往之前的环境里装tensorflow导致tensorboard读不了log了，手动把以上三个包都卸掉之后，回顾了之前的<a href="https://zhuanlan.zhihu.com/p/103630393">教程</a>，但是只安装了tensorboard&#x3D;&#x3D;2.0.2，发现还是打不开log。最终看了之前用过的另一台服务器上的pip list，发现tensorboard是由以上三个包共同组成的。重新pip install tensorboard不加版本号，自动安装三个包，才把问题解决。</p>
+]]></content>
+      <tags>
+        <tag>神经网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>x-ui高级设定</title>
+    <url>/2023/02/17/x-ui%E9%AB%98%E7%BA%A7%E8%AE%BE%E5%AE%9A/</url>
+    <content><![CDATA[<p>x-ui是基于xray的套壳管理面板，优点是用起来简单，缺点是每个端口只能设定一个uuid，无法在分享给其他人使用的时候防止滥用，也无法精确监控每个用户的使用情况。</p>
+<p>下面给出一些思路：</p>
+<h1 id="使用者身份设定"><a href="#使用者身份设定" class="headerlink" title="使用者身份设定"></a>使用者身份设定</h1><ul>
+<li>假定使用者是某个学校校园网内的全体学生，那么可以利用校园网来限定使用者身份。</li>
+</ul>
+<ol>
+<li><p>将订阅链接在公网上公开，但是订阅链接的内容只能在内网中成功订阅。方法是在内网运行一个服务器专门发布订阅链接的内容。外加是不是的更新节点内容，这样就能保证只有内网的用户才能用到服务。</p>
+</li>
+<li><p>校园网在公网上一般是一个公网ip区间，倘若能探明这个区间，就能直接从节点、订阅层面限定使用者范围。从订阅层面，同上，在nginx里可以设定订阅链接的内容仅某些ip可访问。从节点层面，可以在xray之前统一经过443端口的nginx反代，由nginx检查使用者的ip。</p>
+</li>
+</ol>
+<ul>
+<li>可以利用校园邮箱来限定使用者身份。<br>为了保护隐私，用邮箱验证需要先自建一个邮箱系统。</li>
+</ul>
+<ol>
+<li>手动验证。要求使用者用校园邮箱发送申请，邮件里包含一个合法的uuid，然后管理员将此uuid添加到后台。目前的x-ui原版的config.json是每次restart时被x-ui.db覆盖的，而x-ui.db不支持一个端口多个用户。所以需要另起config1.json，放在原config一起，让xray启动时合并读取config；还有fork版本的x-ui，支持单个端口后多用户的设定，可以用。</li>
+<li>自动验证。所有的操作最后都应该自动化。可以想办法将邮件内容接收、uuid读取、config添加等工作写成代码，用合并读取config的方式来完成这个工作。</li>
+</ol>
+<h1 id="匿名交易"><a href="#匿名交易" class="headerlink" title="匿名交易"></a>匿名交易</h1><p>倘若需要匿名交易功能，可能需要使用paypal。</p>
+<h1 id="acme-sh自动设置域名"><a href="#acme-sh自动设置域名" class="headerlink" title="acme.sh自动设置域名"></a>acme.sh自动设置域名</h1><p>x-ui支持自动下载acme.sh脚本并用该脚本申请ssl证书。该脚本会自动更新证书，且每次拷贝新证书到&#x2F;root&#x2F;cert下。</p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
+<li>每次用acme.sh脚本申请证书，所用域名都会被acme.sh记录。即使这个域名以后作废了，acme.sh也会为其自动更新证书。</li>
+<li>申请的证书有fullchain.cer和xxx.xxxx.cer两种公钥，如果是给网站使用的话，用前面一个，前者包含了后者。</li>
+<li>有一次我发现ws+tls类型的节点失效了，更新了证书节点仍然无效。后来重启x-ui解决了问题，原因可能是：<br>  x-ui在启动时会自动读取一次证书，并缓存该证书。后期更新证书并吊销旧证书，x-ui使用的仍然是旧的，这就导致tls类型节点无效。解决方法就是重启x-ui。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>vpn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>没有管理员权限也能安装软件</title>
+    <url>/2023/02/01/%E6%B2%A1%E6%9C%89%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90%E4%B9%9F%E8%83%BD%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/</url>
+    <content><![CDATA[<p>实验室的服务器是大家共用的，一人一个账号。</p>
+<p>为了数据和代码的安全，通常某个师兄&#x2F;师姐负责维护服务器，他的账号拥有管理员权限，能sudo。其他师弟&#x2F;师妹们都是普通账号，不能sudo。</p>
+<p>现在python用得很频繁，很多磕盐上的需求在python内部都能解决了，根本不涉及ubuntu系统权限的问题。git等常用工具，管理员也都体贴地预先安装好了。可是仍然有时候会用到一些不常用的软件，不好意思去麻烦师兄单独安装它；网上铺天盖地的sudo apt-get install大法，我又没有sudo的权限，怎么办呢？</p>
+<p>其实很多软件考虑到使用者可能没有系统的管理员权限，都是支持二进制代码形式安装的。apt-get是系统级的，从某个仓库直接安装软件，必须用到sudo，用apt是行不通的。去软件的官网上去看其他的安装方式，或者直接搜索“xxx软件二进制安装”。</p>
+<p>举个例子，谷歌的编译工具bazel就提供了好几种安装方式，其中的“二进制安装”可以通过加“–user”参数的方式将bazel安装到用户目录下，仅需要用到用户级的权限：<br><img src="/../images/bazel%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85.png" alt="二进制安装"></p>
+<p>这就不需要sudo了。</p>
+]]></content>
+      <tags>
+        <tag>ubuntu</tag>
+        <tag>server</tag>
       </tags>
   </entry>
   <entry>
@@ -585,6 +1011,52 @@
       </tags>
   </entry>
   <entry>
+    <title>生活表</title>
+    <url>/2023/03/20/%E7%94%9F%E6%B4%BB%E8%A1%A8/</url>
+    <content><![CDATA[<ul>
+<li>工作日表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>时间段</th>
+<th>所做的事</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>上午</td>
+<td>实验室看论文、实验、作业</td>
+</tr>
+<tr>
+<td>中午</td>
+<td>午休</td>
+</tr>
+<tr>
+<td>下午</td>
+<td>实验室看论文、实验、作业</td>
+</tr>
+<tr>
+<td>晚饭后</td>
+<td>健身，百词斩</td>
+</tr>
+<tr>
+<td>健身后</td>
+<td>看书看剧打游戏，python C++ 力扣</td>
+</tr>
+</tbody></table>
+<ul>
+<li>非工作日表<ul>
+<li>出去玩</li>
+<li>托福</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>腾讯云安装Cloudron&amp;&amp;mc服务器踩坑</title>
     <url>/2023/01/22/%E8%85%BE%E8%AE%AF%E4%BA%91%E5%AE%89%E8%A3%85Cloudron&amp;&amp;mc%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B8%A9%E5%9D%91/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>国内外销售云服务器的商家在提供各种原版系统镜像的同时，也会提供一些预装了某种受欢迎的软件、应用或环境的“应用镜像”。</p>
@@ -620,18 +1092,52 @@
       </tags>
   </entry>
   <entry>
-    <title>没有管理员权限也能安装软件</title>
-    <url>/2023/02/01/%E6%B2%A1%E6%9C%89%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90%E4%B9%9F%E8%83%BD%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6/</url>
-    <content><![CDATA[<p>实验室的服务器是大家共用的，一人一个账号。</p>
-<p>为了数据和代码的安全，通常某个师兄&#x2F;师姐负责维护服务器，他的账号拥有管理员权限，能sudo。其他师弟&#x2F;师妹们都是普通账号，不能sudo。</p>
-<p>现在python用得很频繁，很多磕盐上的需求在python内部都能解决了，根本不涉及ubuntu系统权限的问题。git等常用工具，管理员也都体贴地预先安装好了。可是仍然有时候会用到一些不常用的软件，不好意思去麻烦师兄单独安装它；网上铺天盖地的sudo apt-get install大法，我又没有sudo的权限，怎么办呢？</p>
-<p>其实很多软件考虑到使用者可能没有系统的管理员权限，都是支持二进制代码形式安装的。apt-get是系统级的，从某个仓库直接安装软件，必须用到sudo，用apt是行不通的。去软件的官网上去看其他的安装方式，或者直接搜索“xxx软件二进制安装”。</p>
-<p>举个例子，谷歌的编译工具bazel就提供了好几种安装方式，其中的“二进制安装”可以通过加“–user”参数的方式将bazel安装到用户目录下，仅需要用到用户级的权限：<br><img src="/../images/bazel%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E8%A3%85.png" alt="二进制安装"></p>
-<p>这就不需要sudo了。</p>
+    <title>用blender渲染物体并将渲染结果插入到图片中</title>
+    <url>/2023/04/07/%E7%94%A8blender%E6%B8%B2%E6%9F%93%E7%89%A9%E4%BD%93%E5%B9%B6%E5%B0%86%E6%B8%B2%E6%9F%93%E7%BB%93%E6%9E%9C%E6%8F%92%E5%85%A5%E5%88%B0%E5%9B%BE%E7%89%87%E4%B8%AD/</url>
+    <content><![CDATA[<p>光照估计得到的全景环境贴图好不好，需要看渲染虚拟物体的效果。</p>
+<p>而渲染是一个比较复杂的事情，不如直接用专业的软件来做。</p>
+<p>这里记录了chatgpt对“教教我怎么用blender渲染物体并将渲染结果插入到图片中”的回答，经过实践，该方法可行。</p>
+<hr>
+<p>要在 Blender 中渲染物体并将渲染结果插入到图片中，可以按照以下步骤操作：</p>
+<pre><code>打开 Blender，创建或导入你想要渲染的物体。
+
+在场景中添加一个相机（如果没有的话）。在 3D 视图中，按 Shift + A，然后选择 Camera。将相机移动并定位至合适的角度。
+
+在场景中添加光源，如平行光、点光源或聚光灯，以便为渲染增添真实感。同样地，可以按 Shift + A 来添加光源。
+
+将背景图像导入 Blender。在右侧面板中，找到“输出属性”选项卡（类似于一个小电影拍摄器的图标）。展开 &quot;Post Processing&quot; 部分，勾选 &quot;Compositing&quot; 选项。
+
+点击顶部的 &quot;Compositing&quot; 工作区。确保 &quot;Use Nodes&quot; 复选框被勾选。在节点编辑器中，你会看到已经存在的 &quot;Render Layers&quot; 节点和 &quot;Composite&quot; 节点。
+
+按 Shift + A，从 &quot;Input&quot; 类别中添加一个 &quot;Image&quot; 节点。单击 &quot;Open&quot; 并找到你要作为背景的图片，然后单击 &quot;Open Image&quot;。
+
+现在你需要将渲染结果与背景图像合并。按 Shift + A，从 &quot;Color&quot; 类别中添加一个 &quot;Alpha Over&quot; 节点。将 &quot;Image&quot; 节点的 &quot;Image&quot; 输出连接到 &quot;Alpha Over&quot; 节点的 &quot;Image&quot; 输入，将 &quot;Render Layers&quot; 节点的 &quot;Image&quot; 输出连接到 &quot;Alpha Over&quot; 节点的 &quot;Image 2&quot; 输入。
+
+将 &quot;Alpha Over&quot; 节点的 &quot;Image&quot; 输出连接到 &quot;Composite&quot; 节点的 &quot;Image&quot; 输入。
+
+调整渲染设置。返回 &quot;Layout&quot; 工作区，在右侧面板的 &quot;输出属性&quot; 选项卡中设置分辨率、输出格式等。确保在 &quot;Output&quot; 部分中设置好输出路径和文件格式（例如，PNG 或 JPEG）。
+
+现在一切准备就绪，可以开始渲染了。点击顶部菜单栏的 &quot;Render&quot;，然后选择 &quot;Render Image&quot;。Blender 将开始渲染场景，并将渲染结果插入到背景图片中。
+
+渲染完成后，可以在 &quot;Image Editor&quot; 视图中查看结果。要保存渲染结果，请在 &quot;Image Editor&quot; 视图中点击 &quot;Image&quot; 菜单，然后选择 &quot;Save As&quot;。
+</code></pre>
+<p>按照这些步骤，你就可以在 Blender 中渲染物体并将渲染结果插入到图片中了。当然，你可能需要根据自己的需求进行一些细节调整，以获得理想的渲染结果。以下是一些建议，以帮助你优化渲染效果：</p>
+<pre><code>调整相机设置：在场景中选择相机，然后在右侧属性面板中找到 &quot;Camera&quot; 选项卡（一个相机图标）。在 &quot;Lens&quot; 部分，可以调整焦距、景深等相机参数，以获得更好的视觉效果。
+
+调整光源设置：选择光源后，可以在属性面板的 &quot;光源&quot; 选项卡中调整光源的颜色、强度、大小等参数。不同类型的光源具有不同的属性，尝试使用多种光源以获得最佳照明效果。
+
+使用 HDRI 图像进行环境照明：为了获得更真实的全局照明效果，可以使用 HDRI 图像。在 &quot;世界&quot; 属性选项卡（地球图标）中，展开 &quot;Surface&quot; 部分，点击 &quot;Color&quot; 属性旁边的小圆点，然后选择 &quot;Environment Texture&quot;。点击 &quot;Open&quot;，找到 HDRI 图像并导入。
+
+调整材质和纹理：为物体分配适当的材质和纹理，以增强渲染结果的真实感。在 &quot;材质&quot; 属性选项卡（一个红色圆球图标）中，可以添加新的材质，调整颜色、光泽度、透明度等参数。
+
+使用遮罩调整合成：如果需要更精细的控制合成过程，可以使用遮罩层。例如，可以在 &quot;Render Layers&quot; 节点中使用 &quot;Object Index&quot; 或 &quot;Material Index&quot; 输出作为遮罩，以便更精确地控制哪些部分应与背景图像混合。
+
+使用降噪和后期处理：在渲染设置中，可以启用降噪功能以减少渲染中的噪点。在 &quot;Compositing&quot; 工作区，可以添加各种后期处理节点，如 &quot;Blur&quot;、&quot;Color Balance&quot; 或 &quot;Glare&quot;，以提高最终渲染效果的质量。
+</code></pre>
+<p>通过尝试和调整这些设置，你可以在 Blender 中渲染物体并将渲染结果插入到图片中，从而获得更好的视觉效果。</p>
 ]]></content>
       <tags>
-        <tag>ubuntu</tag>
-        <tag>server</tag>
+        <tag>渲染</tag>
       </tags>
   </entry>
   <entry>
@@ -695,170 +1201,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo迁移加速</title>
-    <url>/2023/02/05/Hexo%E8%BF%81%E7%A7%BB%E5%8A%A0%E9%80%9F/</url>
-    <content><![CDATA[<h1 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h1><p>之前的hexo是创建在国内的腾讯云上的，当时撸羊毛，学生机一年40。眼看着要到期了，打算把博客环境迁移到国外的一台小主机上。主要那台小主机我本来就有，是刚需，且价格一年70左右，比腾讯云良心很多。</p>
-<p>迁移的主要原因是网站的访问速度太慢了，有人反映半天加载不出来。托管在github上的网页确实是这样的，网速时好时坏。所以我打算把网页直接运行在自己的国外主机上，然后用cloudflare的cdn给网站加速、加密，这样比Github绝对是要快的。</p>
-<h1 id="网络代理"><a href="#网络代理" class="headerlink" title="网络代理"></a>网络代理</h1><p>国外的小主机，ip已经被封死了。为了能ssh到它，需要挂梯子，然后在本机上走网络代理去ssh它。<br>xshell自带网络代理功能，但是我的编辑器vscode没有自带的网络代理。写博客vscode又必不可少。所以我搜了些文章，给vscode的国外主机远程配置里边添了一行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#走代理</span><br><span class="line">ProxyCommand ncat --proxy-type socks5 --proxy 127.0.0.1:10808 %h %p </span><br></pre></td></tr></table></figure>
-<p>这里的ncat是一个软件，我看过了，必须安装它。然后端口根据个人情况，一般梯子里都会看到本地socks5是哪个端口。</p>
-<p>这一行添加之后，就可以用vscode远程ip被墙的主机了。</p>
-<h1 id="Hexo工程迁移"><a href="#Hexo工程迁移" class="headerlink" title="Hexo工程迁移"></a>Hexo工程迁移</h1><p>Hexo的工程文件都还是在本地的，只有public文件夹下生成的静态文件是托管在github的，所以不能直接从Github克隆整个hexo工程。</p>
-<p>最简单的方法是直接拷贝包含以下几个重要的文件、目录的Hexo文件夹到到新的机器上，其他的都丢掉：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_config.yml</span><br><span class="line">package.json </span><br><span class="line">scaffolds/ </span><br><span class="line">source/</span><br><span class="line">themes/</span><br></pre></td></tr></table></figure>
-<p>然后重复之前的工作，安装node&#x2F;npm&#x2F;hexo-cli…<br>这个时候hexo-deployer-git其实没必要装了，想装也能装。<br>由于新主机是国外的，各种源也都是国外的，这次直接参考<a href="https://blog.csdn.net/weixin_42176112/article/details/122200295">这篇文章</a>里的第一个nvm方法，直接从就把node和npm装好了，速度快得一批，不像之前在腾讯云上遇到各种问题。<br>此时，hexo工程就已经完整的迁移好了。</p>
-<h1 id="用nginx部署Hexo"><a href="#用nginx部署Hexo" class="headerlink" title="用nginx部署Hexo"></a>用nginx部署Hexo</h1><p>原本以为直接在新机器上<code>hexo s -p 80</code>就能搞定，结果试了下没这么简单。搜了一下，基本都用了nginx，有修改hexo自身文件的方法，我不想改动hexo自身的文件太多。</p>
-<ul>
-<li>先下载nginx</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">apt install nginx</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>看看配置文件在哪<br>-t 是test的意思，让nginx测试一下自己的配置对不对。会显示配置文件的位置“&#x2F;etc&#x2F;nginx&#x2F;nginx.conf”。vscode里直接单击这个文件，就能打开编辑。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@racknerd-88d4c8:~/blog# nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>修改nginx配置</li>
-</ul>
-<p>首先，把第一行改成：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user root;</span><br></pre></td></tr></table></figure>
-<p>因为我的博客都放在root目录下。</p>
-<p>然后，在<code>http &#123;...&#125;</code>里边加上一段：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name www.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/blog/public/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>重点是端口443，域名设置，ssl证书位置（我的证书虽然名字是二级域名，但是实际上是通用域名，适用所有的*.jixinlong.top（我的猜的））。</p>
-<p>重中之重是站点目录，要写到public目录下。假如还想实现http自动跳转https，再加下边一段，和上边的并列。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 80;</span><br><span class="line">	server_name  www.jixinlong.top;</span><br><span class="line">	rewrite ^(.*)$ https://$&#123;server_name&#125;$1 permanent; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后，<code>service nginx restart</code>，开启nginx。此nginx服务运行在国外主机的443端口后，并能将80端的访问改到443。外置cloudflare的cdn加速解析，将域名<a href="http://www.jixinlong.top解析到主机ip:443上。">www.jixinlong.top解析到主机ip:443上。</a></p>
-<p>爷从此和腾讯云说拜拜了。</p>
-<h1 id="用nginx部署其他服务"><a href="#用nginx部署其他服务" class="headerlink" title="用nginx部署其他服务"></a>用nginx部署其他服务</h1><p>上一节中，nginx被配置成监听443端口，并让443端口和系统位置“&#x2F;root&#x2F;blog&#x2F;public&#x2F;”下的静态网页关联起来，实现nginx对hexo所生成的静态的网页的代理。该方法实际上是用自己的nginx服务替换了github pages的托管服务。</p>
-<p>nginx还可以有其他代理方式。例如，也可以直接执行<code>hexo s</code>命令，让hexo运行一个在4000端口后的网页服务。然后将域名<a href="http://www.jixinlong.top在443上的location改成：">www.jixinlong.top在443上的location改成：</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">	location / &#123;</span><br><span class="line">		proxy_pass http://127.0.0.1:8000;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样便很容易的将<a href="https://www.jixinlong.top和本地已经能成功运行的hexo自带服务器关联起来.hexo仅负责提供网页内容,https所需要的证书依然是在nginx中配置./">https://www.jixinlong.top和本地已经能成功运行的hexo自带服务器关联起来。hexo仅负责提供网页内容，https所需要的证书依然是在nginx中配置。</a></p>
-<p>受此启发，一个服务器上便可以架设更多的服务或应用，这些服务先都在本地不同端口下调试成功。同时，设定不同的域名来对应不同的服务，虽然这些域名解析到同一个ip，但是可以在nginx里设置，让他们对应上服务器上不同端口后的服务。例如，<a href="http://www.jixinlong.top用于个人博客,master.jixinlong.top用于挂导师评价网的静态文件/">www.jixinlong.top用于个人博客，master.jixinlong.top用于挂导师评价网的静态文件</a>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name jump.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	# return 500;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/blog/public/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name master.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	# return 500;</span><br><span class="line">	</span><br><span class="line">	location / &#123;</span><br><span class="line">		root /root/导师评价/html/;    # 站点目录</span><br><span class="line">		autoindex on;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>!!! 1 注意，在原先已经为jump.jixinlong.top配置过ssl证书的基础上，新增二级域名来对应服务器上新的服务时，无需重新申请ssl证书，只需要在域名解析那里用一个CNAME记录将新域名指向原域名。即：</p>
-<p>jump.jixinlong.top（申请ssl证书）–&gt; 真实ip    https访问网站成功</p>
-<p>再添加功能：<br><a href="http://www.jixinlong.top/">www.jixinlong.top</a> –&gt; jump.jixinlong.top  nginx代理<a href="http://www.jixinlong.top/">www.jixinlong.top</a><br>master.jixinlong.top –&gt; jump.jixinlong.top  nginx代理master.jixinlong.top</p>
-<p>nginx检查第一次输入CNAME前的域名来区分不同的服务，而ssl证书主要看CNAME的最终域名。</p>
-<h1 id="禁用IP直接访问网站"><a href="#禁用IP直接访问网站" class="headerlink" title="禁用IP直接访问网站"></a>禁用IP直接访问网站</h1><p>网站到IP的解析已经被加密。<br>为了防止IP暴露时有人反向试探出该IP上的网站，需要在nginx里设置禁用IP直接访问网站。<strong>单独添加</strong>以下两段：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#http</span><br><span class="line">server &#123;</span><br><span class="line">	listen 80 default_server;</span><br><span class="line">	server_name  _; #禁止ip方式访问网站</span><br><span class="line">	return 403;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># https </span><br><span class="line">server &#123;</span><br><span class="line">	listen 443 ssl default;#default表示该端口确定，但是域名、证书等不确定时都显示此服务。</span><br><span class="line">	server_name _;</span><br><span class="line">	ssl_certificate /root/cert/jump.jixinlong.top.cer;</span><br><span class="line">	ssl_certificate_key /root/cert/jump.jixinlong.top.key;</span><br><span class="line">	return 403;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>其含义是，涉及80端口和443端口上的访问默认展示403界面。配合着其他“server”段对 域名-代理端口-服务地址或端口 的明确指定，就能保住用户指定的域名访问之外所有访问都返回以403。</p>
-]]></content>
-      <tags>
-        <tag>ubuntu</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>x-ui高级设定</title>
-    <url>/2023/02/17/x-ui%E9%AB%98%E7%BA%A7%E8%AE%BE%E5%AE%9A/</url>
-    <content><![CDATA[<p>x-ui是基于xray的套壳管理面板，优点是用起来简单，缺点是每个端口只能设定一个uuid，无法在分享给其他人使用的时候防止滥用，也无法精确监控每个用户的使用情况。</p>
-<p>下面给出一些思路：</p>
-<h1 id="使用者身份设定"><a href="#使用者身份设定" class="headerlink" title="使用者身份设定"></a>使用者身份设定</h1><ul>
-<li>假定使用者是某个学校校园网内的全体学生，那么可以利用校园网来限定使用者身份。</li>
-</ul>
-<ol>
-<li><p>将订阅链接在公网上公开，但是订阅链接的内容只能在内网中成功订阅。方法是在内网运行一个服务器专门发布订阅链接的内容。外加是不是的更新节点内容，这样就能保证只有内网的用户才能用到服务。</p>
-</li>
-<li><p>校园网在公网上一般是一个公网ip区间，倘若能探明这个区间，就能直接从节点、订阅层面限定使用者范围。从订阅层面，同上，在nginx里可以设定订阅链接的内容仅某些ip可访问。从节点层面，可以在xray之前统一经过443端口的nginx反代，由nginx检查使用者的ip。</p>
-</li>
-</ol>
-<ul>
-<li>可以利用校园邮箱来限定使用者身份。<br>为了保护隐私，用邮箱验证需要先自建一个邮箱系统。</li>
-</ul>
-<ol>
-<li>手动验证。要求使用者用校园邮箱发送申请，邮件里包含一个合法的uuid，然后管理员将此uuid添加到后台。目前的x-ui原版的config.json是每次restart时被x-ui.db覆盖的，而x-ui.db不支持一个端口多个用户。所以需要另起config1.json，放在原config一起，让xray启动时合并读取config；还有fork版本的x-ui，支持单个端口后多用户的设定，可以用。</li>
-<li>自动验证。所有的操作最后都应该自动化。可以想办法将邮件内容接收、uuid读取、config添加等工作写成代码，用合并读取config的方式来完成这个工作。</li>
-</ol>
-<h1 id="匿名交易"><a href="#匿名交易" class="headerlink" title="匿名交易"></a>匿名交易</h1><p>倘若需要匿名交易功能，可能需要使用paypal。</p>
-]]></content>
-      <tags>
-        <tag>vpn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于ipv6-ddns的PC建站方式</title>
-    <url>/2023/02/19/%E5%9F%BA%E4%BA%8Eipv6-ddns%E7%9A%84PC%E5%BB%BA%E7%AB%99%E6%96%B9%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h1><p>偶然发现实验室的电脑都分配了很多ipv6地址，且有很多是公网地址。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">eno1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 10.108.11.94  netmask 255.255.254.0  broadcast 10.108.11.255</span><br><span class="line">        inet6 2001:da8:204:1086:ad28:ff67:94a7:1997  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:b9b8:9136:3ef3:6be6  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:f455:5fa0:b6ca:63c  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661::1066  prefixlen 128  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fe80::7258:dd48:9547:6be3  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:41f7:aed6:af12:5f13  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:a1e4:69cb:2d82:3f54  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        inet6 2001:da8:204:1086:fc1b:66d8:b2b5:8904  prefixlen 64  scopeid 0x0&lt;global&gt;</span><br><span class="line">        ether e4:54:e8:77:f5:f3  txqueuelen 1000  (以太网)</span><br><span class="line">        RX packets 52881182  bytes 10069311241 (10.0 GB)</span><br><span class="line">        RX errors 0  dropped 26069  overruns 0  frame 0</span><br><span class="line">        TX packets 2549468  bytes 249593912 (249.5 MB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line">        device interrupt 16  memory 0xe5400000-e5420000  </span><br></pre></td></tr></table></figure>
-
-<p>那么就不需要ipv4公网ip了。据说现在ipv6普及，家里的宽带也都有ipv6地址。</p>
-<p>但是ipv6地址都是被分配的，且没法固定，这个时候可以用dns解析托管商的ddns服务。很简单，其实就是获取托管商那里的一些key，然后在本地写脚本获取ipv6地址并PUSH到托管商那里更新ip。<br>具体见：<a href="https://zhuanlan.zhihu.com/p/69379645">基于 Cloudflare DNS API 部署 IPv6 DDNS</a></p>
-<h1 id="困难"><a href="#困难" class="headerlink" title="困难"></a>困难</h1><p>但我遇到一个问题，就是直接采用上述链接里的脚本时，会尝试将所有带<global>标记的ip地址加到域名上。而域名解析只能一对一！<br>其实用这种方法无法将输出列表里的fd00开头的地址剔除出去：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">fd00:f484:8d1f:b661:b2b0:dbde:63f4:d9e0</span><br><span class="line">2001:da8:204:1086:f455:5fa0:b6ca:63c</span><br><span class="line">2001:da8:204:1086:fc1b:66d8:b2b5:8904</span><br><span class="line">2001:da8:204:1086:a1e4:69cb:2d82:3f54</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>但是不知道为什么，fd00这种总在列表头部，实际想要获取的2001开头地址在尾部。那么可以在命令管道后面在再加上一个tail -1，输出结果如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">jxl@vostro-5090-china-hdd-protection:~$ ip -6 addr show dev eno1 | grep &#x27;global temporary&#x27; | awk &#x27;&#123;print $2&#125;&#x27; | awk -F &quot;/&quot; &#x27;&#123;print $1&#125;&#x27;|tail -1</span><br><span class="line">2001:da8:204:1086:ad28:ff67:94a7:1997</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>获得了想要的ipv6公网地址！</p>
-<h1 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h1><p>ipv6公网地址通过ddns绑定到域名上，任何闲置主机就都能变成云服务器了。</p>
-<ul>
-<li>ipv6支持ssh，以后在任何地方都能轻松登陆自家电脑</li>
-<li>必须要一个公网云服务器做中转的frp类内网穿透方法将被取代</li>
-<li>mc服务器等可以开在自己的电脑上</li>
-<li>可以在自己的服务器上自建云盘、博客</li>
-<li>旧电脑将可以被利用，收费昂贵性能也有限的阿里云、腾讯云不再成为小服务器玩家的首选。</li>
-</ul>
-<p>缺点也有，就是ipv6开起来的服务不能被只支持ipv4的网络用户访问。当然随着ipv6大力普及，这个缺点越来越小。</p>
-<h1 id="彩蛋"><a href="#彩蛋" class="headerlink" title="彩蛋"></a>彩蛋</h1><p>本来搞ipv6 ddns是想在主机上建一个饥荒服务器的…</p>
-<p>结果照着<a href="https://github.com/qinming99/dst-admin">饥荒面板服</a>的教程走完，发现饥荒开服根本就不需要服务器有固定公网ip。它实际上是把个人的服务器统一登记在科雷服务器上，然后让玩家去访问科雷。<br>不过因为实验室电脑会自行断网，安装过程总是报网络原因的错误，我还以为是需要挂梯子，挂了也没用。最后重新用脚本连接下校园网，就非常顺滑地安装完了。<br>唉，安装环境总担心是资源在国外需要挂梯子的，也就中国程序员和伊朗程序员了…………</p>
-]]></content>
-      <tags>
-        <tag>server</tag>
-        <tag>ddns</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>我对神经网络的理解</title>
-    <url>/2023/02/20/%E6%88%91%E5%AF%B9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<p>最早接触神经网络是在大学的图书馆，翻开一本讲神经网络理论与实践的书。但不知为何，当时神经网络已经在各处开花了，那本书给我的印象还是“神经网络太超前了，难以实际用起来，或许一直都不能用。”</p>
-<h1 id="仿生学"><a href="#仿生学" class="headerlink" title="仿生学"></a>仿生学</h1><p>但是那本书里说到神经网络是模仿大脑里相互连接的神经元的。信号在神经元之间传导，人因此能够识别万物，能够判断是非，能有情感。所以我本科早期曾对这种计算机科学与脑科学、心理学交叉的研究课题感兴趣。当时年轻气盛，一开始就瞄准AI的终极目标AGI（强人工智能）。我现在仍然觉得用机器仿制人类智能和情感这项伟大的事业，倘若缺失能在符号主义深邃的理论里开拓的人，那么最先的突破口应该是人工神经网络。直接从仿生学上模仿人类大脑的结构，够唯物主义，够简单粗暴。多说一句，目前在电脑里深度学习框架上跑的神经网络，实际上还是依靠硅基计算机的内存和速度，这个速度和人类大脑中信号传导速度（化学信号）比起来可能还是不够快。所以我觉得本科时候一位造预警机的院士讲得很对：神经网络最终应该用量子或者其他什么更微观的物质来构建，才能高速运转，性能接近人类大脑。</p>
-<p>所以你看，从仿生学上看，神经网络不仅有依据、有人信，能力还远不止人脸识别、目标检测这种弱AI应用。人家一开始瞄准的是AGI伟大事业。</p>
-<h1 id="统计模式识别"><a href="#统计模式识别" class="headerlink" title="统计模式识别"></a>统计模式识别</h1><p>但是，目前神经网络遍地开花的领域，主要还是各种人脸识别一类的应用。那么在这些更接地气的研究中，神经网络有什么更接地气的解释呢？<br>我觉得至少还可以从统计模式识别和数学建模的角度来看。之所以用两个课程名，是因为这两个课程我上过，很多人肯定也上过，能开课的内容一般都是公认的具有科学性的内容。统计模式识别讲的是如何运用各种技巧来清洗数据、获取特征、处理特征、完成识别任务。其核心是特征。所谓的特征，就是我想识别一个物体，这个物体应该有什么与众不同的地方，能让我将其与其他万事万物相区别。譬如做人脸识别，脸部应当有眉毛、鼻子、眼睛、嘴唇，且这些线条的相对位置关系是固定的。去读（神经网络之前的）经典统计模式识别论文中的做人脸识别的论文(Rapid object detection using a boosted cascade of simple features)，你会发现他的核心还是用下面这样的模板来匹配脸部的特征：<br><img src="/../images/990517-fig-4-source-large.gif" alt="脸部特征模板"><br>而神经网络，例如CNN，其前部的层一般都是用于提取特征的。提取特征用的是各种形状的卷积核，这些卷积核就先相当于上图里的各种模板。在阅读论文的时候，常常看到直接把别人在大规模图片数据集上训练好“预训练模型”拿过来作为网络的全部或前部，在别人的基础上接着训练的做法。这就是因为训练好的网络通常具有抽取图像特征的能力，这种能力可以直接被新的网络借用。</p>
-<h1 id="数学建模"><a href="#数学建模" class="headerlink" title="数学建模"></a>数学建模</h1><p>很多研究工作可以用建模解决。譬如做分类任务，可以看成给定一个样本X，要求输出样本所属类别Y。这就是一种数学建模。那么研究的目标就是用尽方法探知Y与X的关系。关系无非两种：线性关系和非线性关系。倘若我们对这个分类任务较为了解，掌握很多先验，我们就能猜出X与Y大概属于哪种关系，不确定的就是一些系数细节。系数待定，并可以通过大量已知的数据样本回归出来，统计模式识别里这种回归通常叫“训练”。而神经网络就比较简单粗暴了，它直接用全连接表示X经过线性变换得到Y，用激活函数表示非线性变换，并在网络里反复叠加线性层和非线性层，增加网络深度和广度。只要网络足够深和广，其理论上能表征的X与Y的关系表达式就越多。最后借助GPU，暴力求解权重和偏移，存储于网络结构上的Y&#x3D;f(X)。</p>
-]]></content>
-      <tags>
-        <tag>神经网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据可视化tensorboard</title>
-    <url>/2023/02/27/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96tensorboard/</url>
-    <content><![CDATA[<p>数据可视化，指的是训练神经网络过程中对loss、preview等做出的记录和展示。</p>
-<h1 id="为什么需要可视化"><a href="#为什么需要可视化" class="headerlink" title="为什么需要可视化"></a>为什么需要可视化</h1><p>我曾经有很长一段时间是闭着眼睛训练的。原因是初出茅庐，拿到开源的代码之后虔诚学习，不敢改动，生怕代码被我改坏了。于是便按照github上的指示输入类似“python3 train.py”的进行训练。论文已经开源的代码通常能够训练出收敛的效果，因为中间探索正确训练参数的过程已经由论文作者一个人走过了，其中的艰辛甚至不必写入论文。最终只需要把探索过程所用的代码删去，保留美丽的最终成果，挂到github上，并告诉追随者“汝只需输入这样一行训练指令，训练xxx个epoch，便可以证实我论文中说的结果是对的”。</p>
-<p>假如只是复现，后来者确实可以这样闭着眼睛训练出成果。但问题是假如我已经熟读那份开源代码，觉得它有些地方可以改进，但改进之后势必产生不同的训练结果，我又需要观察训练过程中loss是否收敛，训练中实时的效果展示，该怎么做呢？或者有的人就算不改动代码，也想亲眼看看loss收敛下降那美丽的过程，该怎么做呢？</p>
-<h1 id="用tensorboard"><a href="#用tensorboard" class="headerlink" title="用tensorboard!"></a>用tensorboard!</h1><p>tensorboard本是tensorflow的一个组件。现在很多训练用的是pytorch，pytorch也可以用tensorboard来可视化。使用方法可以参照这篇：<a href="https://zhuanlan.zhihu.com/p/103630393">PyTorch下的Tensorboard 使用</a></p>
-<h2 id="loss"><a href="#loss" class="headerlink" title="loss"></a>loss</h2><p>具体操作的时候，比方说我想确定一个自创的网络模型，应当使用多大的学习率lr比较好，那么我就设立多次对比试验，每次存到一个单独的文件夹下：</p>
-<p>\tf-logs\lr&#x3D;0.001<br>\tf-logs\lr&#x3D;0.01<br>……</p>
-<p>但是在写入loss的时候，都写入同一个loss里：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#loss输出到tensorboard可视化</span><br><span class="line">writer.add_scalar(&#x27;shlight_loss/total_loss&#x27;, loss, epoch)</span><br></pre></td></tr></table></figure>
-
-<p>最终效果就像这样：<br><img src="/../images/tensorboard%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="tensorboard"></p>
-<p>将两次（lr不同的）训练结果绘制到同一张图里。可以清晰地看出两种lr设定下loss下降的快慢高低。<br>其中，total_loss子图是shlight_loss图的一部分。只改变total_loss，但是“shlight_loss&#x2F;”保持不变，都会绘制到shlight_loss类别下。</p>
-<h2 id="preview"><a href="#preview" class="headerlink" title="preview"></a>preview</h2><p>多次训练的preview可以统一写成：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">writer.add_image(&#x27;preview&#x27;, np.array(im), epoch, walltime=None, dataformats=&#x27;HWC&#x27;) ###当前训练的preview图示仅仅保存最新的几十张</span><br><span class="line">            </span><br></pre></td></tr></table></figure>
-<p>这样的效果是：</p>
-<p><img src="/../images/tensorboard-preview%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="preview"></p>
-<h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><h2 id="tensorboard的版本"><a href="#tensorboard的版本" class="headerlink" title="tensorboard的版本"></a>tensorboard的版本</h2><p>tensorboard的版本需要固定。旧版本tensorboard写入的log用新版本tensorboard很可能就看不了了，反之亦然。</p>
-<p>由于训练很长，或者训练新的项目会搭建新的环境，tensorboard的版本就很容易被改变。这时候要尽量保证tensorboard的版本在写log和读取log时一致。</p>
-<h2 id="与tensorflow的关系"><a href="#与tensorflow的关系" class="headerlink" title="与tensorflow的关系"></a>与tensorflow的关系</h2><p>tensorboard本身是tensorflow的一部分。假如环境中原本有新版本tensorboard，再安装一个旧版本的tensorflow就会把tensorboard版本连带退回到旧版本。</p>
-<p>这时候kill掉之前后台运行的新版本tensorboard，并重新运行tensorboard，后台中跑的就是旧版本tensorboard。再试图用旧版本tensorboard读取之前新版本tensorboard写入的那些log，你将面对一片空白，啥也看不到。</p>
-<p><strong>所以，当环境中已经有了tensorboard，且已经用它写过很多log，这时候安装tensorflow就要小心了。最好新建一个全新的环境安装tensorflow，写入和读取log都在新环境里做，和旧的环境隔离。</strong></p>
-<h2 id="tensorboard不是tensorboard"><a href="#tensorboard不是tensorboard" class="headerlink" title="tensorboard不是tensorboard"></a>tensorboard不是tensorboard</h2><p>仅仅运行一句<code>pip install tensorboard==2.0.2</code>，安装的就仅仅是这一个包。</p>
-<p>但是单独这个包可能没法完成log写入和读取。</p>
-<p>因为执行<code>pip install tensorboard</code>，你会发现装了三个包：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tensorboard              2.11.2</span><br><span class="line">tensorboard-data-server  0.6.1</span><br><span class="line">tensorboard-plugin-wit   1.8.1</span><br></pre></td></tr></table></figure>
-
-<p>所以，假如你的tensorboard没法读取之前写的log了，你要同时确认以上三个包在曾经和现在的版本是否一致。我就是往之前的环境里装tensorflow导致tensorboard读不了log了，手动把以上三个包都卸掉之后，回顾了之前的<a href="https://zhuanlan.zhihu.com/p/103630393">教程</a>，但是只安装了tensorboard&#x3D;&#x3D;2.0.2，发现还是打不开log。最终看了之前用过的另一台服务器上的pip list，发现tensorboard是由以上三个包共同组成的。重新pip install tensorboard不加版本号，自动安装三个包，才把问题解决。</p>
-]]></content>
-      <tags>
-        <tag>神经网络</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>错误的loss项可能对训练带来什么影响？</title>
     <url>/2023/02/28/%E9%94%99%E8%AF%AF%E7%9A%84loss%E9%A1%B9%E5%8F%AF%E8%83%BD%E5%AF%B9%E8%AE%AD%E7%BB%83%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88%E5%BD%B1%E5%93%8D%EF%BC%9F/</url>
     <content><![CDATA[<p>我训练emlight很长时间了，在小规模数据集上尚能收敛，数据集规模一上升到18000就失控。由于现在很多论文里公布的方法本就无法复现出作者描述的效果，再加上对神经网络弊端的一些了解，emlight在大规模数据集上难以收敛的问题，我也就没有多加怀疑。</p>
@@ -888,14 +1230,188 @@
       </tags>
   </entry>
   <entry>
-    <title>SOME IDEAS</title>
-    <url>/2023/03/06/SOME-IDEAS/</url>
-    <content><![CDATA[<ol>
-<li>emlight:目前intensity一项难以收敛，可能是loss设计的缺少内在逻辑。所以怎样设计能让它更好的收敛呢？</li>
+    <title>blender渲染简单物体和虚拟复杂物体</title>
+    <url>/2023/05/10/blender%E6%B8%B2%E6%9F%93%E7%AE%80%E5%8D%95%E7%89%A9%E4%BD%93%E5%92%8C%E8%99%9A%E6%8B%9F%E5%A4%8D%E6%9D%82%E7%89%A9%E4%BD%93/</url>
+    <content><![CDATA[<h1 id="安装blender-3-5"><a href="#安装blender-3-5" class="headerlink" title="安装blender 3.5"></a>安装blender 3.5</h1><p>从官网下载压缩包后解压就可以直接使用了<br>在linux上建议把blender加入系统路径:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vi ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>在最后一行添加<code>export PATH=$PATH:$HOME/blender</code><br>然后退出vi并执行<code>source ~/.bashrc</code><br>这样以后直接输入<code>blender</code>就能启动</p>
+<h1 id="渲染简单物体"><a href="#渲染简单物体" class="headerlink" title="渲染简单物体"></a>渲染简单物体</h1><p>简单创立一个场景，放置一个小球并定制小球的材质，设立相机并把相机对准小球，设立环境贴图，渲染并保存渲染结果。代码在chatgpt协助下修改完成。</p>
+<h1 id="渲染虚拟插入物体"><a href="#渲染虚拟插入物体" class="headerlink" title="渲染虚拟插入物体"></a>渲染虚拟插入物体</h1><p>已经有.blend工程文件。其中摄像机背景都已经设定好了，但是不能直接在渲染的时候带背景渲染，因为“在渲染过程中，摄像机的背景图像将被用作环境照明，并且会在最终渲染结果中出现。”</p>
+<p>所以只能先渲染出背景透明的虚拟物体，然后通过blender或者python将虚拟物体插入到Fov图中。</p>
+<p>用chatgpt完成代码，但是注意几个地方：</p>
+<ol>
+<li>更换全景环境贴图。工程中已经有名为“xxx.exr”的文件，此时用image.open方法打开同名（但是内容不一样的）文件时，同名文件会被重命名为“xxx.exr.001”。此时默认使用的文件仍然时旧的，也不好确定新文件被重命名为什么，所以不好指定使用新文件。使用image.load直接加载新文件，可以工程使用的是新加载的文件。</li>
+<li>对全景贴图强度和旋转量的调整。渲染结果过暗的，增加光强；物体影子不对的，调整旋转量。</li>
+<li>在python脚本中构建compositor节点树。首先需要判断当前工程是否使用节点树，假如使用了就清空树的内容；加入没有使用，就先设置使用，然后清空树。由于blender有中文有英文，在不确定树节点名称是中文还是英文时，要同时考虑中英文两个版本的名称。</li>
+<li>背景Fov图和渲染结果的尺寸问题。VOR数据集中的背景图都是标准一致的。渲染分辨率和背景图尺寸也是也是一致的。但是有的工程里，会把渲染的缩放百分比调成50%或30%，这导致渲染层会比背景图小。猜测这样做的原因是部分虚拟物体过于精细，渲染结果过于“高清”，相比之下他们的背景图更模糊，VOR人为地调小了过于高清的渲染结果尺寸，然后再插值渲染结果使其变模糊，来适应模糊的背景，追求视觉上的真实感。我的做法是保留VOR的这种渲染百分比缩放，在背景图和alpah上叠节点之间加一个scale节点，用这个节点拉伸背景图使其和渲染结果的最终尺寸保持一致。然后设定compositor的输出尺寸统一为Fov的尺寸，使最终的合并结果尺寸一致。当然也可以拉伸渲染结果其贴合Fov图的尺寸。</li>
 </ol>
 ]]></content>
       <tags>
-        <tag>ideas</tag>
+        <tag>blender</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>利用nginx 搭建webdav服务</title>
+    <url>/2023/05/23/%E5%88%A9%E7%94%A8nginx%20%E6%90%AD%E5%BB%BAwebdav%E6%9C%8D%E5%8A%A1/</url>
+    <content><![CDATA[<h1 id="什么是webdav"><a href="#什么是webdav" class="headerlink" title="什么是webdav"></a>什么是webdav</h1><p>简单来说就像百度云一样，是一种云端硬盘服务。但是它是纯技术型的开源的，任何人都可以在自己的服务器上构建一个webdav，作为一个云硬盘。他的速度拉满，支持用户名密码，支持共享协作等文件存储系统常用属性。</p>
+<ul>
+<li>chatgpt更详细的解释：</li>
+</ul>
+<p>WebDAV（Web Distributed Authoring and Versioning）是一种基于HTTP协议的扩展，它允许用户通过互联网进行文件的远程访问和协作。它提供了一套标准的方法和协议，使得用户可以像操作本地文件系统一样，通过网络对远程服务器上的文件进行读取、写入、编辑和管理。</p>
+<p>WebDAV扩展了HTTP协议，添加了一些额外的功能，包括对文件的锁定、版本控制、属性管理等。通过WebDAV，用户可以像在本地计算机上操作文件一样，在远程服务器上创建、删除、移动和复制文件和目录。它提供了一种方便的方式来共享和协作文件，允许多个用户在不同的位置使用各种设备访问和编辑共享文件。</p>
+<p>一些常见的用途和功能包括：</p>
+<ul>
+<li>远程文件访问和管理：通过WebDAV，用户可以通过互联网远程访问和管理服务器上的文件和目录，就像访问本地文件系统一样。</li>
+<li>文件同步和备份：WebDAV可用于实现文件同步和备份，使用户可以方便地将文件从本地计算机上传到远程服务器或将文件从远程服务器下载到本地计算机。</li>
+<li>远程协作和共享：多个用户可以同时访问和编辑同一个WebDAV服务器上的文件，从而实现远程协作和共享工作文档的目的。</li>
+<li>版本控制和文件锁定：WebDAV支持文件版本控制，允许用户追踪和管理文件的不同版本。它还支持文件的锁定机制，以确保在协作过程中文件不会被意外地覆盖或修改。</li>
+</ul>
+<p>WebDAV在许多操作系统和应用程序中得到广泛支持，包括Windows、macOS、Linux以及常见的Web浏览器和办公软件。通过使用WebDAV客户端或直接在支持的应用程序中配置WebDAV连接，用户可以方便地进行远程文件操作和协作。</p>
+<h1 id="为什么需要webdav"><a href="#为什么需要webdav" class="headerlink" title="为什么需要webdav"></a>为什么需要webdav</h1><p>前提是是个懒人，并喜欢琢磨技术来让自己的生活心安理得地变得便捷。目前我的代码都存储在github，在任何设备上可以轻松同步，网页都存储在火狐，工程都存储在实验室服务器，这些都是“在任何设备上”都能快速轻松访问的。唯独我阅读的文献，都放在个人笔记本上，用zotero来读。zotero自带云存储服务，但是容量肯定有限制，能存储下文献库的目录结构，存不了动辄几十个M的附件pdf。<br>zotero支持webdav。之前搜过免费的webdav服务，但是没搜到。也考虑过百度云的免费同步文件夹服务，但是有限额且下载速度感人。上次偶然问了chatgpt如何搭建个人webdav服务。没想到他的回答看起来很简单，且基于apache和nignx都能快速搭建！</p>
+<h1 id="可行性"><a href="#可行性" class="headerlink" title="可行性"></a>可行性</h1><p>腾讯云学生轻量级服务器一年40元，白菜价格。国内云厂商的服务器有个特点就是给的硬盘空间非常大，cpu和内存很少。这个特点其实很适合用来搭建webdav服务。</p>
+<h1 id="基于nginx搭建webdav"><a href="#基于nginx搭建webdav" class="headerlink" title="基于nginx搭建webdav"></a>基于nginx搭建webdav</h1><p>记录搭建记录，chatgpt指导下的实践。</p>
+<ol>
+<li>Ubuntu安装NGINX及WebDAV模块</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt -y update</span><br><span class="line">sudo apt -y install nginx nginx-extras libnginx-mod-http-dav-ext libnginx-mod-http-auth-pam</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在域名托管商那里为webdav添加一个域名解析记录</li>
+</ol>
+<p>我把webdav.jixinlong.top用cname解析到jixinlong.top了，我习惯用[服务名].[根域名]来区分不同子服务。</p>
+<ol start="3">
+<li>配置nginx，增加一个网站<br>在我常用的配置文件&#x2F;etc&#x2F;nginx&#x2F;nginx.conf 中，我增加了这样一个https类型的web server：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">	server &#123;</span><br><span class="line">	listen 443 ssl;</span><br><span class="line">	server_name webdav.jixinlong.top;     # 填写绑定证书的域名</span><br><span class="line">	ssl on;</span><br><span class="line">	ssl_certificate /root/cert_cf/CERTIFICATE;</span><br><span class="line">	ssl_certificate_key /root/cert_cf/KEY;</span><br><span class="line">	ssl_session_timeout 5m;</span><br><span class="line">	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    # 按照这个协议配置</span><br><span class="line">	ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;     # 按照这个套件配置</span><br><span class="line">	ssl_prefer_server_ciphers on;</span><br><span class="line">	# return 500;</span><br><span class="line">	</span><br><span class="line">	# webdav</span><br><span class="line">	location / &#123;</span><br><span class="line">	alias /var/www/webdav;</span><br><span class="line">	dav_methods PUT DELETE MKCOL COPY MOVE;</span><br><span class="line">	dav_ext_methods PROPFIND OPTIONS;</span><br><span class="line">	auth_basic &quot;WebDAV&quot;;</span><br><span class="line">	auth_basic_user_file /etc/nginx/webdav.password;</span><br><span class="line">	autoindex on;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表示把webdav.jixinlong.top&#x2F;zotero 代理到&#x2F;var&#x2F;www&#x2F;webdav目录（没有需创建并设置好所属用户和目录权限）中去。使用&#x2F;etc&#x2F;nginx&#x2F;webdav.password作为用户名密码校验文件。</p>
+<ol start="4">
+<li>创建用于身份验证的用户名和密码</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo htpasswd -c /etc/nginx/webdav.password username</span><br></pre></td></tr></table></figure>
+<p>（将 “username” 替换为您想要使用的用户名）</p>
+<p>输入并确认密码。</p>
+<p>若未安装htpasswd，需要先安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt install apache2-utils</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>检查配置，配置无误重启nginx</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nginx -t #若返回is ok is successful:</span><br><span class="line">sudo service nginx restart #重启Nginx以应用更改：</span><br></pre></td></tr></table></figure>
+<p>webdav服务器搭建成功可以通过访问webdav.jixinlong.top&#x2F;zotero，成功时网页会让输入用户名密码，输入后可以看到当前webdav里的所有文件。</p>
+<p><img src="/../images/webdav%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="webdav示意图"></p>
+<ol start="6">
+<li>配置zotero同步服务</li>
+</ol>
+<p>同步那里选择webdav，服务器填写：<br>https:&#x2F;&#x2F; webdav.jixinlong.top &#x2F;zotero<br>测试无误ok</p>
+<ol start="7">
+<li>向webdav上传文件受到的限制<br>实际使用中，同步时zotero会向zotero官方服务器上传文献库，同时向webdav上传各个附件。<br>有的附件很大，在上传时受到了限制，在zotero的log里能观察到http 413返回。<br><a href="https://blog.csdn.net/ffzhihua/article/details/89339015">修改nginx配置里的上传文件大小限制即可</a>。<br>修改之前，用zotero同步data和files的时候观察服务器上的webdav目录，无变化；修改之后，再用命令观察，能看到同步的同时wevdav目录中的文件一直增加。<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@mail:~/blog/source# ls /var/www/webdav/zotero/|wc -l</span><br><span class="line">232</span><br><span class="line">root@mail:~/blog/source# ls /var/www/webdav/zotero/|wc -l</span><br><span class="line">233</span><br><span class="line">root@mail:~/blog/source# ls /var/www/webdav/zotero/|wc -l</span><br><span class="line">287</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>webdav</tag>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python中的矩阵操作</title>
+    <url>/2023/08/18/python%E4%B8%AD%E7%9A%84%E7%9F%A9%E9%98%B5%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="为什么需要了解python？"><a href="#为什么需要了解python？" class="headerlink" title="为什么需要了解python？"></a>为什么需要了解python？</h2><p>计算机专业的学生，入门语言应该是C或者C++这种接近计算底层、难度稍微大一点但是学懂以后可以充分理解编程的中层语言。C和C++，再往下一点可以伸手摸到嵌入式，并进一步和更加底层的汇编语言、二进制机器指令产生联想。在往上一点，C和C++有可以凝聚成坚实可用的工具包，供更上层的python等语言调用。然而C和C++有一定难度，形成的壁垒将一些人拒绝在门外；与之相比，更简单的python海纳百川，吸引更多人参与运用，并造就了它在如今深度学习科学研究中的地位。所以，了解python能更快地投入到ai学习中，去看别人开源的代码。</p>
+<h2 id="为什么要写python中的矩阵操作？"><a href="#为什么要写python中的矩阵操作？" class="headerlink" title="为什么要写python中的矩阵操作？"></a>为什么要写python中的矩阵操作？</h2><p>C++更有计算机的味道。严谨，注重效率，关注点常常在算法本身的时间复杂度。而python更有科学研究的味道。现如今大部分科学问题要和数学相关。更进一步地说，要和数学里的矩阵运算、概率论等直接关联。一切模型或方法，最终回落到矩阵公式上。同一个问题，如果你用计算机的风格来思考，那就是考虑如何高效地使用循环、分支和一些算法上的技巧。如果你用科学或者说更数学的方式思考，那循环就会被归纳成矩阵运算。近期我越发觉得，我每天使用python，说白了就是在用它写矩阵、变换矩阵、求解矩阵、显示矩阵。所以，我决定总结归纳python中的矩阵操作，加深对它的理解。</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在vscode上安装labuladong插件</title>
+    <url>/2023/08/30/%E5%9C%A8vscode%E4%B8%8A%E5%AE%89%E8%A3%85labuladong%E6%8F%92%E4%BB%B6/</url>
+    <content><![CDATA[<p>故事发生在一个略微轻松的下午–论文上的事情在等待下一步指示，项目上的事在等待对接的人。</p>
+<p>于是我想起了同学推荐我的labuladong刷题插件。之前他还推荐我使用Bing的免费AI对话，我搜了教程，发现现在只能在Edge的开发者版本上可以免费使用了。顺带着我还发现这个开发者版本的Edge和平常用的不一样，它有linux版的。这意味着在linux也是能用微软家浏览器的了！之前呢，我以为同时支持windows、linux、安卓三个主流操作系统的只有火狐和谷歌。谷歌默认谷歌搜索引擎，有时不太方便，所以我一直很喜欢火狐。总之，Edge开发版本再次让我意识到了跨设备是未来的趋势，是良好的美德。</p>
+<p>我很喜欢火狐，我已经习惯性的把所有重要的网页都收藏在火狐上了。可是labuladong在火狐上并没有扩展。这意味着要使用这个扩展，还得用Edge？可是我已经在各个设备上主用火狐了，我也不想在实验室电脑的ubuntu上再装一个Edge了…偶然间我发现labuladong也有vscode的插件。vscode我熟悉呀！vscode就是我最爱的IDE，它和火狐一样都是跨设备多终端同步的典范！于是我打算在vscode上安装labuladong插件，以此免除对Edge的依赖。而AI对话有更多的平替，这个也无须用Edge。</p>
+<h1 id="第一回：如何在没有管理员权限的服务器上安装node-js"><a href="#第一回：如何在没有管理员权限的服务器上安装node-js" class="headerlink" title="第一回：如何在没有管理员权限的服务器上安装node.js"></a>第一回：如何在没有管理员权限的服务器上安装node.js</h1><p>labuladong插件依赖node.js</p>
+<p>其实“安装”这个词，容易让人产生误解，以为它是个很复杂的动作。特别是早期，我们都使用windows，一般安装某某软件就是个复杂的过程，有的时候还得去搜教程和攻略，这件事的根源在于，windows是黑箱一样的操作系统，是傻瓜式的图形操作界面，且面向的用户都是不懂系统和电脑的普罗大众。这就导致我们在使用windows的时候，不会多动脑筋去思考“安装”到底是在做什么事情。更有很多端正复杂的“安装向导”程序，先给我们展示一大段看不懂的“协议”，再引导我们一步一步安装，让我们觉得这个过程相当复杂和神圣，“不要去细想它里面做的事了，一定是很复杂的”。</p>
+<p>也有些软件在暗示我们，安装其实不是（需要）这么复杂的。例如，我们一定见过很多“绿色版”软件，从别人那里拷贝过来，点开就能运行。我的理解是，这种绿色版软件就相当于我们自己平时写的那种代码，包含了所有重要的功能，但是未曾向系统注册（表明自己的存在）。这种绿色版软件，实际上就是跳过了向系统注册等等windows上复杂的“安装”流程，直接以可执行程序的形式存在着。它未注册，因而像黑户一样，系统不知道它的存在；但是它确确实实有着完整的功能，往那一放就可以用，不想时卸载就行。</p>
+<p>使用linux之后，把某个软件或包的路径”写入系统路径“，是经常要做的事情。这其实就是linux上的”安装“了，等价于windows上向系统”注册“、写入系统变量等过程。网上的很多教程，在说到安装某款软件的时候，常常会让使用<code>sudo apt install xxx</code>命令。这让我们觉得，似乎这就是标准的“安装”过程。实际上并不是的。首先，apt只是一个云端的软件仓库，它收藏了常用的软件。这条命令最大的作用是从云端下载软件的过程，下载之后将软件的配置、可执行文件等分门别类地放到系统不同位置。而sudo其实不是必须的，它之所以经常出现，是因为这条命令可能改变对系统来说很重要的某个软件包，让系统轰然倒塌，所以一般只有管理员才能使用。</p>
+<p>但实验室的服务器通常是大家共用的，无法使用sudo apt命令直接从仓库安装某个软件。此时，要注意的是，linux上安装某个软件其实非常简单，不需要使用<code>sudo apt install xxx</code>命令。</p>
+<p>第一步，下载这个包到某个位置，例如可以这样直接下载node.js：<br><code>curl https://nodejs.org/dist/v20.5.1/node-v20.5.1-linux-x64.tar.xz</code></p>
+<p>下载之后，解压，能看到一个文件夹里包含了所有你需要的nodejs相关文件。这个时候cd到这个文件夹中的bin文件夹中，执行这样一个命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(base) jxl@vostro-5090-china-hdd-protection:~/下载/node-v20.5.1-linux-x64/bin$ ./node</span><br><span class="line">Welcome to Node.js v20.5.1.</span><br><span class="line">Type &quot;.help&quot; for more information.</span><br><span class="line">&gt; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到当前的这个node俨然就是一个完美的可执行文件了。然而这样并没有结束，在系统的其他位置执行<code>node</code>，会提示你没有”node”这个东西。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(base) jxl@vostro-5090-china-hdd-protection:~$ node</span><br><span class="line">Command &#x27;node&#x27; not found, but can be installed with:</span><br><span class="line">sudo apt install nodejs</span><br></pre></td></tr></table></figure>
+<p>这就是我们之前说的“将软件的路径添加到系统路径里”的事情了。随手下载的软件只有你当时知道它的存在，在系统看来就是个黑户，在系统中的其他软件看来更是如此。<br>此时，把可执行文件的路径加到系统路径即可。先<code>vi ~/.bashrc</code>，把<code>export PATH=&quot;$PATH:/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin&quot;</code>这样一句加到最后。<code>.bashrc</code>是当前用户每次登陆时会自动执行的脚本，而<code>export PATH=&quot;$PATH:/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin&quot;</code>表示给<code>PATH</code>这个系统变量赋值为旧值<code>$PATH</code>后面加上<code>/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin</code>。</p>
+<p>然后执行<code>source ~/.bashrc</code>让这个脚本立刻生效，而不必等到用户下次登陆再生效。<br>此时，在系统任何位置执行node命令，都会显示node存在：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(base) jixinlong@ubun:~/Illumination-Estimation-1/SHGLight$ node</span><br><span class="line">Welcome to Node.js v20.5.1.</span><br><span class="line">Type &quot;.help&quot; for more information.</span><br><span class="line">&gt; </span><br></pre></td></tr></table></figure>
+
+<h1 id="第二回：labuladong为什么登陆不上"><a href="#第二回：labuladong为什么登陆不上" class="headerlink" title="第二回：labuladong为什么登陆不上"></a>第二回：labuladong为什么登陆不上</h1><p><code>千辛万苦，想清了平头百姓装node一事；万苦千辛，网断了labuladong如何登陆得上！</code></p>
+<p>其实有些事情早有伏笔，只是当时未能想到这一层。学校的校园网一次性只能有四个ip登陆，而中午的时候我可能登陆了太多设备，把之前连着校园网的服务器弄断网了。实验室的服务器上有一天执行一次的自动联网脚本，所以我从来不会去关注它网络的状况。</p>
+<p>还有个比较狗的事情，就是实验室的服务器，即时不自己去联网，也会有一个比较慢速的网。这个网在我安装labuladong插件的时候完全够用，可是我进一步在插件里登陆leetcode账号的时候，却完全不够用了。能成功下载插件，麻痹我，让我意识不到网络有问题。等到我折腾两个小时都登陆不上leetcode账号，尝试各种方法都不行时，偶然看了一眼内网穿透等服务的log，发现网络似乎在最近几个小时不对劲。然后我再试着<code>curl www.baidu.com</code>检查一下网络状态，发现拉出了个10.0.0.58的校园网登陆界面，才发现滑天下之大稽，自己竟然和断网的插件斗争了两个小时。</p>
+<p>给服务器手动连了校园网，再次尝试登陆leetcode账号。丝滑登陆，畅通无阻，热泪盈眶。事了拂衣去，深藏功与名。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其实node用nvm安装也很方便，也不需要管理员权限。同时还能支持对不同node版本的切换使用。<br>nvm之于node，就好像conda之于python，就好像java的一个版本管理器之于java…真是优美的管理者们。</p>
+]]></content>
+      <tags>
+        <tag>node</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>全景图坐标系与人头坐标系的对齐</title>
+    <url>/2023/09/03/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E9%BD%90/</url>
+    <content><![CDATA[<p>我们需要为重建的人头添加一个背景。其中一个方案是，直接找到一张全景图，背景、光照都从全景图中来。</p>
+<h1 id="球面坐标与欧式坐标之间的转化"><a href="#球面坐标与欧式坐标之间的转化" class="headerlink" title="球面坐标与欧式坐标之间的转化"></a>球面坐标与欧式坐标之间的转化</h1><p>从全景图中采样出背景图，这个过程涉及到球面坐标和标准欧式坐标之间的转换。</p>
+<p>查阅资料后，我了解到球面坐标系与标准欧氏坐标系之间（空间直角坐标系）之间有固定的转化公式。球极坐标中的仰角、方位角在标准欧式坐标中怎么画，都是有规定的。</p>
+<p><img src="https://bkimg.cdn.bcebos.com/pic/ac4bd11373f082028b32ab2744fbfbedab641b01?x-bce-process=image/resize,m_lfit,w_536,limit_1/format,f_auto" alt="球面坐标转换的概述图"></p>
+<h2 id="仰角-方位角"><a href="#仰角-方位角" class="headerlink" title="仰角-方位角"></a>仰角-方位角</h2><p>在全景图中，假如采用“仰角elevation-方位角azimuth”的方式确定像素的位置，那么使用上述标准的转换公式即可。例如，EMLight里有这样的写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 笛卡尔坐标系（标准欧氏坐标系、空间直角坐标系）-&gt;极坐标（球面坐标系）</span><br><span class="line">def cartesian_to_polar(xyz):</span><br><span class="line">    theta = np.arccos(np.clip(xyz[2], -1.0, 1.0))</span><br><span class="line">    phi = np.arctan2(xyz[1], xyz[0])</span><br><span class="line">    return phi, theta</span><br><span class="line">    # return np.stack((phi, theta), axis=1)</span><br><span class="line"></span><br><span class="line"># 极坐标（球面坐标系）-&gt; 笛卡尔坐标系（标准欧氏坐标系、空间直角坐标系）</span><br><span class="line">def polar_to_cartesian(phi_theta):</span><br><span class="line">    x = np.sin(phi_theta[:, 1]) * np.cos(phi_theta[:, 0])</span><br><span class="line">    y = np.sin(phi_theta[:, 1]) * np.sin(phi_theta[:, 0])</span><br><span class="line">    z = np.cos(phi_theta[:, 1])</span><br><span class="line">    return np.stack((x, y, z), axis=1)</span><br></pre></td></tr></table></figure>
+<p>由于仰角和方位角经常用$\theta$和$\phi$表示，代码里经常用theta和phi代指仰角和方位角。</p>
+<h2 id="经度-纬度"><a href="#经度-纬度" class="headerlink" title="经度-纬度"></a>经度-纬度</h2><p>但也有的时候，全景图被看成一张世界地图，以经纬度标记像素位置。<br>全景图拍摄时,相机往往将镜头对准正北方向进行拍摄。此时,图片的正中央对应地理坐标的北纬方向,经度为0度。</p>
+<p>随着视角向东移动,经度值逐渐增加;向西移动,经度值逐渐减小。当视角转到正南方向时,经度达到最大值180度或最小值-180度。</p>
+<p>所以在全景图中,不管相机的朝向如何,经度为0的位置通常都在图片的正中央,表示北纬方向。这与我们平时看地图的习惯也是一致的。<br>所以，在经纬度描述的全景图中，中心位置才是O点，经度纬度都是0。左上角是成了纬度为90度,经度为-180度的点。此时代码里常用经纬度的英文，即Longitude and latitude。以下是来自Stack Overflow的代码，将经纬度转笛卡尔。可以看到，其与上面一种“仰角-方位角”的主要区别就在于，套在lat外的sin和cos是相反的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Converting lat/long to cartesian</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">def get_cartesian(lat=None,lon=None):</span><br><span class="line">    lat, lon = np.deg2rad(lat), np.deg2rad(lon)</span><br><span class="line">    R = 6371 # radius of the earth</span><br><span class="line">    x = R * np.cos(lat) * np.cos(lon)</span><br><span class="line">    y = R * np.cos(lat) * np.sin(lon)</span><br><span class="line">    z = R *np.sin(lat)</span><br><span class="line">    return x,y,z</span><br></pre></td></tr></table></figure>
+
+<p>反转可以这样写：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 三维空间坐标到经纬度坐标的转换函数</span><br><span class="line">def xyz2polar(xyz):</span><br><span class="line">    lat = np.arcsin(xyz[2])</span><br><span class="line">    lon = np.arctan2(xyz[1], xyz[0])</span><br><span class="line">    return np.array([lon, lat])</span><br></pre></td></tr></table></figure>
+<p>当lat和lon都为0时，xyz&#x3D;[1,0,0]。</p>
+<h1 id="相机成像过程中的多个参考坐标系"><a href="#相机成像过程中的多个参考坐标系" class="headerlink" title="相机成像过程中的多个参考坐标系"></a>相机成像过程中的多个参考坐标系</h1><p>从全景图采用背景，需要知道相机在世界坐标系中的朝向；根据人头表面法向采集光照，也需要知道人头坐标系中的法向如何转化到世界坐标系中。<br>首先，应当明确，相机拍照的过程，是把<strong>世界坐标系</strong>中的点捕获到<strong>相机坐标系</strong>，再通过凸透镜投影到<strong>像平面</strong>上，最终放到<strong>像素平面</strong>上的。</p>
+<p>相机的内参和外参矩阵表明了如何做这一系列转化。</p>
+<h2 id="外参矩阵"><a href="#外参矩阵" class="headerlink" title="外参矩阵"></a>外参矩阵</h2><p>外参矩阵worldToCamera，能够将世界坐标系中的点$P^W$的坐标转成相机坐标系中的坐标$P^C &#x3D; P^W * worldToCamera$。外参矩阵是4$ \times$4的矩阵，左上角的3$ \times$3负责旋转，最后一列负责平移。在三维重建中，可能外参矩阵的逆矩阵cameraToWorld更有意思。它能把相机坐标系中的点放回世界坐标系中。同时，它的前三列分别对应$cameraToWorld * [1,0,0]^T$、$cameraToWorld * [0,1,0]^T$、$cameraToWorld * [0,0,1]^T$的结果，即相机坐标系xyz三个轴在世界坐标系中的真实指向。cameraToWorld的第四列则直接表明相机在世界坐标系中的位置。<br>下面这个函数是个例子，讲述如何从外参矩阵中提取这些有用信息。外参矩阵暗示相机在世界坐标系中的位置和朝向，因而这个函数名为setCameraPose，即和相机的Pose有关。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 根据相机外参矩阵设置相机参数</span><br><span class="line">def setCameraPose(self, cameraToWorld):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    worldToCamera，cameraToWorld: 4x4 matrix</span><br><span class="line">    相机外参矩阵worldToCamera，即世界坐标系到相机坐标系的变换矩阵，P^C = P^W * worldToCamera</span><br><span class="line">    cameraToWorld，即相机坐标系到世界坐标系的变换矩阵，P^W = P^C * cameraToWorld</span><br><span class="line">    cameraToWorld的第四列为相机在世界坐标系下的坐标，即相机的位置</span><br><span class="line">    cameraToWorld的第三列为相机在世界坐标系下的朝向，即相机的朝向</span><br><span class="line">    cameraToWorld的第二列为相机在世界坐标系下的上方向，即相机的上方向</span><br><span class="line">    cameraToWorld的第一列为相机在世界坐标系下的右方向，即相机的右方向</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    self.cameraToWorld = cameraToWorld</span><br><span class="line">    self.cameraPosition = cameraToWorld[:3,3]</span><br><span class="line">    self.cameraOrientation = cameraToWorld[:3,2]</span><br><span class="line">    self.cameraUp = cameraToWorld[:3,1]</span><br><span class="line">    self.cameraRight = cameraToWorld[:3,0]</span><br><span class="line">    self.worldToCamera = np.linalg.inv(self.cameraToWorld)</span><br><span class="line"></span><br><span class="line">    self.cameraToWorld = np.expand_dims(self.cameraToWorld, axis=0)    </span><br><span class="line">    self.worldToCamera = np.expand_dims(self.worldToCamera, axis=0)</span><br><span class="line">    self.cameraPosition = np.expand_dims(self.cameraPosition, axis=0)</span><br><span class="line">    self.cameraOrientation = np.expand_dims(self.cameraOrientation, axis=0)</span><br><span class="line">    self.cameraUp = np.expand_dims(self.cameraUp, axis=0)</span><br><span class="line">    self.cameraRight = np.expand_dims(self.cameraRight, axis=0)</span><br></pre></td></tr></table></figure>
+<p>相机坐标系中z轴的朝向一般就是相机的朝向，而外参矩阵的第三列就是我们需要的相机在世界坐标系中的朝向。</p>
+<h2 id="内参矩阵"><a href="#内参矩阵" class="headerlink" title="内参矩阵"></a>内参矩阵</h2><p>外参指的是相机与外部世界之间的关系，内参则决定相机坐标系中的点如何变化到像平面、像素平面上。这部分的变换都是二维上的变换，主要用到三角形相似定理。相机坐标系中的任意一点(x,y,z)，等比例相似变换到像平面中，成了(x’,y’,f)。$f$是焦距。x’,y’,f的单位就是真实世界里的长度单位，只不过比米小很多，一般是毫米。<br>$$<br>x&#x2F;x’ &#x3D; y&#x2F;y’ &#x3D; z&#x2F;f<br>$$</p>
+<p><img src="/../images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-31-28.png" alt="截图 2023-09-07 16-31-28"></p>
+<p>然而，像平面上的图像，最终要转化成像素组成的像素平面上（即最终看到的图像）。此时有是一次等比例放缩，数值放缩多少由传感器中一个像素的长和宽决定。像素越小，则同样的像平面最终获得的像素图越大。此时，还要把原点从光心挪到图片左上角。最终的像素图为(u,v):<br>$$<br>u &#x3D; \alpha x’ + c_x &#x3D; \alpha xf&#x2F;z + c _x \<br>v &#x3D; \beta y’ + c_y &#x3D; \beta yf&#x2F;z + c_y<br>$$<br>$c_x、c_y$的单位都是像素，即光心在像素图上的位置。原先的$f&#x2F;z$用于将相机坐标系中的点放缩到像平面中。这里又额外有了像平面到像素的放缩因素$\alpha$，因此可以把这两个放缩因素打包成$f_x &#x2F;z &#x3D; \alpha f&#x2F;z$，表示从相机坐标系到最终像素坐标的直接放缩，跳过中间的像平面。</p>
+<p>$$<br>u &#x3D; f_x x&#x2F;z+ c _x \<br>v &#x3D; f_y y &#x2F;z+ c_y<br>$$</p>
+<p>内参矩阵：</p>
+<p><img src="/../images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-52-23.png" alt="截图 2023-09-07 16-52-23"></p>
+<p>在我们的任务中，相机内参主要用来求视角fov。视角可以从象平面和像素平面的高深比求出，注意单位统一。这里使用像素平面的高$c_y$和深度$f_y$求垂直视角范围：</p>
+<p>$$<br>fov &#x3D; 2* arctan( c_y &#x2F; f_y )<br>$$<br>实际求出vfov等于20度这样，虽然有点小，但从全景图上抠出来的背景也能看，刚好是个人头的背景大小。</p>
+<h1 id="人头坐标系与全景图坐标系的对准"><a href="#人头坐标系与全景图坐标系的对准" class="headerlink" title="人头坐标系与全景图坐标系的对准"></a>人头坐标系与全景图坐标系的对准</h1><p>我们定义一个世界坐标系，假设全景图都是在水平面上转360度采集的，那么把全景图直接围在世界坐标系中即可。</p>
+<p><img src="/../images/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%B1%95%E7%A4%BA.gif" alt="全景图展示"></p>
+<p>在人头重建任务中，人头坐在的坐标系就是世界坐标系。而相机相当于在世界坐标系中游走，带着相机坐标系不断变化。但是，一旦要把人头和背景结合，此时要明确一个问题：<strong>全景图所在的世界坐标系才是真正的世界坐标系，将人头放置到全景图环绕的世界中时，人头所在的坐标系自动降格成一个物体坐标系，我称之为“人头坐标系”。</strong></p>
+<p>那么此时，就有个五个坐标系。每一级包含下一级：</p>
+<ul>
+<li>全景图所在的世界坐标系<ul>
+<li>人头坐标系<ul>
+<li>相机坐标系<ul>
+<li>像平面<ul>
+<li>像素平面</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>后四个坐标系之间的关系，我们已经通过前面的内参外参矩阵明确了。此时需要明确人头坐标系和世界坐标系之间的关系。此时，我们把重建出的一个人头导入放置好全景图的世界中，发现人头是平躺着、面朝上的：</p>
+<p><img src="/../images/%E5%AF%BC%E5%85%A5%E4%B8%96%E7%95%8C%E7%9A%84%E4%BA%BA%E5%A4%B4.png" alt="导入世界的人头"></p>
+<p>而我们希望人头是正对着我们的。此时，需要对人头坐标系做一个旋转。相对世界坐标系，对人头（人头坐标系）围绕x轴转90度，使其摆正；再围绕z轴旋转90度，使其面向我们。经过两次旋转，在世界坐标系固定为图中（x指出屏幕；y向右；z向上）所示，人头正对着屏幕。</p>
+<p><img src="/../images/%E6%97%8B%E8%BD%AC%E5%90%8E%E7%9A%84%E4%BA%BA%E5%A4%B4.png" alt="旋转后的人头"></p>
+<p>右上角是固定不变的世界坐标系，人头周围的是人头坐标系。<br>这个旋转其实是把人头坐标系的xyz轴数据当成z-xy。（blender里面铺展全景图的方法和真实的情况有差别，所以看起来是当成zxy）。写成函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def headPosition2WorldPosition(position):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Convert a head position to a world position.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    x, y, z = position</span><br><span class="line"></span><br><span class="line">    return np.array([z, -x, y])</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>blender</tag>
       </tags>
   </entry>
 </search>

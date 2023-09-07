@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一些小的但是有意思的工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全景图坐标系与人头坐标系的对齐">
+<meta property="og:url" content="http://example.com/2023/09/03/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E9%BD%90/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="一些小的但是有意思的工作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bkimg.cdn.bcebos.com/pic/ac4bd11373f082028b32ab2744fbfbedab641b01?x-bce-process=image/resize,m_lfit,w_536,limit_1/format,f_auto">
+<meta property="og:image" content="http://example.com/images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-31-28.png">
+<meta property="og:image" content="http://example.com/images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-52-23.png">
+<meta property="og:image" content="http://example.com/images/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%B1%95%E7%A4%BA.gif">
+<meta property="og:image" content="http://example.com/images/%E5%AF%BC%E5%85%A5%E4%B8%96%E7%95%8C%E7%9A%84%E4%BA%BA%E5%A4%B4.png">
+<meta property="og:image" content="http://example.com/images/%E6%97%8B%E8%BD%AC%E5%90%8E%E7%9A%84%E4%BA%BA%E5%A4%B4.png">
+<meta property="article:published_time" content="2023-09-03T19:22:43.000Z">
+<meta property="article:modified_time" content="2023-09-07T10:16:07.521Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="blender">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bkimg.cdn.bcebos.com/pic/ac4bd11373f082028b32ab2744fbfbedab641b01?x-bce-process=image/resize,m_lfit,w_536,limit_1/format,f_auto">
+
+<link rel="canonical" href="http://example.com/2023/09/03/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E9%BD%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>全景图坐标系与人头坐标系的对齐 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/03/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E9%BD%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          全景图坐标系与人头坐标系的对齐
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-09-04 03:22:43" itemprop="dateCreated datePublished" datetime="2023-09-04T03:22:43+08:00">2023-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-07 18:16:07" itemprop="dateModified" datetime="2023-09-07T18:16:07+08:00">2023-09-07</time>
+              </span>
+
+          
+            <div class="post-description">一些小的但是有意思的工作</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我们需要为重建的人头添加一个背景。其中一个方案是，直接找到一张全景图，背景、光照都从全景图中来。</p>
+<h1 id="球面坐标与欧式坐标之间的转化"><a href="#球面坐标与欧式坐标之间的转化" class="headerlink" title="球面坐标与欧式坐标之间的转化"></a>球面坐标与欧式坐标之间的转化</h1><p>从全景图中采样出背景图，这个过程涉及到球面坐标和标准欧式坐标之间的转换。</p>
+<p>查阅资料后，我了解到球面坐标系与标准欧氏坐标系之间（空间直角坐标系）之间有固定的转化公式。球极坐标中的仰角、方位角在标准欧式坐标中怎么画，都是有规定的。</p>
+<p><img src="https://bkimg.cdn.bcebos.com/pic/ac4bd11373f082028b32ab2744fbfbedab641b01?x-bce-process=image/resize,m_lfit,w_536,limit_1/format,f_auto" alt="球面坐标转换的概述图"></p>
+<h2 id="仰角-方位角"><a href="#仰角-方位角" class="headerlink" title="仰角-方位角"></a>仰角-方位角</h2><p>在全景图中，假如采用“仰角elevation-方位角azimuth”的方式确定像素的位置，那么使用上述标准的转换公式即可。例如，EMLight里有这样的写法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 笛卡尔坐标系（标准欧氏坐标系、空间直角坐标系）-&gt;极坐标（球面坐标系）</span><br><span class="line">def cartesian_to_polar(xyz):</span><br><span class="line">    theta = np.arccos(np.clip(xyz[2], -1.0, 1.0))</span><br><span class="line">    phi = np.arctan2(xyz[1], xyz[0])</span><br><span class="line">    return phi, theta</span><br><span class="line">    # return np.stack((phi, theta), axis=1)</span><br><span class="line"></span><br><span class="line"># 极坐标（球面坐标系）-&gt; 笛卡尔坐标系（标准欧氏坐标系、空间直角坐标系）</span><br><span class="line">def polar_to_cartesian(phi_theta):</span><br><span class="line">    x = np.sin(phi_theta[:, 1]) * np.cos(phi_theta[:, 0])</span><br><span class="line">    y = np.sin(phi_theta[:, 1]) * np.sin(phi_theta[:, 0])</span><br><span class="line">    z = np.cos(phi_theta[:, 1])</span><br><span class="line">    return np.stack((x, y, z), axis=1)</span><br></pre></td></tr></table></figure>
+<p>由于仰角和方位角经常用$\theta$和$\phi$表示，代码里经常用theta和phi代指仰角和方位角。</p>
+<h2 id="经度-纬度"><a href="#经度-纬度" class="headerlink" title="经度-纬度"></a>经度-纬度</h2><p>但也有的时候，全景图被看成一张世界地图，以经纬度标记像素位置。<br>全景图拍摄时,相机往往将镜头对准正北方向进行拍摄。此时,图片的正中央对应地理坐标的北纬方向,经度为0度。</p>
+<p>随着视角向东移动,经度值逐渐增加;向西移动,经度值逐渐减小。当视角转到正南方向时,经度达到最大值180度或最小值-180度。</p>
+<p>所以在全景图中,不管相机的朝向如何,经度为0的位置通常都在图片的正中央,表示北纬方向。这与我们平时看地图的习惯也是一致的。<br>所以，在经纬度描述的全景图中，中心位置才是O点，经度纬度都是0。左上角是成了纬度为90度,经度为-180度的点。此时代码里常用经纬度的英文，即Longitude and latitude。以下是来自Stack Overflow的代码，将经纬度转笛卡尔。可以看到，其与上面一种“仰角-方位角”的主要区别就在于，套在lat外的sin和cos是相反的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Converting lat/long to cartesian</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">def get_cartesian(lat=None,lon=None):</span><br><span class="line">    lat, lon = np.deg2rad(lat), np.deg2rad(lon)</span><br><span class="line">    R = 6371 # radius of the earth</span><br><span class="line">    x = R * np.cos(lat) * np.cos(lon)</span><br><span class="line">    y = R * np.cos(lat) * np.sin(lon)</span><br><span class="line">    z = R *np.sin(lat)</span><br><span class="line">    return x,y,z</span><br></pre></td></tr></table></figure>
+
+<p>反转可以这样写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 三维空间坐标到经纬度坐标的转换函数</span><br><span class="line">def xyz2polar(xyz):</span><br><span class="line">    lat = np.arcsin(xyz[2])</span><br><span class="line">    lon = np.arctan2(xyz[1], xyz[0])</span><br><span class="line">    return np.array([lon, lat])</span><br></pre></td></tr></table></figure>
+<p>当lat和lon都为0时，xyz&#x3D;[1,0,0]。</p>
+<h1 id="相机成像过程中的多个参考坐标系"><a href="#相机成像过程中的多个参考坐标系" class="headerlink" title="相机成像过程中的多个参考坐标系"></a>相机成像过程中的多个参考坐标系</h1><p>从全景图采用背景，需要知道相机在世界坐标系中的朝向；根据人头表面法向采集光照，也需要知道人头坐标系中的法向如何转化到世界坐标系中。<br>首先，应当明确，相机拍照的过程，是把<strong>世界坐标系</strong>中的点捕获到<strong>相机坐标系</strong>，再通过凸透镜投影到<strong>像平面</strong>上，最终放到<strong>像素平面</strong>上的。</p>
+<p>相机的内参和外参矩阵表明了如何做这一系列转化。</p>
+<h2 id="外参矩阵"><a href="#外参矩阵" class="headerlink" title="外参矩阵"></a>外参矩阵</h2><p>外参矩阵worldToCamera，能够将世界坐标系中的点$P^W$的坐标转成相机坐标系中的坐标$P^C &#x3D; P^W * worldToCamera$。外参矩阵是4$ \times$4的矩阵，左上角的3$ \times$3负责旋转，最后一列负责平移。在三维重建中，可能外参矩阵的逆矩阵cameraToWorld更有意思。它能把相机坐标系中的点放回世界坐标系中。同时，它的前三列分别对应$cameraToWorld * [1,0,0]^T$、$cameraToWorld * [0,1,0]^T$、$cameraToWorld * [0,0,1]^T$的结果，即相机坐标系xyz三个轴在世界坐标系中的真实指向。cameraToWorld的第四列则直接表明相机在世界坐标系中的位置。<br>下面这个函数是个例子，讲述如何从外参矩阵中提取这些有用信息。外参矩阵暗示相机在世界坐标系中的位置和朝向，因而这个函数名为setCameraPose，即和相机的Pose有关。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 根据相机外参矩阵设置相机参数</span><br><span class="line">def setCameraPose(self, cameraToWorld):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    worldToCamera，cameraToWorld: 4x4 matrix</span><br><span class="line">    相机外参矩阵worldToCamera，即世界坐标系到相机坐标系的变换矩阵，P^C = P^W * worldToCamera</span><br><span class="line">    cameraToWorld，即相机坐标系到世界坐标系的变换矩阵，P^W = P^C * cameraToWorld</span><br><span class="line">    cameraToWorld的第四列为相机在世界坐标系下的坐标，即相机的位置</span><br><span class="line">    cameraToWorld的第三列为相机在世界坐标系下的朝向，即相机的朝向</span><br><span class="line">    cameraToWorld的第二列为相机在世界坐标系下的上方向，即相机的上方向</span><br><span class="line">    cameraToWorld的第一列为相机在世界坐标系下的右方向，即相机的右方向</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    self.cameraToWorld = cameraToWorld</span><br><span class="line">    self.cameraPosition = cameraToWorld[:3,3]</span><br><span class="line">    self.cameraOrientation = cameraToWorld[:3,2]</span><br><span class="line">    self.cameraUp = cameraToWorld[:3,1]</span><br><span class="line">    self.cameraRight = cameraToWorld[:3,0]</span><br><span class="line">    self.worldToCamera = np.linalg.inv(self.cameraToWorld)</span><br><span class="line"></span><br><span class="line">    self.cameraToWorld = np.expand_dims(self.cameraToWorld, axis=0)    </span><br><span class="line">    self.worldToCamera = np.expand_dims(self.worldToCamera, axis=0)</span><br><span class="line">    self.cameraPosition = np.expand_dims(self.cameraPosition, axis=0)</span><br><span class="line">    self.cameraOrientation = np.expand_dims(self.cameraOrientation, axis=0)</span><br><span class="line">    self.cameraUp = np.expand_dims(self.cameraUp, axis=0)</span><br><span class="line">    self.cameraRight = np.expand_dims(self.cameraRight, axis=0)</span><br></pre></td></tr></table></figure>
+<p>相机坐标系中z轴的朝向一般就是相机的朝向，而外参矩阵的第三列就是我们需要的相机在世界坐标系中的朝向。</p>
+<h2 id="内参矩阵"><a href="#内参矩阵" class="headerlink" title="内参矩阵"></a>内参矩阵</h2><p>外参指的是相机与外部世界之间的关系，内参则决定相机坐标系中的点如何变化到像平面、像素平面上。这部分的变换都是二维上的变换，主要用到三角形相似定理。相机坐标系中的任意一点(x,y,z)，等比例相似变换到像平面中，成了(x’,y’,f)。$f$是焦距。x’,y’,f的单位就是真实世界里的长度单位，只不过比米小很多，一般是毫米。<br>$$<br>x&#x2F;x’ &#x3D; y&#x2F;y’ &#x3D; z&#x2F;f<br>$$</p>
+<p><img src="/../images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-31-28.png" alt="截图 2023-09-07 16-31-28"></p>
+<p>然而，像平面上的图像，最终要转化成像素组成的像素平面上（即最终看到的图像）。此时有是一次等比例放缩，数值放缩多少由传感器中一个像素的长和宽决定。像素越小，则同样的像平面最终获得的像素图越大。此时，还要把原点从光心挪到图片左上角。最终的像素图为(u,v):<br>$$<br>u &#x3D; \alpha x’ + c_x &#x3D; \alpha xf&#x2F;z + c _x \<br>v &#x3D; \beta y’ + c_y &#x3D; \beta yf&#x2F;z + c_y<br>$$<br>$c_x、c_y$的单位都是像素，即光心在像素图上的位置。原先的$f&#x2F;z$用于将相机坐标系中的点放缩到像平面中。这里又额外有了像平面到像素的放缩因素$\alpha$，因此可以把这两个放缩因素打包成$f_x &#x2F;z &#x3D; \alpha f&#x2F;z$，表示从相机坐标系到最终像素坐标的直接放缩，跳过中间的像平面。</p>
+<p>$$<br>u &#x3D; f_x x&#x2F;z+ c _x \<br>v &#x3D; f_y y &#x2F;z+ c_y<br>$$</p>
+<p>内参矩阵：</p>
+<p><img src="/../images/%E6%88%AA%E5%9B%BE%202023-09-07%2016-52-23.png" alt="截图 2023-09-07 16-52-23"></p>
+<p>在我们的任务中，相机内参主要用来求视角fov。视角可以从象平面和像素平面的高深比求出，注意单位统一。这里使用像素平面的高$c_y$和深度$f_y$求垂直视角范围：</p>
+<p>$$<br>fov &#x3D; 2* arctan( c_y &#x2F; f_y )<br>$$<br>实际求出vfov等于20度这样，虽然有点小，但从全景图上抠出来的背景也能看，刚好是个人头的背景大小。</p>
+<h1 id="人头坐标系与全景图坐标系的对准"><a href="#人头坐标系与全景图坐标系的对准" class="headerlink" title="人头坐标系与全景图坐标系的对准"></a>人头坐标系与全景图坐标系的对准</h1><p>我们定义一个世界坐标系，假设全景图都是在水平面上转360度采集的，那么把全景图直接围在世界坐标系中即可。</p>
+<p><img src="/../images/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%B1%95%E7%A4%BA.gif" alt="全景图展示"></p>
+<p>在人头重建任务中，人头坐在的坐标系就是世界坐标系。而相机相当于在世界坐标系中游走，带着相机坐标系不断变化。但是，一旦要把人头和背景结合，此时要明确一个问题：<strong>全景图所在的世界坐标系才是真正的世界坐标系，将人头放置到全景图环绕的世界中时，人头所在的坐标系自动降格成一个物体坐标系，我称之为“人头坐标系”。</strong></p>
+<p>那么此时，就有个五个坐标系。每一级包含下一级：</p>
+<ul>
+<li>全景图所在的世界坐标系<ul>
+<li>人头坐标系<ul>
+<li>相机坐标系<ul>
+<li>像平面<ul>
+<li>像素平面</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>后四个坐标系之间的关系，我们已经通过前面的内参外参矩阵明确了。此时需要明确人头坐标系和世界坐标系之间的关系。此时，我们把重建出的一个人头导入放置好全景图的世界中，发现人头是平躺着、面朝上的：</p>
+<p><img src="/../images/%E5%AF%BC%E5%85%A5%E4%B8%96%E7%95%8C%E7%9A%84%E4%BA%BA%E5%A4%B4.png" alt="导入世界的人头"></p>
+<p>而我们希望人头是正对着我们的。此时，需要对人头坐标系做一个旋转。相对世界坐标系，对人头（人头坐标系）围绕x轴转90度，使其摆正；再围绕z轴旋转90度，使其面向我们。经过两次旋转，在世界坐标系固定为图中（x指出屏幕；y向右；z向上）所示，人头正对着屏幕。</p>
+<p><img src="/../images/%E6%97%8B%E8%BD%AC%E5%90%8E%E7%9A%84%E4%BA%BA%E5%A4%B4.png" alt="旋转后的人头"></p>
+<p>右上角是固定不变的世界坐标系，人头周围的是人头坐标系。<br>这个旋转其实是把人头坐标系的xyz轴数据当成z-xy。（blender里面铺展全景图的方法和真实的情况有差别，所以看起来是当成zxy）。写成函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def headPosition2WorldPosition(position):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Convert a head position to a world position.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    x, y, z = position</span><br><span class="line"></span><br><span class="line">    return np.array([z, -x, y])</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blender/" rel="tag"># blender</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/30/%E5%9C%A8vscode%E4%B8%8A%E5%AE%89%E8%A3%85labuladong%E6%8F%92%E4%BB%B6/" rel="prev" title="在vscode上安装labuladong插件">
+      <i class="fa fa-chevron-left"></i> 在vscode上安装labuladong插件
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%90%83%E9%9D%A2%E5%9D%90%E6%A0%87%E4%B8%8E%E6%AC%A7%E5%BC%8F%E5%9D%90%E6%A0%87%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">球面坐标与欧式坐标之间的转化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B0%E8%A7%92-%E6%96%B9%E4%BD%8D%E8%A7%92"><span class="nav-number">1.1.</span> <span class="nav-text">仰角-方位角</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E5%BA%A6-%E7%BA%AC%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">经度-纬度</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E6%9C%BA%E6%88%90%E5%83%8F%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%A4%9A%E4%B8%AA%E5%8F%82%E8%80%83%E5%9D%90%E6%A0%87%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">相机成像过程中的多个参考坐标系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E5%8F%82%E7%9F%A9%E9%98%B5"><span class="nav-number">2.1.</span> <span class="nav-text">外参矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%8F%82%E7%9F%A9%E9%98%B5"><span class="nav-number">2.2.</span> <span class="nav-text">内参矩阵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E5%87%86"><span class="nav-number">3.</span> <span class="nav-text">人头坐标系与全景图坐标系的对准</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

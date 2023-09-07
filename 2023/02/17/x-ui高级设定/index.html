@@ -30,7 +30,7 @@
 <meta property="og:description" content="使用者身份限制，精确到用户的流量和时长限制。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-17T20:45:45.000Z">
-<meta property="article:modified_time" content="2023-02-18T05:19:14.343Z">
+<meta property="article:modified_time" content="2023-03-14T08:58:46.368Z">
 <meta property="article:author" content="Ji Xinlong">
 <meta property="article:tag" content="vpn">
 <meta name="twitter:card" content="summary">
@@ -214,10 +214,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-02-18 04:45:45 / 修改时间：13:19:14" itemprop="dateCreated datePublished" datetime="2023-02-18T04:45:45+08:00">2023-02-18</time>
+              <time title="创建时间：2023-02-18 04:45:45" itemprop="dateCreated datePublished" datetime="2023-02-18T04:45:45+08:00">2023-02-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-14 16:58:46" itemprop="dateModified" datetime="2023-03-14T16:58:46+08:00">2023-03-14</time>
+              </span>
 
           
             <div class="post-description">使用者身份限制，精确到用户的流量和时长限制。</div>
@@ -250,6 +256,12 @@
 <li>自动验证。所有的操作最后都应该自动化。可以想办法将邮件内容接收、uuid读取、config添加等工作写成代码，用合并读取config的方式来完成这个工作。</li>
 </ol>
 <h1 id="匿名交易"><a href="#匿名交易" class="headerlink" title="匿名交易"></a>匿名交易</h1><p>倘若需要匿名交易功能，可能需要使用paypal。</p>
+<h1 id="acme-sh自动设置域名"><a href="#acme-sh自动设置域名" class="headerlink" title="acme.sh自动设置域名"></a>acme.sh自动设置域名</h1><p>x-ui支持自动下载acme.sh脚本并用该脚本申请ssl证书。该脚本会自动更新证书，且每次拷贝新证书到&#x2F;root&#x2F;cert下。</p>
+<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
+<li>每次用acme.sh脚本申请证书，所用域名都会被acme.sh记录。即使这个域名以后作废了，acme.sh也会为其自动更新证书。</li>
+<li>申请的证书有fullchain.cer和xxx.xxxx.cer两种公钥，如果是给网站使用的话，用前面一个，前者包含了后者。</li>
+<li>有一次我发现ws+tls类型的节点失效了，更新了证书节点仍然无效。后来重启x-ui解决了问题，原因可能是：<br>  x-ui在启动时会自动读取一次证书，并缓存该证书。后期更新证书并吊销旧证书，x-ui使用的仍然是旧的，这就导致tls类型节点无效。解决方法就是重启x-ui。</li>
+</ul>
 
     </div>
 
@@ -333,7 +345,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%80%85%E8%BA%AB%E4%BB%BD%E8%AE%BE%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">使用者身份设定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E4%BA%A4%E6%98%93"><span class="nav-number">2.</span> <span class="nav-text">匿名交易</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%80%85%E8%BA%AB%E4%BB%BD%E8%AE%BE%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">使用者身份设定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E4%BA%A4%E6%98%93"><span class="nav-number">2.</span> <span class="nav-text">匿名交易</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#acme-sh%E8%87%AA%E5%8A%A8%E8%AE%BE%E7%BD%AE%E5%9F%9F%E5%90%8D"><span class="nav-number">3.</span> <span class="nav-text">acme.sh自动设置域名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">3.1.</span> <span class="nav-text">注意点</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -349,14 +361,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

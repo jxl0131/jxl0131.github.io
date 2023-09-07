@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-32x32.png.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD-16x16.png.png">
+  <link rel="mask-icon" href="/images/logo-%E7%A9%BA%E4%B8%AD%E8%8A%B1%E5%9B%AD.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="高端的bug往往由简单的断网引起">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在vscode上安装labuladong插件">
+<meta property="og:url" content="http://example.com/2023/08/30/%E5%9C%A8vscode%E4%B8%8A%E5%AE%89%E8%A3%85labuladong%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="Secret Garden of Ji">
+<meta property="og:description" content="高端的bug往往由简单的断网引起">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-30T22:16:49.000Z">
+<meta property="article:modified_time" content="2023-08-31T06:29:26.380Z">
+<meta property="article:author" content="Ji Xinlong">
+<meta property="article:tag" content="node">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/08/30/%E5%9C%A8vscode%E4%B8%8A%E5%AE%89%E8%A3%85labuladong%E6%8F%92%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在vscode上安装labuladong插件 | Secret Garden of Ji</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Secret Garden of Ji</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Ji's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/30/%E5%9C%A8vscode%E4%B8%8A%E5%AE%89%E8%A3%85labuladong%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ji Xinlong">
+      <meta itemprop="description" content="你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Secret Garden of Ji">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在vscode上安装labuladong插件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-31 06:16:49 / 修改时间：14:29:26" itemprop="dateCreated datePublished" datetime="2023-08-31T06:16:49+08:00">2023-08-31</time>
+            </span>
+
+          
+            <div class="post-description">高端的bug往往由简单的断网引起</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>故事发生在一个略微轻松的下午–论文上的事情在等待下一步指示，项目上的事在等待对接的人。</p>
+<p>于是我想起了同学推荐我的labuladong刷题插件。之前他还推荐我使用Bing的免费AI对话，我搜了教程，发现现在只能在Edge的开发者版本上可以免费使用了。顺带着我还发现这个开发者版本的Edge和平常用的不一样，它有linux版的。这意味着在linux也是能用微软家浏览器的了！之前呢，我以为同时支持windows、linux、安卓三个主流操作系统的只有火狐和谷歌。谷歌默认谷歌搜索引擎，有时不太方便，所以我一直很喜欢火狐。总之，Edge开发版本再次让我意识到了跨设备是未来的趋势，是良好的美德。</p>
+<p>我很喜欢火狐，我已经习惯性的把所有重要的网页都收藏在火狐上了。可是labuladong在火狐上并没有扩展。这意味着要使用这个扩展，还得用Edge？可是我已经在各个设备上主用火狐了，我也不想在实验室电脑的ubuntu上再装一个Edge了…偶然间我发现labuladong也有vscode的插件。vscode我熟悉呀！vscode就是我最爱的IDE，它和火狐一样都是跨设备多终端同步的典范！于是我打算在vscode上安装labuladong插件，以此免除对Edge的依赖。而AI对话有更多的平替，这个也无须用Edge。</p>
+<h1 id="第一回：如何在没有管理员权限的服务器上安装node-js"><a href="#第一回：如何在没有管理员权限的服务器上安装node-js" class="headerlink" title="第一回：如何在没有管理员权限的服务器上安装node.js"></a>第一回：如何在没有管理员权限的服务器上安装node.js</h1><p>labuladong插件依赖node.js</p>
+<p>其实“安装”这个词，容易让人产生误解，以为它是个很复杂的动作。特别是早期，我们都使用windows，一般安装某某软件就是个复杂的过程，有的时候还得去搜教程和攻略，这件事的根源在于，windows是黑箱一样的操作系统，是傻瓜式的图形操作界面，且面向的用户都是不懂系统和电脑的普罗大众。这就导致我们在使用windows的时候，不会多动脑筋去思考“安装”到底是在做什么事情。更有很多端正复杂的“安装向导”程序，先给我们展示一大段看不懂的“协议”，再引导我们一步一步安装，让我们觉得这个过程相当复杂和神圣，“不要去细想它里面做的事了，一定是很复杂的”。</p>
+<p>也有些软件在暗示我们，安装其实不是（需要）这么复杂的。例如，我们一定见过很多“绿色版”软件，从别人那里拷贝过来，点开就能运行。我的理解是，这种绿色版软件就相当于我们自己平时写的那种代码，包含了所有重要的功能，但是未曾向系统注册（表明自己的存在）。这种绿色版软件，实际上就是跳过了向系统注册等等windows上复杂的“安装”流程，直接以可执行程序的形式存在着。它未注册，因而像黑户一样，系统不知道它的存在；但是它确确实实有着完整的功能，往那一放就可以用，不想时卸载就行。</p>
+<p>使用linux之后，把某个软件或包的路径”写入系统路径“，是经常要做的事情。这其实就是linux上的”安装“了，等价于windows上向系统”注册“、写入系统变量等过程。网上的很多教程，在说到安装某款软件的时候，常常会让使用<code>sudo apt install xxx</code>命令。这让我们觉得，似乎这就是标准的“安装”过程。实际上并不是的。首先，apt只是一个云端的软件仓库，它收藏了常用的软件。这条命令最大的作用是从云端下载软件的过程，下载之后将软件的配置、可执行文件等分门别类地放到系统不同位置。而sudo其实不是必须的，它之所以经常出现，是因为这条命令可能改变对系统来说很重要的某个软件包，让系统轰然倒塌，所以一般只有管理员才能使用。</p>
+<p>但实验室的服务器通常是大家共用的，无法使用sudo apt命令直接从仓库安装某个软件。此时，要注意的是，linux上安装某个软件其实非常简单，不需要使用<code>sudo apt install xxx</code>命令。</p>
+<p>第一步，下载这个包到某个位置，例如可以这样直接下载node.js：<br><code>curl https://nodejs.org/dist/v20.5.1/node-v20.5.1-linux-x64.tar.xz</code></p>
+<p>下载之后，解压，能看到一个文件夹里包含了所有你需要的nodejs相关文件。这个时候cd到这个文件夹中的bin文件夹中，执行这样一个命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) jxl@vostro-5090-china-hdd-protection:~/下载/node-v20.5.1-linux-x64/bin$ ./node</span><br><span class="line">Welcome to Node.js v20.5.1.</span><br><span class="line">Type &quot;.help&quot; for more information.</span><br><span class="line">&gt; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到当前的这个node俨然就是一个完美的可执行文件了。然而这样并没有结束，在系统的其他位置执行<code>node</code>，会提示你没有”node”这个东西。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) jxl@vostro-5090-china-hdd-protection:~$ node</span><br><span class="line">Command &#x27;node&#x27; not found, but can be installed with:</span><br><span class="line">sudo apt install nodejs</span><br></pre></td></tr></table></figure>
+<p>这就是我们之前说的“将软件的路径添加到系统路径里”的事情了。随手下载的软件只有你当时知道它的存在，在系统看来就是个黑户，在系统中的其他软件看来更是如此。<br>此时，把可执行文件的路径加到系统路径即可。先<code>vi ~/.bashrc</code>，把<code>export PATH=&quot;$PATH:/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin&quot;</code>这样一句加到最后。<code>.bashrc</code>是当前用户每次登陆时会自动执行的脚本，而<code>export PATH=&quot;$PATH:/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin&quot;</code>表示给<code>PATH</code>这个系统变量赋值为旧值<code>$PATH</code>后面加上<code>/data/jixinlong/jixinlong/node-v20.5.1-linux-x64/bin</code>。</p>
+<p>然后执行<code>source ~/.bashrc</code>让这个脚本立刻生效，而不必等到用户下次登陆再生效。<br>此时，在系统任何位置执行node命令，都会显示node存在：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(base) jixinlong@ubun:~/Illumination-Estimation-1/SHGLight$ node</span><br><span class="line">Welcome to Node.js v20.5.1.</span><br><span class="line">Type &quot;.help&quot; for more information.</span><br><span class="line">&gt; </span><br></pre></td></tr></table></figure>
+
+<h1 id="第二回：labuladong为什么登陆不上"><a href="#第二回：labuladong为什么登陆不上" class="headerlink" title="第二回：labuladong为什么登陆不上"></a>第二回：labuladong为什么登陆不上</h1><p><code>千辛万苦，想清了平头百姓装node一事；万苦千辛，网断了labuladong如何登陆得上！</code></p>
+<p>其实有些事情早有伏笔，只是当时未能想到这一层。学校的校园网一次性只能有四个ip登陆，而中午的时候我可能登陆了太多设备，把之前连着校园网的服务器弄断网了。实验室的服务器上有一天执行一次的自动联网脚本，所以我从来不会去关注它网络的状况。</p>
+<p>还有个比较狗的事情，就是实验室的服务器，即时不自己去联网，也会有一个比较慢速的网。这个网在我安装labuladong插件的时候完全够用，可是我进一步在插件里登陆leetcode账号的时候，却完全不够用了。能成功下载插件，麻痹我，让我意识不到网络有问题。等到我折腾两个小时都登陆不上leetcode账号，尝试各种方法都不行时，偶然看了一眼内网穿透等服务的log，发现网络似乎在最近几个小时不对劲。然后我再试着<code>curl www.baidu.com</code>检查一下网络状态，发现拉出了个10.0.0.58的校园网登陆界面，才发现滑天下之大稽，自己竟然和断网的插件斗争了两个小时。</p>
+<p>给服务器手动连了校园网，再次尝试登陆leetcode账号。丝滑登陆，畅通无阻，热泪盈眶。事了拂衣去，深藏功与名。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其实node用nvm安装也很方便，也不需要管理员权限。同时还能支持对不同node版本的切换使用。<br>nvm之于node，就好像conda之于python，就好像java的一个版本管理器之于java…真是优美的管理者们。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/node/" rel="tag"># node</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/18/python%E4%B8%AD%E7%9A%84%E7%9F%A9%E9%98%B5%E6%93%8D%E4%BD%9C/" rel="prev" title="python中的矩阵操作">
+      <i class="fa fa-chevron-left"></i> python中的矩阵操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/09/03/%E5%85%A8%E6%99%AF%E5%9B%BE%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8E%E4%BA%BA%E5%A4%B4%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E5%AF%B9%E9%BD%90/" rel="next" title="全景图坐标系与人头坐标系的对齐">
+      全景图坐标系与人头坐标系的对齐 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%9B%9E%EF%BC%9A%E5%A6%82%E4%BD%95%E5%9C%A8%E6%B2%A1%E6%9C%89%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%AE%89%E8%A3%85node-js"><span class="nav-number">1.</span> <span class="nav-text">第一回：如何在没有管理员权限的服务器上安装node.js</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%9B%9E%EF%BC%9Alabuladong%E4%B8%BA%E4%BB%80%E4%B9%88%E7%99%BB%E9%99%86%E4%B8%8D%E4%B8%8A"><span class="nav-number">2.</span> <span class="nav-text">第二回：labuladong为什么登陆不上</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ji Xinlong"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ji Xinlong</p>
+  <div class="site-description" itemprop="description">你好，欢迎来到我的秘密花园！<br> 这里是我记录学习生活中的各种经历和小trick的地方。我是一名计算机图形学方向在读的研究生，业余兴趣涉及linux相关应用、我的世界、饥荒等。<br> 欢迎来和我做朋友！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxl0131" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxl0131" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jixinlong0131@foxmail.com" title="E-Mail → mailto:jixinlong0131@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ji Xinlong</span>
+</div>
+  <div class="powered-by">基于 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 建立此站
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
